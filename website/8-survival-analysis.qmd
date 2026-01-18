@@ -1,0 +1,624 @@
+---
+title: "Survival Analysis"
+format: html
+engine: knitr
+---
+
+```{css}
+#| echo: false
+p {
+  text-align: justify
+}
+```
+
+This chapter covers survival analysis in DataSHIELD using `dsSurvival` package functions including `ds.Surv()`, Cox proportional hazards models with restricted cubic splines, and competing risks analysis (Fine-Gray models).
+
+## Overview
+
+Survival analysis is used to analyze time-to-event data, such as:
+
+- Time to death (all-cause mortality - ACM)
+- Time to cardiovascular event (CVD)
+- Time to disease onset
+- Time to recurrence
+
+## Setup
+
+::: {.callout-important}
+## Profile Requirement
+Survival analysis requires the `dsSurvival` server-side package. On the Opal demo server, use `profile = "default"` which includes `dsBase`, `dsSurvival`, `dsTidyverse`, and `resourcer`.
+:::
+
+### Installing dsSurvivalClient
+
+```{r}
+#| eval: false
+
+# Install the specific version used in ProPASS
+devtools::install_github("datashield/dsSurvivalClient", ref = "v2.3.0-dev")
+```
+
+### Loading Libraries and Connecting
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+# Load all required libraries
+library(DSI)
+library(DSOpal)
+library(dsBaseClient)
+library(dsTidyverseClient)
+library(dsSurvivalClient)
+
+# Connect to ProPass dataset
+builder <- DSI::newDSLoginBuilder()
+builder$append(
+  server = "study1",
+  url = "https://opal-demo.obiba.org",
+  user = "administrator",
+  password = "password",
+  table = "ProPass.life1",
+  profile = "margin-idiom"
+)
+
+logindata <- builder$build()
+conns <- datashield.login(logins = logindata, assign = TRUE, symbol = "D")
+```
+
+### Exploring the Data
+
+```{r}
+# Check data structure
+ds.colnames("D")
+ds.dim("D")
+```
+
+The ProPASS dataset contains lifestyle and follow-up data.
+
+## Data Preparation (ProPASS Workflow)
+
+This section replicates the data preparation steps from the ProPASS analysis script. These steps are necessary to create the analysis-ready dataset.
+
+### Step 1: Arrange and Winsorize BMI
+
+First, we arrange the data by ID and cap extreme BMI values at the 97.5th percentile (here approximated as 37.16):
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Arrange data by ID
+ds.arrange(df.name = "D", tidy_expr = list(ID), newobj = "D")
+
+# Winsorize BMI at 97.5th percentile (cap at 37.16)
+# Original script uses 0.975 quantile; on DataSHIELD we approximate this
+# ds.quantileMean(x = 'D$bmi') yields approximately 37.16 at 95th percentile
+ds.case_when(
+  tidy_expr = list(D$bmi <= 37.16 ~ D$bmi, D$bmi > 37.16 ~ 37.16),
+  newobj = "bmi_revised"
+)
+ds.dataFrame(x = c("D", "bmi_revised"), newobj = "D")
+```
+
+### Step 2: Handle Missing Values and Create Derived Variables
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Check for missing values in alcohol variable
+ds.numNA(x = "D$alc")
+
+# Filter out rows with missing alcohol data
+ds.filter(df.name = "D", tidy_expr = list(D$alc != "NA"), newobj = "D")
+
+# Create combined medication variable (1 if any medication, 0 otherwise)
+ds.if_else(
+  condition = list(D$med_lipid == 1 | D$med_bp == 1 | D$med_glucose == 1),
+  true = 1,
+  false = 0,
+  newobj = "med_combined"
+)
+ds.dataFrame(x = c("D", "med_combined"), newobj = "D")
+
+# Create diet variable from fruit and vegetable consumption
+ds.asNumeric(x.name = "D$veg", newobj = "veg.n")
+ds.asNumeric(x.name = "D$fruit", newobj = "fruit.n")
+ds.make(toAssign = "fruit.n + veg.n", newobj = "diet")
+ds.dataFrame(x = c("D", "diet"), newobj = "D")
+```
+
+### Step 3: Select Variables and Generate Outcome Variables
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Select relevant columns for analysis
+ds.select(
+  df.name = "D",
+  tidy_expr = list(ID, age, sex, smoke, edu, bmi, alc, med_combined, diet),
+  newobj = "D2"
+)
+
+# Generate simulated ACM outcome (for demonstration purposes)
+ds.rBinom(samp.size = 491, size = 1, prob = 0.15, newobj = "acm", seed.as.integer = 3112)
+
+# Generate follow-up times
+ds.rUnif(samp.size = 491, min = 3.0, max = 7.8, newobj = "var1", seed.as.integer = NULL)
+ds.make(toAssign = "acm * var1", newobj = "var2")
+ds.recodeValues(var.name = "var2", values2replace.vector = 0, new.values.vector = 8, newobj = "fup")
+ds.recodeValues(var.name = "var1", values2replace.vector = 0, new.values.vector = 8, newobj = "fup2")
+ds.dataFrame(x = c("D2", "acm", "fup"), newobj = "D2")
+
+# Generate simulated CVD outcome (0 = censored, 1 = CVD, 2 = competing death)
+ds.rBinom(samp.size = 491, size = 2, prob = 0.3, newobj = "CVD", seed.as.integer = NULL)
+ds.case_when(tidy_expr = list(CVD == 2 ~ var1, CVD < 2 ~ 8), newobj = "fup_CVD")
+ds.dataFrame(x = c("D2", "CVD", "fup_CVD"), newobj = "D2")
+```
+
+### Step 4: Convert Variables to Appropriate Types
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Convert categorical variables to numeric for model fitting
+ds.asNumeric(x.name = "D2$edu", newobj = "edu")
+ds.asNumeric(x.name = "D2$smoke", newobj = "smoke")
+
+# Reorganize data frame
+ds.select(
+  df.name = "D2",
+  tidy_expr = list(ID, age, sex, bmi, alc, med_combined, diet, acm, fup, CVD, fup_CVD),
+  newobj = "D2"
+)
+ds.dataFrame(x = c("D2", "smoke", "edu"), newobj = "D2")
+```
+
+### Step 5: Multiple Imputation
+
+Handle remaining missing values using multiple imputation with random forests:
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Perform multiple imputation with 5 imputations using random forest
+ds.mice(
+  data = "D2",
+  m = 5,
+  method = "rf",
+  newobj_df = "imputed_data",
+  seed = "fixed",
+  newobj_mids = "imputed_mids"
+)
+
+# Convert variables to factors for the imputed data
+ds.asFactor(input.var.name = "D2$edu", newobj.name = "edu")
+ds.asFactor(input.var.name = "D2$smoke", newobj.name = "smoke")
+ds.asFactor(input.var.name = "D2$sex", newobj.name = "sex")
+
+# Select from first imputation and combine with factor variables
+ds.select(
+  df.name = "imputed_data.1",
+  tidy_expr = list(ID, age, bmi, alc, med_combined, diet, acm, fup, CVD, fup_CVD),
+  newobj = "imputed_data1"
+)
+ds.dataFrame(x = c("imputed_data1", "smoke", "edu", "sex"), newobj = "imputed_data.3")
+```
+
+### Step 6: Prepare Final Analysis Datasets
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# ACM analysis dataset: filter for adequate follow-up (>= 1 year)
+ds.dataFrameSubset(
+  df.name = "imputed_data.3",
+  V1.name = "fup",
+  V2.name = "1",
+  Boolean.operator = ">=",
+  newobj = "dat_ACM_BMI"
+)
+ds.make(toAssign = "dat_ACM_BMI$bmi", newobj = "Primary_exposure")
+ds.dataFrame(c("dat_ACM_BMI", "Primary_exposure"), newobj = "dat_ACM_BMI")
+
+# CVD analysis dataset: filter for adequate CVD follow-up
+ds.dataFrameSubset(
+  df.name = "imputed_data.3",
+  V1.name = "fup_CVD",
+  V2.name = "1",
+  Boolean.operator = ">=",
+  newobj = "dat_CVD_BMI"
+)
+ds.make(toAssign = "dat_CVD_BMI$bmi", newobj = "Primary_exposure")
+ds.dataFrame(c("dat_CVD_BMI", "Primary_exposure"), newobj = "dat_CVD_BMI")
+
+# Check final sample sizes
+ds.dim("dat_ACM_BMI")
+ds.dim("dat_CVD_BMI")
+```
+
+::: {.callout-note}
+## Data Preparation Summary
+The data preparation steps above:
+
+1. **Winsorize** extreme BMI values to reduce outlier influence
+2. **Filter** observations with missing alcohol data
+3. **Create** derived variables (combined medication, diet score)
+4. **Impute** missing values using multiple imputation
+5. **Subset** for adequate follow-up time
+6. **Create** standardized `Primary_exposure` variable for modeling
+:::
+
+## Cox Proportional Hazards Models with RCS
+
+::: {.callout-note}
+## Why Restricted Cubic Splines?
+RCS allows modeling non-linear exposure-response relationships. Instead of assuming a linear association between BMI and mortality, RCS captures potential J-shaped or U-shaped curves. This is the approach used in the **ProPASS analysis**.
+:::
+
+### Step 1: Setup for RMS Package
+
+The `rms` package enables restricted cubic splines. Setup requires `ds.datadist()`:
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Setup datadist for rms functions
+# adjust_to specifies the reference value for hazard ratio plots
+ds.datadist(
+  data = "dat_ACM_BMI",
+  adjust_to = list(Primary_exposure = "min")  # Reference = minimum BMI
+)
+
+# Activate the datadist
+ds.useDatadist(datadist = "datadist_dat_ACM_BMI")
+```
+
+### Step 2: Define Spline Knots
+
+Knots are placed at quantiles of the exposure distribution. Standard practice is to use the 10th, 50th, and 90th percentiles for 3 knots:
+
+```{r}
+# Get quantiles to determine knot placement
+ds.quantileMean(x = "dat_ACM_BMI$Primary_exposure", type = "combine")
+```
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Create knots vector based on quantiles (10th, 50th, 90th percentiles)
+# Values from ds.quantileMean output: approximately 23.5, 27.5, 32.8
+ds.make(toAssign = "c(22.6, 27.5, 34.3)", newobj = "knots")
+```
+
+### Step 3: Create Survival Object
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Create Surv object for time-to-event analysis
+ds.Surv(
+  time = "dat_ACM_BMI$fup",
+  event = "dat_ACM_BMI$acm",
+  objectname = "surv_object"
+)
+```
+
+### Step 4: Fit Cox Model with RCS
+
+Use `ds.coxphSLMAassign()` to fit a Cox model with restricted cubic splines:
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+ds.make(toAssign = "dat_ACM_BMI", newobj = "dataTable")
+ds.make(toAssign = "NULL", newobj = "weights_obj")
+# Fit Cox model with restricted cubic splines for the exposure
+ds.coxphSLMAassign(
+  formula = "surv_object ~ rms::rcs(Primary_exposure, knots) + age + sex + smoke + edu + alc + med_combined + diet",
+  dataName = "dat_ACM_BMI",
+  objectname = "cph1",
+  use.rms = TRUE
+)
+```
+
+::: {.callout-tip}
+## Understanding the Formula
+- `rms::rcs(Primary_exposure, knots)`: Models BMI as a restricted cubic spline with 3 knots
+- This allows the hazard ratio to vary non-linearly across BMI values
+- The reference point is set by `adjust_to` in `ds.datadist()` (minimum BMI)
+- Covariates: `age`, `sex`, `smoke`, `edu`, `alc`, `med_combined`, `diet`
+:::
+
+### Step 5: Test Proportional Hazards Assumption
+
+The proportional hazards assumption should be verified. Use `ds.cox.zphSLMA()` and visualize with `survminer::ggcoxzph()`:
+
+```{r}
+#| fig-width: 10
+#| fig-height: 8
+#| warning: false
+
+# Test the proportional hazards assumption
+test_ph <- ds.cox.zphSLMA("cph1")
+
+# View the test results
+print(test_ph[[1]]$table)
+
+# Visualize the Schoenfeld residuals
+# Non-significant p-values and flat lines indicate PH assumption holds
+survminer::ggcoxzph(test_ph[[1]])
+```
+
+::: {.callout-note}
+## Interpreting the PH Test
+- **p-value > 0.05**: Proportional hazards assumption is satisfied
+- **Flat residual plot**: The hazard ratio is constant over time
+- **Sloped residual plot**: The effect changes over time (assumption violated)
+:::
+
+### Step 6: Generate Predictions and Plot Hazard Ratio Curves
+
+This is the key visualization step - creating hazard ratio curves across the exposure range:
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Generate predictions across BMI range
+# We use 5th to 95th percentile range (approximately 22.6 to 34.4 from quantiles)
+ds.Predict(
+  fit = "cph1",
+  objectname = "predictions",
+  Primary_exposure = seq(22.6, 34.4, 0.1),
+  fun = "exp",        # Exponentiate to get hazard ratios
+  ref.zero = TRUE     # Reference hazard ratio = 1
+)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 6
+
+# Create the hazard ratio plot using ds.acmPlot
+ds.acmPlot(
+  pred_obj = "predictions",
+  line_color = "blue",
+  line_size = 2,
+  ref_line_color = "brown",
+  ref_line_size = 1.5,
+  x_label = "BMI",
+  y_label = "Hazard Ratio",
+  event_n = 87
+)[[1]]
+```
+
+::: {.callout-tip}
+## Understanding the Hazard Ratio Plot
+- **Y-axis = 1**: Reference (minimum BMI)
+- **Blue line**: Hazard ratio curve with 95% CI (shaded)
+- **Brown dashed line**: Reference line at HR = 1
+- **Non-linear shape**: Captures J-shaped or U-shaped relationships
+:::
+
+### Extended Prediction Range
+
+We can also generate predictions over a wider range to see the full curve:
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Extend the prediction range
+ds.Predict(
+  fit = "cph1",
+  objectname = "predictions",
+  Primary_exposure = seq(22, 44, 0.01),
+  fun = "exp",
+  ref.zero = TRUE
+)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 6
+
+ds.acmPlot(
+  pred_obj = "predictions",
+  line_color = "blue",
+  line_size = 2,
+  ref_line_color = "brown",
+  ref_line_size = 1.5,
+  x_label = "BMI",
+  y_label = "Hazard Ratio",
+  event_n = 87
+)[[1]]
+```
+
+## Competing Risks Analysis (Fine-Gray Model)
+
+When there are competing events (e.g., CVD event vs. death from other causes), use the Fine-Gray model. This estimates the **subdistribution hazard** which accounts for competing risks.
+
+::: {.callout-note}
+## Why Fine-Gray?
+In CVD analysis, death from non-CVD causes is a competing event. Standard Cox regression would treat these as censored, potentially overestimating CVD risk. Fine-Gray models correctly handle this.
+:::
+
+### Step 1: Setup for RMS Package
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Setup datadist for CVD analysis
+ds.datadist(
+  data = "dat_CVD_BMI",
+  adjust_to = list(Primary_exposure = "min")
+)
+ds.useDatadist(datadist = "datadist_dat_CVD_BMI")
+```
+
+### Step 2: Define Spline Knots
+
+```{r}
+# Get quantiles for CVD data
+ds.quantileMean(x = "dat_CVD_BMI$Primary_exposure", type = "combine")
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Create knots vector (same quantiles as ACM analysis)
+ds.make(toAssign = "c(23.5, 27.5, 32.8)", newobj = "knots")
+```
+
+### Step 3: Prepare CVD Variable for Fine-Gray
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Convert CVD to factor (required for Fine-Gray)
+# CVD coding: 0 = censored, 1 = CVD event, 2 = death from other causes
+ds.asFactor(input.var.name = "dat_CVD_BMI$CVD", newobj.name = "CVD_factor")
+ds.dataFrame(x = c("dat_CVD_BMI", "CVD_factor"), newobj = "dat_CVD_BMI")
+```
+
+### Step 4: Create Fine-Gray Object
+
+The `ds.finegray()` function creates a special dataset for competing risks analysis:
+
+```{r}
+# Create Fine-Gray object
+ds.finegray(
+  formula = "Surv(fup_CVD, CVD_factor) ~ .",
+  data = "dat_CVD_BMI",
+  etype = "1",        # Event of interest (CVD = 1)
+  newobj = "fg_object"
+)
+```
+
+::: {.callout-note}
+## Fine-Gray Data Structure
+`ds.finegray()` creates a modified dataset with:
+
+- `fgstart`: Start time (counting process format)
+- `fgstop`: Stop time
+- `fgstatus`: Event status for Fine-Gray model (weights competing risks)
+:::
+
+### Step 5: Fit Fine-Gray Model with RCS
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Fit Cox model on Fine-Gray data with RCS
+ds.coxphSLMAassign(
+  formula = "survival::Surv(fgstart, fgstop, fgstatus) ~ rms::rcs(Primary_exposure, knots) + age + sex + smoke + edu + alc + med_combined + diet",
+  dataName = "fg_object",
+  objectname = "cph3",
+  use.rms = TRUE
+)
+```
+
+### Step 6: Generate Predictions and Plot
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Generate predictions for subdistribution hazard ratio
+ds.Predict(
+  fit = "cph3",
+  objectname = "predictions",
+  Primary_exposure = seq(22.6, 34.4, 0.01),
+  fun = "exp",
+  ref.zero = TRUE
+)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| fig-width: 8
+#| fig-height: 6
+
+# Plot the subdistribution hazard ratio curve
+ds.acmPlot(
+  pred_obj = "predictions",
+  line_color = "blue",
+  line_size = 2,
+  ref_line_color = "brown",
+  ref_line_size = 1.5,
+  x_label = "BMI",
+  y_label = "Subdistribution Hazard Ratio",
+  event_n = 220,
+  outcome_name = "CVD"  # Labels the plot for CVD outcome
+)[[1]]
+```
+
+## Summary of Key Functions
+
+| Function | Purpose | When to Use |
+|----------|---------|-------------|
+| `ds.Surv()` | Create survival object | Always - first step |
+| `ds.coxph.SLMA()` | Simple Cox model | Quick analysis, no RCS needed |
+| `ds.coxphSLMAassign()` | Cox model with RCS | ProPASS workflow, need predictions |
+| `ds.datadist()` | Setup RMS | Before RCS models |
+| `ds.useDatadist()` | Activate datadist | After ds.datadist() |
+| `ds.cox.zphSLMA()` | Test PH assumption | Model diagnostics |
+| `survminer::ggcoxzph()` | **Plot PH test** | Visualize Schoenfeld residuals |
+| `ds.Predict()` | Generate predictions | Before plotting |
+| `ds.acmPlot()` | **Plot HR curves** | Main visualization |
+| `ds.finegray()` | Competing risks prep | CVD analysis |
+
+
+
+```{r}
+#| include: false
+
+# Cleanup
+datashield.logout(conns)
+```
+
+## References
+
+- [dsSurvival Package Documentation](https://github.com/neelsoumya/dsSurvival)
+- [dsSurvival Paper](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-022-06085-1)
+- [dsSurvival Bookdown](https://neelsoumya.github.io/dsSurvivalbookdown/)
+
+## Next Steps
+
+Continue to [CoDA Analysis](9-coda-analysis.qmd) to learn about compositional data analysis.

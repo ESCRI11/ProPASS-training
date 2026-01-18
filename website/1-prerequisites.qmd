@@ -1,0 +1,145 @@
+---
+title: "Prerequisites"
+format: html
+engine: knitr
+---
+
+```{css}
+#| echo: false
+p {
+  text-align: justify
+}
+```
+
+This page outlines the software and knowledge requirements for the ProPASS DataSHIELD training materials.
+
+## Software Requirements
+
+### R and RStudio
+
+You will need:
+
+- **R** version 4.3.0 or later
+  - Download from [CRAN](https://cran.r-project.org/)
+- **RStudio Desktop** (recommended)
+  - Download from [Posit](https://posit.co/download/rstudio-desktop/)
+
+### Required R Packages
+
+Install the following R packages:
+
+```{r}
+#| eval: false
+
+# Core DataSHIELD packages
+install.packages("DSI")
+install.packages("DSOpal")
+
+# DataSHIELD client packages
+install.packages("devtools")
+devtools::install_github("datashield/dsBaseClient", force = TRUE)
+
+# Tidyverse-style data manipulation (used in ProPASS scripts)
+devtools::install_github("molgenis/dsTidyverseClient")
+
+# Survival analysis (for Module 2)
+devtools::install_github("neelsoumya/dsSurvivalClient")
+
+# Helper packages
+devtools::install_github("timcadman/ds-helper")
+
+# Meta-analysis (for pooling results)
+install.packages("metafor")
+```
+
+### Verify Installation
+
+Run the following to confirm your packages are installed correctly:
+
+```{r}
+#| eval: false
+
+library(DSI)
+library(DSOpal)
+library(dsBaseClient)
+library(dsTidyverseClient)
+
+# Check versions
+packageVersion("dsBaseClient")
+packageVersion("dsTidyverseClient")
+```
+
+## Server Access
+
+For this training, we will use the public **Opal demo server** provided by OBiBa:
+
+| Setting | Value |
+|---------|-------|
+| **Server URL** | `https://opal-demo.obiba.org` |
+| **Username** | `dsuser` |
+| **Password** | `P@ssw0rd` |
+| **Profile** | `lemon-donkey` |
+
+::: {.callout-note}
+## Public Demo Server
+These credentials are publicly available for demonstration and training purposes.
+:::
+
+### Testing Your Connection
+
+Test your connection with the demo server:
+
+```{r}
+#| eval: false
+
+library(DSI)
+library(DSOpal)
+
+# Build login credentials for the demo server
+builder <- DSI::newDSLoginBuilder()
+builder$append(
+  server = "demo",
+  url = "https://opal-demo.obiba.org",
+  user = "dsuser",
+  password = "P@ssw0rd",
+  table = "CNSIM.CNSIM1",
+  profile = "lemon-donkey"
+)
+
+logindata <- builder$build()
+
+# Test connection
+conns <- datashield.login(logins = logindata, assign = TRUE, symbol = "D")
+
+# Verify connection
+ds.ls()
+ds.dim("D")
+
+# Clean up
+datashield.logout(conns)
+```
+
+## Knowledge Prerequisites
+
+This workshop assumes familiarity with:
+
+### R Programming
+- Data manipulation with base R or tidyverse
+- Writing and calling functions
+- Working with data frames
+
+### Statistics
+- Descriptive statistics (mean, median, standard deviation)
+- Linear and logistic regression
+- Basic survival analysis concepts
+
+### DataSHIELD Basics (Helpful but not required)
+- Understanding of federated analysis concepts
+- Basic DataSHIELD workflow (login, assign, analyze, logout)
+
+## Additional Resources
+
+- [DataSHIELD Wiki](https://data2knowledge.atlassian.net/wiki/spaces/DSDEV/overview)
+- [dsBaseClient Reference Manual](https://cran.datashield.org/web/packages/dsBaseClient/dsBaseClient.pdf)
+- [DataSHIELD Training Materials](https://github.com/isglobal-brge/workshop_datashield)
+

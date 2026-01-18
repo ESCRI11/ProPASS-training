@@ -1,0 +1,79 @@
+---
+title: "Welcome"
+format: html
+engine: knitr
+---
+
+```{css}
+#| echo: false
+p {
+  text-align: justify
+}
+```
+
+Welcome to the **ProPASS DataSHIELD Training** materials. This will guide you through performing federated data analysis using DataSHIELD, from data cleaning to statistical modelling.
+
+::: {.callout-note}
+## What is DataSHIELD?
+DataSHIELD is a software infrastructure that enables the remote and non-disclosive analysis of sensitive research data. It allows researchers to analyze data across multiple sites without the data ever leaving its original location.
+:::
+
+## Overview
+
+This materials cover two main modules:
+
+### Module 1: Data Cleaning
+
+Learn to prepare your data within the DataSHIELD environment:
+
+- **Filtering & Subsetting**: Use filtering tools to subset datasets based on specified conditions
+- **Conditional Operations**: Apply `ifelse()`-style conditional operations across variables and datasets
+- **Derived Variables**: Create derived variables and perform grouped summaries
+- **Table 1 Creation**: Produce descriptive summaries for participant characteristics using group-level statistics
+
+### Module 2: Statistical Modelling
+
+Master the statistical analysis tools available in DataSHIELD:
+
+- **Generalized Linear Models**: Fit `ds.glm()` models within the DataSHIELD framework
+- **Survival Analysis**: Run survival models using `ds.Surv()` and related functions
+- **Compositional Data Analysis**: Execute CoDA scripts for compositional data
+
+## Target Audience
+
+- Researchers working with the ProPASS consortium data
+- Epidemiologists and biostatisticians new to DataSHIELD
+- Anyone interested in federated data analysis techniques
+
+## Prerequisites
+
+Before starting, please ensure you have:
+
+- R (≥ 4.3.0) and RStudio installed
+- Basic familiarity with R programming
+- Understanding of basic statistical concepts (regression, survival analysis)
+
+See [Prerequisites](1-prerequisites.qmd) for detailed setup instructions.
+
+## Training Server
+
+For this workshop, we use the public **OBiBa Opal demo server**:
+
+| Setting | Value |
+|---------|-------|
+| **URL** | `https://opal-demo.obiba.org` |
+| **Username** | `dsuser` |
+| **Password** | `P@ssw0rd` |
+| **Profile** | `lemon-donkey` |
+
+::: {.callout-tip}
+## Why lemon-donkey?
+The `lemon-donkey` profile includes the required DataSHIELD packages to follow the materials.
+:::
+
+## Resources
+
+- [DataSHIELD Documentation](https://www.datashield.org/)
+- [dsBaseClient Package](https://github.com/datashield/dsBaseClient)
+- [dsSurvival Package](https://github.com/neelsoumya/dsSurvival)
+- [Workshop Repository](https://github.com/propass/propass-training)

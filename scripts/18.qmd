@@ -1,0 +1,205 @@
+---
+title: "Work Task Eighteen: Investigation of Strategy to provide DataSHIELD compatible alternatives for ILR Rotation Code function"
+authors: "Xavier Escribà Montagut & Stuart Wheater"
+format:
+  html:
+    theme: cosmo   # You can also try: flatly, lumen, journal, etc.
+    toc: true
+    code-overflow: wrap
+    smooth-scroll: true
+    page-layout: full
+    embed-resources: true
+execute:
+  echo: true
+  warning: false
+  message: false
+  cache: true
+  cache.refresh: false
+  freeze: auto
+---
+
+## Discussion of the work task
+
+The work task involves implementing a DataSHIELD compatible alternative for ILR Rotation Code function. An example script and functions to do so have been provided by ProPASS.
+
+## What does the ILR Rotation Code function do?
+
+The ILR Rotation Code functions provided by ProPASS does two operations:
+
+1. **Basis rotation**: The function rotates the compositional data through different basis orderings based on the `base_rot` parameter (1-N), which reorders the columns of the composition to change which component serves as the reference in the transformation.
+
+2. **Isometric Log-Ratio (ILR) transformation**: The function applies the ILR transformation to convert the N-part compositional data into a (N-1)-dimensional Euclidean space using sequential binary partitions (SBP).
+
+## How the ILR function is implemented in DataSHIELD
+
+The ILR function is implemented in DataSHIELD as the `ds.ilr()` assign function which applies the ILR transformation to compositional data using a basis matrix V.
+
+## How is the ILR Rotation Code function implemented as a DataSHIELD compatible function?
+
+The ILR Rotation Code function is implemented as a DataSHIELD assign function since it needs to operate on data that resides on the analysis server. Here's how it works:
+
+1. **Data Selection and Rotation**: First, we select the compositional columns from our dataset using `ds.select()` to create a composition matrix containing variables like vpa, mpa, lipa, sleep, and sb. During this step we can also perform the rotation by reordering the variables in the `tidy_expr` list, for example: `ds.select(df.name = "D2", tidy_expr = list(vpa, mpa, lipa, sleep, sb), newobj = "D3")`.
+
+2. **Basis Matrix Construction**: We build the transformation matrix V using `build_sequential_ilr_V()` which creates the sequential binary partition structure needed for the ILR transformation.
+
+3. **ILR Transformation**: We apply the transformation using `ds.ilr()` which takes the composition matrix (X), the basis matrix (V), and creates a new object with the transformed values.
+
+## Solution
+
+A 2-stage assign DataSHIELD function has been developed and placed into dsCoda. This function acts as a wrapper to the target function `ilrDS`.
+
+## Test script
+
+### Library Setup
+
+We begin by loading all the required packages for the DataSHIELD analysis. This includes the core DataSHIELD infrastructure packages (`DSI`, `DSOpal`), client packages for base functions (`dsBaseClient`), tidyverse operations (`dsTidyverseClient`), compositional analysis (`dsCodaClient`), and survival analysis (`dsSurvivalClient`).
+
+```{r setup, cache=FALSE}
+# load the required packages
+library('DSI')  
+library('DSOpal')
+library('dsBaseClient') # Make sure this is v6.3.2-dev `devtools::install_github("datashield/dsBaseClient", ref = "v6.3.2-dev")`
+library('dsTidyverseClient')
+library('dsSurvivalClient') # Make sure this is v2.3.0-dev `devtools::install_github("datashield/dsSurvivalClient", ref = "v2.3.0-dev")`
+library('dsCodaClient') # Make sure this is task-18 branch `devtools::install_github("datashield/dsCodaClient", ref = "task-18")`
+```
+
+### Data Preparation
+
+#### Local Data Processing
+
+We start by reading the synthetic lifestyle data and preparing it for upload to the Opal server. The synthetic data is stored in the `lifestyle_study1.rds`, `Sim_df_accel.rds`, and `Sim_df_mort.rds` files. A new data.frame is created by merging the three files on the `ID` variable.
+
+```{r data-prep-local, cache=FALSE}
+lifestyle_study1 <- readRDS("data/lifestyle_study1.rds")
+df_actipass <- readRDS("data/Sim_df_accel.rds")
+df_mort <- readRDS("data/Sim_df_mort.rds")
+df <- merge(df_actipass, lifestyle_study1, by=c("ID"))
+df <- merge(df, df_mort, by=c("ID"))
+
+save(df, file='df.rda')
+```
+
+#### Opal Server Setup
+
+We define a helper function for uploading datasets to the Opal server that handles both CSV and RDA file formats. The function creates projects if they don't exist and properly formats data with row identifiers for DataSHIELD compatibility.
+
+After defining the function, we log into the Opal demo server and upload our prepared dataset to the 'ProPass' project.
+
+```{r opal-setup, cache=FALSE}
+library(opalr)
+library(tibble)
+
+upload_testing_dataset_table <- function(opal, project_name, table_name, local_file_path, file_type='csv') {
+  if (! opal.project_exists(opal, project_name))
+    opal.project_create(opal, project_name, database = "mongodb")
+  
+  if(file_type=='rda'){
+    dataset_name <- load(file = local_file_path)
+    dataset <- eval(as.symbol(dataset_name))
+  }
+  if(file_type=='csv'){
+    dataset <- read.csv(file = local_file_path)
+  }
+  
+  data <- as_tibble(dataset, rownames = '_row_id_')
+  data$`_row_id_` <- as.numeric(data$`_row_id_`)
+  
+  opal.table_save(opal = opal, data, project_name, table_name, id.name = "_row_id_", force = TRUE)
+}
+
+opal <- opal.login('administrator','password', url='https://opal-demo.obiba.org', 
+                   opts = list(ssl_verifyhost=0, ssl_verifypeer=0))
+upload_testing_dataset_table(opal, project_name = 'ProPass', table_name = 'life1', file_type='rda', local_file_path='df.rda')
+```
+
+#### Server Configuration
+
+We configure the Opal server for DataSHIELD analysis by setting general configuration options, installing required packages, and configuring DataSHIELD profiles. This includes installing the survival analysis packages from GitHub, setting up the DataSHIELD profile with all necessary packages, and configuring privacy and seed settings for reproducible analysis.
+
+```{r server-config, results='hide', cache=FALSE, eval=FALSE}
+config_json <- '{
+  "name": "Opal",
+  "defaultCharSet": "ISO-8859-1", 
+  "enforced2FA": false,
+  "allowRPackageManagement": true
+}'
+
+opal.put(
+  opal, "system", "conf", "general",
+  body = config_json,
+  contentType = "application/json"
+)
+
+opalr::dsadmin.install_github_package(opal, "dsSurvival", "datashield", "v2.3.0-phase1") # This operation takes some minutes to complete
+opalr::dsadmin.install_github_package(opal, "dsCoda", "datashield", "task-18")
+opalr::dsadmin.install_package(opal, "dsTidyverse")
+opalr::dsadmin.profile_init(opal, "default", c("dsBase", "dsSurvival", "dsTidyverse", "resourcer", "dsCoda"))
+opalr::dsadmin.set_option(opal, "datashield.privacyControlLevel", "permissive")
+opalr::dsadmin.set_option(opal, "	datashield.seed", "239")
+opal.logout(opal)
+```
+
+### DataSHIELD Analysis
+
+#### Connection and Initial Data Processing
+
+We establish the DataSHIELD connection to our Opal server using the login builder pattern. This replicates the approach from the original `Example_script.html` script for ProPASS. The connection assigns our uploaded dataset to the 'D' symbol for analysis.
+
+```{r datashield-connection, cache=FALSE}
+builder <- DSI::newDSLoginBuilder()
+builder$append(server = "study1", url = "https://opal-demo.obiba.org", user = "administrator", password = "password", table = "ProPass.life1", driver = "OpalDriver", options='list(ssl_verifyhost=0, ssl_verifypeer=0)')
+logindata <- builder$build()
+
+connections <- datashield.login(logins = logindata, assign = TRUE, symbol = "D")
+```
+
+#### Data wranggling
+
+We will create a new variable `lipa` by adding the `lpa` and `stand` variables. Then we will select the variables `vpa`, `mpa`, `lipa`, `sleep`, and `sb` from the data.frame.
+
+Also, at this step is where we can perform the rotation of the data.
+
+```{r data-wrangling, cache=FALSE}
+ds.dim("D")
+ds.mutate(
+  df.name = "D",
+  tidy_expr = list(lipa = lpa + stand),
+  newobj = "D2"
+)
+
+ds.select(df.name = "D2", tidy_expr = list(vpa, mpa, lipa, sleep, sb), newobj = "D3")
+```
+
+#### Build the basis matrix
+
+We will build the basis matrix using the `build_sequential_ilr_V` function. The only input parameter is the number of columns in the data.frame.
+
+```{r build-basis-matrix, results='hide', cache=FALSE}
+cols <- ds.dim("D3")[[1]][2]
+V <- build_sequential_ilr_V(cols)
+```
+
+#### Apply the ILR transformation
+
+We will apply the ILR transformation using the `ds.ilr` assign function. The only input parameters are the data.frame and the basis matrix.
+
+```{r apply-ilr-transformation, results='hide', cache=FALSE}
+
+ds.ilr(X = "D3", V = V, objectname = "D4")
+```
+
+### Summary
+
+This task 18 analysis demonstrates the complete DataSHIELD workflow to use the `ds.ilr` function, we included:
+
+1. **Data Preparation**: Local data processing, server setup, and remote data preparation
+2. **Data wrangling**: Create a new variable `lipa` by adding the `lpa` and `stand` variables. Then we will select the variables `vpa`, `mpa`, `lipa`, `sleep`, and `sb` from the data.frame.
+3. **Build the basis matrix**: Build the basis matrix using the `build_sequential_ilr_V` function.
+4. **Apply the ILR transformation**: Apply the ILR transformation using the `ds.ilr` assign function.
+
+The analysis successfully implements privacy-preserving statistical methods through DataSHIELD while maintaining analytical rigor comparable to traditional centralized approaches.
+
+## Results
+
+The `ds.ilr` creates a new object on the server side.

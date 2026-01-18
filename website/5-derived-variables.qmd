@@ -1,0 +1,280 @@
+---
+title: "Derived Variables & Grouped Summaries"
+format: html
+engine: knitr
+---
+
+```{css}
+#| echo: false
+p {
+  text-align: justify
+}
+```
+
+This chapter covers creating derived variables and performing grouped summaries in DataSHIELD.
+
+## Overview
+
+Derived variables are new variables computed from existing ones. This chapter covers:
+
+- Arithmetic operations with `ds.make()`
+- Getting quantiles for model knots
+- Grouped summaries and tabulations
+- Combining variables into data frames
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+# Load required packages
+library(DSI)
+library(DSOpal)
+library(dsBaseClient)
+library(dsTidyverseClient)
+
+# Connect to the server
+builder <- DSI::newDSLoginBuilder()
+builder$append(
+  server = "demo",
+  url = "https://opal-demo.obiba.org",
+  user = "dsuser",
+  password = "P@ssw0rd",
+  table = "CNSIM.CNSIM1",
+  profile = "lemon-donkey"
+)
+logindata <- builder$build()
+conns <- datashield.login(logins = logindata, assign = TRUE, symbol = "D")
+```
+
+## Arithmetic Operations with ds.make()
+
+Use `ds.make()` to create new variables from arithmetic expressions:
+
+### Ratios and Calculations
+
+```{r}
+# Create HDL to total cholesterol ratio
+ds.make(
+  toAssign = "D$LAB_HDL / D$LAB_TSC",
+  newobj = "hdl_ratio"
+)
+
+ds.dataFrame(x = c("D", "hdl_ratio"), newobj = "D")
+ds.summary("D$hdl_ratio")
+```
+
+### Log Transformations
+
+```{r}
+# Log-transform triglycerides (common for skewed distributions)
+ds.make(
+  toAssign = "log(D$LAB_TRIG)",
+  newobj = "log_trig"
+)
+
+ds.dataFrame(x = c("D", "log_trig"), newobj = "D")
+ds.summary("D$log_trig")
+```
+
+### Variable Copies
+
+Create copies of variables with new names (useful for analysis):
+
+```{r}
+# Create primary exposure variable
+ds.make(
+  toAssign = "D$PM_BMI_CONTINUOUS",
+  newobj = "Primary_exposure"
+)
+
+ds.dataFrame(x = c("D", "Primary_exposure"), newobj = "D")
+ds.colnames("D")
+```
+
+### Creating Constant Vectors
+
+```{r}
+#| eval: false
+
+# Create knots for restricted cubic splines
+# Get quantiles first: ds.quantileMean("D$PM_BMI_CONTINUOUS")
+ds.make(
+  toAssign = "c(23.5, 27.5, 32.8)",
+  newobj = "knots"
+)
+```
+
+## Getting Quantiles
+
+Use `ds.quantileMean()` to get percentiles for setting cutpoints:
+
+```{r}
+# Get quantiles for BMI (used for knots in spline models)
+ds.quantileMean(x = "D$PM_BMI_CONTINUOUS", type = "combine")
+
+# Get quantiles for cholesterol
+ds.quantileMean(x = "D$LAB_TSC", type = "combine")
+```
+
+## Checking for Missing Data
+
+Before analysis, check for missing values:
+
+```{r}
+# Count missing values in variables
+ds.numNA(x = "D$LAB_TSC")
+ds.numNA(x = "D$LAB_HDL")
+ds.numNA(x = "D$PM_BMI_CONTINUOUS")
+```
+
+## Statistical Summaries
+
+### Variable Summary
+
+```{r}
+# Full summary of a variable
+ds.summary("D$PM_BMI_CONTINUOUS")
+
+# Mean
+ds.mean("D$PM_BMI_CONTINUOUS", type = "combine")
+
+# Variance
+ds.var("D$PM_BMI_CONTINUOUS", type = "combine")
+```
+
+### Grouped Summaries with ds.tapply()
+
+Calculate statistics by group:
+
+```{r}
+# Mean BMI by gender
+ds.tapply(
+  X.name = "D$PM_BMI_CONTINUOUS",
+  INDEX.names = "D$GENDER",
+  FUN.name = "mean"
+)
+
+# SD of BMI by gender
+ds.tapply(
+  X.name = "D$PM_BMI_CONTINUOUS",
+  INDEX.names = "D$GENDER",
+  FUN.name = "sd"
+)
+```
+
+### Cross-Tabulations
+
+```{r}
+# Single variable frequency
+ds.table("D$GENDER")
+
+# Two-way table: gender by diabetes
+ds.table(
+  rvar = "D$GENDER",
+  cvar = "D$DIS_DIAB"
+)
+```
+
+## Combining Variables into Data Frames
+
+### Creating New Data Frames
+
+```{r}
+# Combine variables into a new data frame
+ds.dataFrame(
+  x = c("D$PM_BMI_CONTINUOUS", "D$LAB_TSC", "D$LAB_HDL", "D$LAB_TRIG", "D$GENDER", "D$DIS_DIAB"),
+  newobj = "D_analysis"
+)
+
+ds.colnames("D_analysis")
+ds.dim("D_analysis")
+```
+
+### Adding Variables to Existing Data Frames
+
+```{r}
+#| eval: false
+
+# Add derived variables
+ds.dataFrame(
+  x = c("D", "hdl_ratio", "log_trig"),
+  newobj = "D"
+)
+
+# Or use ds.cbind
+ds.cbind(
+  x = c("D_analysis", "hdl_ratio"),
+  newobj = "D_extended"
+)
+
+ds.colnames("D_extended")
+```
+
+## Correlation Analysis
+
+```{r}
+# Correlation between BMI and cholesterol
+ds.cor(
+  x = "D$PM_BMI_CONTINUOUS",
+  y = "D$LAB_TSC"
+)
+```
+
+## ProPASS Script Workflow
+
+::: {.callout-note}
+## ProPASS Data
+The ProPASS analysis uses different variables than the CNSIM demo data. Here's the workflow you'll use with ProPASS data:
+:::
+
+```{r}
+#| eval: false
+
+# 1. Create diet score from fruit and vegetable intake
+ds.asNumeric(x.name = "D$veg", newobj = "veg_n")
+ds.asNumeric(x.name = "D$fruit", newobj = "fruit_n")
+ds.make(toAssign = "fruit_n + veg_n", newobj = "diet")
+ds.dataFrame(x = c("D", "diet"), newobj = "D")
+
+# 2. Create primary exposure variable for survival model
+ds.make(toAssign = "D$bmi", newobj = "Primary_exposure")
+ds.dataFrame(x = c("D", "Primary_exposure"), newobj = "D")
+
+# 3. Get quantiles for spline knots
+ds.quantileMean(x = "D$Primary_exposure", type = "combine")
+# Use 10th, 50th, 90th percentiles as knots
+ds.make(toAssign = "c(23.5, 27.5, 32.8)", newobj = "knots")
+```
+
+## Best Practices
+
+::: {.callout-tip}
+## Derived Variables Tips
+1. **Check for missing data** with `ds.numNA()` before creating derived variables
+2. **Add variables to data frames** immediately after creation with `ds.dataFrame()`
+3. **Use meaningful names** like `Primary_exposure` for clarity in models
+4. **Get quantiles** for setting appropriate knots in spline models
+5. **Verify your work** with `ds.summary()` and `ds.dim()`
+:::
+
+## Exercise
+
+Using the CNSIM data:
+
+1. Create an HDL/TSC ratio using `ds.make()`
+2. Log-transform LAB_TRIG using `ds.make()`
+3. Get the quantiles of BMI using `ds.quantileMean()`
+4. Calculate mean cholesterol by gender using `ds.tapply()`
+5. Create a cross-tabulation of GENDER by DIS_DIAB using `ds.table()`
+
+```{r}
+#| include: false
+
+# Cleanup
+datashield.logout(conns)
+```
+
+## Next Steps
+
+Continue to [Table One](6-table-one.qmd) to learn about creating descriptive statistics tables.

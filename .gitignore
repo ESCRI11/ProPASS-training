@@ -1,0 +1,37 @@
+# Quarto output
+docs/
+website/_site/
+website/_book/
+website/.quarto/
+
+# R session files
+.Rhistory
+.RData
+.Rproj.user/
+*.Rproj
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Temporary files
+*~
+*.tmp
+*.log
+
+# Data files (don't commit data)
+*.rds
+*.RDS
+*.csv
+*.xlsx
+*.xls
+
+# Keep certain data for examples
+!website/data/*.csv
+

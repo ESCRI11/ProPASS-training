@@ -1,0 +1,325 @@
+---
+title: "Conditional Operations"
+format: html
+engine: knitr
+---
+
+```{css}
+#| echo: false
+p {
+  text-align: justify
+}
+```
+
+This chapter covers applying conditional operations to create new variables in DataSHIELD.
+
+## Overview
+
+Conditional operations allow you to create new variables based on conditions applied to existing variables. We use the tidyverse-style functions from `dsTidyverseClient`:
+
+- `ds.case_when()` - Multiple conditions (like SQL CASE WHEN)
+- `ds.if_else()` - Simple binary if-else logic
+- `ds.recodeValues()` - Recode specific values
+- `ds.asNumeric()` / `ds.asFactor()` - Convert variable types
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+# Load required packages
+library(DSI)
+library(DSOpal)
+library(dsBaseClient)
+library(dsTidyverseClient)
+
+# Connect to the server
+builder <- DSI::newDSLoginBuilder()
+builder$append(
+  server = "demo",
+  url = "https://opal-demo.obiba.org",
+  user = "dsuser",
+  password = "P@ssw0rd",
+  table = "CNSIM.CNSIM1",
+  profile = "lemon-donkey"
+)
+logindata <- builder$build()
+conns <- datashield.login(logins = logindata, assign = TRUE, symbol = "D")
+```
+
+## Conditional Logic with ds.case_when()
+
+`ds.case_when()` allows multiple conditions, similar to SQL's CASE WHEN or dplyr's `case_when()`:
+
+### Winsorizing Variables
+
+Cap extreme values at a threshold (common for BMI):
+
+```{r}
+# First, get the 95th percentile
+ds.quantileMean(x = "D$PM_BMI_CONTINUOUS", type = "combine")
+```
+
+```{r}
+# Winsorize BMI: cap values above 40
+ds.case_when(
+  tidy_expr = list(
+    D$PM_BMI_CONTINUOUS <= 40 ~ D$PM_BMI_CONTINUOUS,  # Keep original if <= 40
+    D$PM_BMI_CONTINUOUS > 40 ~ 40                      # Cap at 40 if above
+  ),
+  newobj = "bmi_capped"
+)
+
+# Add the new variable to the data frame
+ds.dataFrame(x = c("D", "bmi_capped"), newobj = "D")
+
+# Check the result
+ds.summary("D$bmi_capped")
+```
+
+### Creating Categories
+
+```{r}
+# Create cholesterol categories based on LAB_TSC
+# Normal: < 5.2, Borderline: 5.2-6.2, High: > 6.2
+ds.case_when(
+  tidy_expr = list(
+    D$LAB_TSC < 5.2 ~ 1,          # Normal
+    D$LAB_TSC >= 5.2 & D$LAB_TSC <= 6.2 ~ 2,  # Borderline
+    D$LAB_TSC > 6.2 ~ 3           # High
+  ),
+  newobj = "chol_category"
+)
+
+ds.dataFrame(x = c("D", "chol_category"), newobj = "D")
+ds.table("D$chol_category")
+```
+
+## Binary Conditions with ds.if_else()
+
+`ds.if_else()` provides simple if-else logic for binary conditions:
+
+### Creating Binary Indicators
+
+```{r}
+# Create overweight indicator (BMI >= 25)
+ds.if_else(
+  condition = list(D$PM_BMI_CONTINUOUS >= 25),
+  true = 1,
+  false = 0,
+  newobj = "is_overweight"
+)
+
+# Add to data frame
+ds.dataFrame(x = c("D", "is_overweight"), newobj = "D")
+
+# Check the result
+ds.table("D$is_overweight")
+```
+
+### Creating Combined Indicators
+
+```{r}
+# Create indicator for metabolic risk (diabetes OR high cholesterol)
+ds.if_else(
+  condition = list(D$DIS_DIAB == 1 | D$LAB_TSC > 6.5),
+  true = 1,
+  false = 0,
+  newobj = "metabolic_risk"
+)
+
+ds.dataFrame(x = c("D", "metabolic_risk"), newobj = "D")
+ds.table("D$metabolic_risk")
+```
+
+## Recoding Values with ds.recodeValues()
+
+Recode specific values in a variable:
+
+### Single Value Replacement
+
+```{r}
+# Recode GENDER: 0,1 -> 1,2
+ds.recodeValues(
+  var.name = "D$GENDER",
+  values2replace.vector = c(0, 1),
+  new.values.vector = c(1, 2),
+  newobj = "gender_recoded"
+)
+
+ds.table("gender_recoded")
+```
+
+### Recoding to Binary
+
+```{r}
+#| eval: false
+
+# Recode PM_BMI_CATEGORICAL to binary (normal vs overweight/obese)
+ds.recodeValues(
+  var.name = "D$PM_BMI_CATEGORICAL",
+  values2replace.vector = c(1, 2, 3),
+  new.values.vector = c(0, 1, 1),
+  newobj = "bmi_binary"
+)
+
+ds.table("bmi_binary")
+```
+
+## Creating Derived Variables with ds.make()
+
+Use `ds.make()` for arithmetic operations and creating variable copies:
+
+### Arithmetic Operations
+
+```{r}
+# Create HDL to total cholesterol ratio
+ds.make(
+  toAssign = "D$LAB_HDL / D$LAB_TSC",
+  newobj = "hdl_ratio"
+)
+
+ds.dataFrame(x = c("D", "hdl_ratio"), newobj = "D")
+ds.summary("D$hdl_ratio")
+```
+
+### Creating Variable Copies
+
+```{r}
+#| eval: false
+
+# Create a copy of BMI as the primary exposure variable
+ds.make(
+  toAssign = "D$PM_BMI_CONTINUOUS",
+  newobj = "Primary_exposure"
+)
+
+ds.dataFrame(x = c("D", "Primary_exposure"), newobj = "D")
+```
+
+## Converting Variable Types
+
+### Numeric to Factor
+
+Convert categorical variables to factors for modeling:
+
+```{r}
+# Convert GENDER to factor
+ds.asFactor(input.var.name = "D$GENDER", newobj.name = "gender_f")
+
+# Convert DIS_DIAB to factor
+ds.asFactor(input.var.name = "D$DIS_DIAB", newobj.name = "diabetes_f")
+
+# Add factors to data frame
+ds.dataFrame(x = c("D", "gender_f", "diabetes_f"), newobj = "D")
+
+# Check levels
+ds.levels("gender_f")
+```
+
+### Factor to Numeric
+
+```{r}
+#| eval: false
+
+# Convert back to numeric
+ds.asNumeric(x.name = "D$DIS_DIAB", newobj = "diabetes_numeric")
+```
+
+## Multiple Imputation with ds.mice()
+
+For handling missing data, use `ds.mice()`:
+
+```{r}
+#| eval: false
+
+# Perform multiple imputation using random forest method
+ds.mice(
+  data = "D",
+  m = 5,                       # Number of imputations
+  method = "rf",               # Random forest method
+  newobj_df = "imputed_data",  # Output data frame prefix
+  seed = "fixed",              # For reproducibility
+  newobj_mids = "imputed_mids" # MICE object for diagnostics
+)
+
+# The function creates multiple imputed datasets:
+# imputed_data.1, imputed_data.2, ..., imputed_data.5
+```
+
+::: {.callout-note}
+## Note on ds.mice()
+`ds.mice()` requires the dsTidyverse server-side package. It may not be available on all servers.
+:::
+
+## ProPASS Script Workflow
+
+::: {.callout-note}
+## ProPASS Data
+The ProPASS analysis uses different variables than the CNSIM demo data. Here's the workflow you'll use with ProPASS data:
+:::
+
+```{r}
+#| eval: false
+
+# 1. Winsorize BMI at the 95th percentile
+ds.case_when(
+  tidy_expr = list(
+    D$bmi <= 37.16 ~ D$bmi,
+    D$bmi > 37.16 ~ 37.16
+  ),
+  newobj = "bmi_revised"
+)
+ds.dataFrame(x = c("D", "bmi_revised"), newobj = "D")
+
+# 2. Create combined medication indicator
+ds.if_else(
+  condition = list(D$med_lipid == 1 | D$med_bp == 1 | D$med_glucose == 1),
+  true = 1,
+  false = 0,
+  newobj = "med_combined"
+)
+ds.dataFrame(x = c("D", "med_combined"), newobj = "D")
+
+# 3. Create diet score
+ds.asNumeric(x.name = "D$veg", newobj = "veg_n")
+ds.asNumeric(x.name = "D$fruit", newobj = "fruit_n")
+ds.make(toAssign = "fruit_n + veg_n", newobj = "diet")
+ds.dataFrame(x = c("D", "diet"), newobj = "D")
+
+# 4. Convert categorical variables to factors
+ds.asFactor(input.var.name = "D$edu", newobj.name = "edu")
+ds.asFactor(input.var.name = "D$smoke", newobj.name = "smoke")
+ds.asFactor(input.var.name = "D$sex", newobj.name = "sex")
+```
+
+## Best Practices
+
+::: {.callout-tip}
+## Conditional Operations Tips
+1. **Use `ds.case_when()`** for multiple conditions or value transformations
+2. **Use `ds.if_else()`** for simple binary conditions
+3. **Always add new variables to data frame** with `ds.dataFrame()`
+4. **Convert to factors** before modeling categorical variables
+5. **Check your results** with `ds.table()` or `ds.summary()`
+:::
+
+## Exercise
+
+Using the CNSIM data:
+
+1. Winsorize BMI at 40 using `ds.case_when()`
+2. Create a binary indicator for high cholesterol (LAB_TSC > 6.5) using `ds.if_else()`
+3. Create an HDL ratio using `ds.make()`
+4. Convert GENDER to a factor using `ds.asFactor()`
+
+```{r}
+#| include: false
+
+# Cleanup
+datashield.logout(conns)
+```
+
+## Next Steps
+
+Continue to [Derived Variables](5-derived-variables.qmd) to learn about creating more complex derived variables and grouped summaries.

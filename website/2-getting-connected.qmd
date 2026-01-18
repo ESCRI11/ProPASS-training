@@ -1,0 +1,262 @@
+---
+title: "Getting Connected"
+format: html
+engine: knitr
+---
+
+```{css}
+#| echo: false
+p {
+  text-align: justify
+}
+```
+
+```{r}
+#| label: setup
+#| include: false
+#| cache: false
+
+# Suppress package startup messages
+options(warn = -1)
+```
+
+This chapter covers how to establish connections to DataSHIELD servers and assign data to your analysis session.
+
+## The DataSHIELD Workflow
+
+A typical DataSHIELD session follows this pattern:
+
+```{mermaid}
+flowchart LR
+    A[Build Login] --> B[Connect]
+    B --> C[Assign Data]
+    C --> D[Analyze]
+    D --> E[Logout]
+```
+
+## Loading Required Libraries
+
+```{r}
+#| message: false
+#| warning: false
+
+# Connection libraries
+library(DSI)
+library(DSOpal)
+
+# Analysis libraries
+library(dsBaseClient)
+library(dsTidyverseClient)
+```
+
+## Building Login Credentials
+
+Use the `DSLoginBuilder` to create your connection configuration.
+
+### Training Server Credentials
+
+For this training, we use the public Opal demo server:
+
+```{r}
+# Create a new login builder
+builder <- DSI::newDSLoginBuilder()
+
+# Add the demo server
+builder$append(
+  server = "demo",
+  url = "https://opal-demo.obiba.org",
+  user = "dsuser",
+  password = "P@ssw0rd",
+  table = "CNSIM.CNSIM1",
+  profile = "lemon-donkey"
+)
+
+# Build the login data frame
+logindata <- builder$build()
+```
+
+::: {.callout-important}
+## Profile: lemon-donkey
+We use the `lemon-donkey` profile which includes additional packages for survival analysis (`dsSurvival`) and other advanced methods not available in the default profile.
+:::
+
+### Multiple Sites Example
+
+In real federated analyses, you connect to multiple sites:
+
+```{r}
+#| eval: false
+
+builder <- DSI::newDSLoginBuilder()
+
+# Site 1
+builder$append(
+  server = "site1",
+  url = "https://opal-demo.obiba.org",
+  user = "dsuser",
+  password = "P@ssw0rd",
+  table = "CNSIM.CNSIM1",
+  profile = "lemon-donkey"
+)
+
+# Site 2 (same server, different table for demo)
+builder$append(
+  server = "site2", 
+  url = "https://opal-demo.obiba.org",
+  user = "dsuser",
+  password = "P@ssw0rd",
+  table = "CNSIM.CNSIM2",
+  profile = "lemon-donkey"
+)
+
+logindata <- builder$build()
+```
+
+::: {.callout-tip}
+## Using Environment Variables (Production)
+For production analyses, store credentials securely:
+```{r}
+#| eval: false
+builder$append(
+  server = "site1",
+  url = Sys.getenv("OPAL_URL"),
+  user = Sys.getenv("OPAL_USER"),
+  password = Sys.getenv("OPAL_PASSWORD"),
+  table = "PROJECT.DATASET",
+  profile = "lemon-donkey"
+)
+```
+:::
+
+## Connecting and Assigning Data
+
+### Basic Connection
+
+```{r}
+#| message: false
+
+# Connect and assign data to symbol "D"
+conns <- datashield.login(logins = logindata, assign = TRUE, symbol = "D")
+
+# Verify the connection
+ds.ls()
+```
+
+### Working with Resources
+
+For resource-based data (e.g., files, databases), you assign a resource instead of a table:
+
+```{r}
+#| eval: false
+
+# Login with resource assignment
+builder <- DSI::newDSLoginBuilder()
+builder$append(
+  server = "demo",
+  url = "https://opal-demo.obiba.org",
+  user = "dsuser",
+  password = "P@ssw0rd",
+  resource = "RSRC.CNSIM1",
+  profile = "lemon-donkey"
+)
+
+logindata <- builder$build()
+conns <- datashield.login(logins = logindata, assign = TRUE, symbol = "res")
+
+# Check the class of assigned object
+ds.class("res")
+
+# Convert resource to data frame
+datashield.assign.expr(
+  conns, 
+  symbol = "D",
+  expr = quote(as.resource.data.frame(res, strict = TRUE))
+)
+
+# Verify conversion
+ds.class("D")
+ds.colnames("D")
+```
+
+### Available Demo Datasets
+
+The Opal demo server has several datasets available:
+
+| Project | Table/Resource | Description |
+|---------|---------------|-------------|
+| `CNSIM` | `CNSIM1`, `CNSIM2`, `CNSIM3` | Simulated health data (tables) |
+| `RSRC` | `CNSIM1`, `CNSIM2`, `CNSIM3` | Same data as resources |
+| `CORDELIA` | `cordelia45` | Cardiovascular study (resource) |
+| `GWAS` | `ega_phenotypes_1/2/3` | GWAS phenotype data |
+
+## Exploring Your Data
+
+Once connected, explore what's available:
+
+```{r}
+# List assigned objects
+ds.ls()
+
+# Check data dimensions
+ds.dim("D")
+
+# List column names
+ds.colnames("D")
+```
+
+## Managing Sessions
+
+### Saving Workspaces
+
+Save your session for later:
+
+```{r}
+#| eval: false
+
+# Save workspace
+datashield.workspace_save(conns, ws = "my_analysis_2024")
+
+# Logout
+datashield.logout(conns)
+```
+### Restoring Workspaces
+
+Resume a saved session:
+
+```{r}
+#| eval: false
+
+# Login and restore
+conns <- datashield.login(logins = logindata, restore = "my_analysis_2024")
+
+# Check what's available
+ds.ls()
+```
+
+### Proper Logout
+
+Always logout when finished:
+
+```{r}
+#| eval: false
+
+# Clean logout
+datashield.logout(conns)
+```
+
+::: {.callout-warning}
+## Session Cleanup
+Always logout properly to release server resources. Abandoned sessions consume memory and may prevent other users from connecting.
+:::
+
+```{r}
+#| include: false
+
+# Cleanup for this chapter
+datashield.logout(conns)
+```
+
+## Next Steps
+
+Now that you're connected, proceed to [Filtering & Subsetting](3-filtering-subsetting.qmd) to start working with your data.
+

@@ -1,0 +1,203 @@
+---
+title: "Work Task Sixteen: Implement a DataSHIELD compatible compositions::acomp"
+authors: "Xavier Escribà Montagut & Stuart Wheater"
+format:
+  html:
+    theme: cosmo   # You can also try: flatly, lumen, journal, etc.
+    toc: true
+    code-overflow: wrap
+    smooth-scroll: true
+    page-layout: full
+    embed-resources: true
+execute:
+  echo: true
+  warning: false
+  message: false
+  cache: true
+  cache.refresh: false
+  freeze: auto
+---
+
+## Discussion of the work task
+
+The work task involves implementing a DataSHIELD compatible version of the compositions::acomp function from the compositions R package.
+
+
+## What does compositions::acomp do?
+
+The `compositions::acomp` function creates objects for analyzing compositional data. It represents closed compositions where parts sum to a specified total (typically 1) and handles missing data including values below detection limits and structural zeros. The acomp class enables proper analysis using specific operations. ([Documentation](https://www.rdocumentation.org/packages/compositions/versions/2.0-8/topics/acomp))
+
+## How is compositions::acomp implemented as a DataSHIELD compatible function?
+
+The compositions::acomp function is implemented as a DataSHIELD assign function (acompDS) since it needs to operate on data that resides on the analysis server. It takes a table as input, processes it on the server-side to create a new `acomp` object.
+
+## Solution
+
+A 2-stage assign DataSHIELD function has been developed and placed into dsCoda. This function acts as a wrapper to the target function compositions::acomp.
+
+## Test script
+
+### Library Setup
+
+We begin by loading all the required packages for the DataSHIELD analysis. This includes the core DataSHIELD infrastructure packages (`DSI`, `DSOpal`), client packages for base functions (`dsBaseClient`), tidyverse operations (`dsTidyverseClient`), compositional analysis (`dsCodaClient`), and survival analysis (`dsSurvivalClient`).
+
+```{r setup, cache=FALSE}
+# load the required packages
+library('DSI')  
+library('DSOpal')
+library('dsBaseClient') # Make sure this is v6.3.2-dev `devtools::install_github("datashield/dsBaseClient", ref = "v6.3.2-dev")`
+library('dsTidyverseClient')
+library('dsSurvivalClient') # Make sure this is v6.3.2-dev `devtools::install_github("datashield/dsSurvivalClient", ref = "v2.3.0-dev")`
+library('dsCodaClient') # Make sure this is task-17 branch `devtools::install_github("datashield/dsCodaClient", ref = "task-16")`
+```
+
+### Data Preparation
+
+#### Local Data Processing
+
+We start by reading the synthetic lifestyle data and preparing it for upload to the Opal server. The synthetic data is stored in the `lifestyle_study1.rds`, `Sim_df_accel.rds`, and `Sim_df_mort.rds` files. A new data.frame is created by merging the three files on the `ID` variable.
+
+```{r data-prep-local, cache=FALSE}
+lifestyle_study1 <- readRDS("data/lifestyle_study1.rds")
+df_actipass <- readRDS("data/Sim_df_accel.rds")
+df_mort <- readRDS("data/Sim_df_mort.rds")
+df <- merge(df_actipass, lifestyle_study1, by=c("ID"))
+df <- merge(df, df_mort, by=c("ID"))
+
+save(df, file='df.rda')
+```
+
+#### Opal Server Setup
+
+We define a helper function for uploading datasets to the Opal server that handles both CSV and RDA file formats. The function creates projects if they don't exist and properly formats data with row identifiers for DataSHIELD compatibility.
+
+After defining the function, we log into the Opal demo server and upload our prepared dataset to the 'ProPass' project.
+
+```{r opal-setup, cache=FALSE}
+library(opalr)
+library(tibble)
+
+upload_testing_dataset_table <- function(opal, project_name, table_name, local_file_path, file_type='csv') {
+  if (! opal.project_exists(opal, project_name))
+    opal.project_create(opal, project_name, database = "mongodb")
+  
+  if(file_type=='rda'){
+    dataset_name <- load(file = local_file_path)
+    dataset <- eval(as.symbol(dataset_name))
+  }
+  if(file_type=='csv'){
+    dataset <- read.csv(file = local_file_path)
+  }
+  
+  data <- as_tibble(dataset, rownames = '_row_id_')
+  data$`_row_id_` <- as.numeric(data$`_row_id_`)
+  
+  opal.table_save(opal = opal, data, project_name, table_name, id.name = "_row_id_", force = TRUE)
+}
+
+opal <- opal.login('administrator','password', url='https://opal-demo.obiba.org', 
+                   opts = list(ssl_verifyhost=0, ssl_verifypeer=0))
+upload_testing_dataset_table(opal, project_name = 'ProPass', table_name = 'life1', file_type='rda', local_file_path='df.rda')
+```
+
+#### Server Configuration
+
+We configure the Opal server for DataSHIELD analysis by setting general configuration options, installing required packages, and configuring DataSHIELD profiles. This includes installing the survival analysis packages from GitHub, setting up the DataSHIELD profile with all necessary packages, and configuring privacy and seed settings for reproducible analysis.
+
+```{r server-config, results='hide', cache=FALSE}
+config_json <- '{
+  "name": "Opal",
+  "defaultCharSet": "ISO-8859-1", 
+  "enforced2FA": false,
+  "allowRPackageManagement": true
+}'
+
+opal.put(
+  opal, "system", "conf", "general",
+  body = config_json,
+  contentType = "application/json"
+)
+
+opalr::dsadmin.install_github_package(opal, "dsSurvival", "datashield", "v2.3.0-phase1") # This operation takes some minutes to complete
+opalr::dsadmin.install_github_package(opal, "dsCoda", "datashield", "main")
+opalr::dsadmin.install_package(opal, "dsTidyverse")
+opalr::dsadmin.profile_init(opal, "default", c("dsBase", "dsSurvival", "dsTidyverse", "resourcer", "dsCoda"))
+opalr::dsadmin.set_option(opal, "datashield.privacyControlLevel", "permissive")
+opalr::dsadmin.set_option(opal, "	datashield.seed", "239")
+opal.logout(opal)
+```
+
+### DataSHIELD Analysis
+
+#### Connection and Initial Data Processing
+
+We establish the DataSHIELD connection to our Opal server using the login builder pattern. This replicates the approach from the original `Example_script.html` script for ProPASS. The connection assigns our uploaded dataset to the 'D' symbol for analysis.
+
+```{r datashield-connection, cache=FALSE}
+builder <- DSI::newDSLoginBuilder()
+builder$append(server = "study1", url = "https://opal-demo.obiba.org", user = "administrator", password = "password", table = "ProPass.life1", driver = "OpalDriver", options='list(ssl_verifyhost=0, ssl_verifypeer=0)')
+logindata <- builder$build()
+
+connections <- datashield.login(logins = logindata, assign = TRUE, symbol = "D")
+```
+
+#### Data wranggling
+
+We will create a new variable `lipa` by adding the `lpa` and `stand` variables. Then we will select the variables `vpa`, `mpa`, `lipa`, `sleep`, and `sb` from the data.frame.
+
+```{r data-wrangling, cache=FALSE}
+ds.dim("D")
+ds.mutate(
+  df.name = "D",
+  tidy_expr = list(lipa = lpa + stand),
+  newobj = "D2"
+)
+
+ds.select(df.name = "D2", tidy_expr = list(vpa, mpa, lipa, sleep, sb), newobj = "D3")
+```
+
+
+
+#### lrEM
+
+We will pass the subseted data frame to the `lrEM` function. We will use the `label` parameter to denote the missing values. We will use the `dl` parameter to denote the detection limits.
+
+```{r lrEM, results='hide', cache=FALSE}
+ds.lrEM(
+  X = "D3",
+  label = 0,
+  dl = c(0.1667, 0.1667, 0.1667, 0.1667, 0.1667),
+  objectname = "D4"
+)
+```
+
+#### acomp
+
+We will pass the subseted data frame to the `acomp` function.
+
+```{r acomp, results='hide', cache=FALSE}
+ds.acomp(
+  X = "D4",
+  objectname = "D5"
+)
+```
+
+
+### Summary
+
+This task 16 analysis demonstrates the complete DataSHIELD workflow to use the `acomp` function, we included:
+
+1. **Data Preparation**: Local data processing, server setup, and remote data preparation
+2. **Data wrangling**: Create a new variable `lipa` by adding the `lpa` and `stand` variables. Then we will select the variables `vpa`, `mpa`, `lipa`, `sleep`, and `sb` from the data.frame.
+3. **lrEM**: Impute the missing values in the data.frame.
+4. **acomp**: Create a new `acomp` object.
+
+The analysis successfully implements privacy-preserving statistical methods through DataSHIELD while maintaining analytical rigor comparable to traditional centralized approaches.
+
+## Results
+
+The `ds.acomp` returns a new `acomp` object.
+
+```{r results, cache=FALSE}
+ds.class("D5")
+```

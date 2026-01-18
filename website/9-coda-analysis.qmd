@@ -1,0 +1,493 @@
+---
+title: "Compositional Data Analysis"
+format: html
+engine: knitr
+---
+
+```{css}
+#| echo: false
+p {
+  text-align: justify
+}
+```
+
+This chapter covers Compositional Data Analysis (CoDA) in DataSHIELD using the `dsCoda` package, which is essential for analyzing time-use data, nutrient compositions, and other proportional data.
+
+## Overview
+
+### What is Compositional Data?
+
+Compositional data consists of parts that sum to a constant (e.g., 100% or 24 hours). Examples include:
+
+- **Time-use data**: Sleep, sedentary time, light activity, moderate-to-vigorous activity
+- **Nutrient composition**: Protein, fat, carbohydrates
+- **Microbiome data**: Relative abundances of bacterial taxa
+- **Body composition**: Fat mass, lean mass, bone mass
+
+### Why Special Methods?
+
+Standard statistical methods assume independence between variables. However, compositional parts are inherently dependent—if one increases, others must decrease. CoDA uses log-ratio transformations to handle this constraint properly.
+
+## CoDA Concepts
+
+### The Simplex
+
+Compositional data lives in a constrained space called the simplex:
+
+$$\mathcal{S}^D = \left\{ \mathbf{x} = (x_1, \ldots, x_D) : x_i > 0, \sum_{i=1}^D x_i = \kappa \right\}$$
+
+where $\kappa$ is the constant sum (e.g., 24 hours for daily time-use).
+
+### Log-Ratio Transformations
+
+Three main transformations move compositional data from the simplex to unconstrained Euclidean space:
+
+1. **ALR** (Additive Log-Ratio): Simple but asymmetric
+2. **CLR** (Centered Log-Ratio): Symmetric but singular
+3. **ILR** (Isometric Log-Ratio): Optimal for regression - **used in ProPASS**
+
+### The ILR Transformation
+
+The ILR transformation maps D-part compositional data to (D-1) dimensional Euclidean space:
+
+$$\mathbf{z} = \log(\mathbf{x}) \cdot \mathbf{V}$$
+
+where $\mathbf{V}$ is an orthonormal basis matrix constructed from a Sequential Binary Partition (SBP).
+
+## Setup
+
+::: {.callout-important}
+## Package Requirements
+CoDA analysis requires the `dsCoda` server-side package. Install the client package from GitHub.
+:::
+
+### Installing dsCodaClient
+
+```{r}
+#| eval: false
+
+# Install from GitHub
+devtools::install_github("datashield/dsCodaClient")
+```
+
+### Loading Libraries and Connecting
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+# Load required packages
+library(DSI)
+library(DSOpal)
+library(dsBaseClient)
+library(dsTidyverseClient)
+library(dsCodaClient)
+
+# Connect to ProPASS data
+builder <- DSI::newDSLoginBuilder()
+builder$append(
+  server = "study1",
+  url = "https://opal-demo.obiba.org",
+  user = "administrator",
+  password = "password",
+  table = "ProPass.df",
+  profile = "margin-idiom"
+)
+
+logindata <- builder$build()
+conns <- datashield.login(logins = logindata, assign = TRUE, symbol = "D")
+```
+
+### Exploring the Data
+
+```{r}
+# Check data structure
+ds.colnames("D")
+ds.dim("D")
+```
+
+## The ProPASS CoDA Workflow
+
+The complete workflow for compositional data analysis follows these steps:
+
+1. **Data Wrangling**: Combine activity categories and select compositional parts
+2. **Handle Zeros**: Use `ds.lrEM()` to impute zeros below detection limits
+3. **Create Composition**: Use `ds.acomp()` to create compositional objects
+4. **Build Basis Matrix**: Use `build_sequential_ilr_V()` for ILR transformation
+5. **Apply ILR**: Use `ds.ilr()` to transform to Euclidean space
+6. **Combine with Covariates**: Merge ILR coordinates with outcome and covariate data
+7. **Survival Analysis**: Fit Fine-Gray competing risks model with ILR coordinates
+
+### Step 1: Data Wrangling
+
+First, prepare the compositional parts. In ProPASS, light intensity physical activity (`lipa`) is created by combining `lpa` and `stand`:
+
+```{r}
+# Create combined light activity variable (lipa = lpa + stand)
+ds.mutate(
+  df.name = "D",
+  tidy_expr = list(lipa = lpa + stand),
+  newobj = "D2"
+)
+
+# Select the 5 compositional parts for analysis
+# Order matters for ILR interpretation!
+ds.select(
+  df.name = "D2",
+  tidy_expr = list(vpa, mpa, lipa, sleep, sb),
+  newobj = "D3"
+)
+
+# Check the composition
+ds.colnames("D3")
+ds.dim("D3")
+```
+
+::: {.callout-note}
+## Composition Parts
+The 5-part composition represents daily time-use:
+- **vpa**: Vigorous physical activity
+- **mpa**: Moderate physical activity  
+- **lipa**: Light intensity physical activity (lpa + stand)
+- **sleep**: Sleep time
+- **sb**: Sedentary behavior
+:::
+
+### Step 2: Handle Zeros with ds.lrEM()
+
+Compositional data requires all parts > 0. The `ds.lrEM()` function uses log-ratio Expectation-Maximization to impute zeros and values below detection limits:
+
+```{r}
+#| results: hide
+
+# Impute zeros using log-ratio EM algorithm
+ds.lrEM(
+  X = "D3",
+  label = 0,                                         # Value indicating zeros/missing
+  dl = c(0.1667, 0.1667, 0.1667, 0.1667, 0.1667),    # Detection limits (10 min = 0.1667 hours)
+  objectname = "D4"
+)
+```
+
+::: {.callout-tip}
+## Understanding ds.lrEM() Parameters
+
+- **X**: Data frame containing compositional parts
+- **label**: Value that indicates zeros/missing (typically 0)
+- **dl**: Detection limits for each part (minimum detectable value)
+- **objectname**: Name for the output object
+
+The detection limit of 0.1667 hours = 10 minutes represents the minimum meaningful activity bout.
+:::
+
+```{r}
+# Verify the imputation
+ds.class("D4")
+ds.dim("D4")
+```
+
+### Step 3: Create Compositional Object with ds.acomp()
+
+The `ds.acomp()` function creates an `acomp` class object that properly represents compositional data:
+
+```{r}
+#| results: hide
+
+# Create acomp object
+ds.acomp(
+  X = "D4",
+  objectname = "D5"
+)
+```
+
+```{r}
+# Verify the acomp object
+ds.class("D5")
+```
+
+::: {.callout-note}
+## What is an acomp object?
+The `acomp` class (from the `compositions` R package) represents closed compositions where parts sum to a total. It enables proper compositional operations and transformations.
+:::
+
+### Step 4: Build the ILR Basis Matrix
+
+The ILR transformation requires a basis matrix V. The `build_sequential_ilr_V()` function creates a sequential binary partition:
+
+```{r}
+# Get the number of compositional parts
+n_parts <- ds.dim("D5")[[1]][2]
+cat("Number of compositional parts:", n_parts, "\n")
+
+# Build the sequential ILR basis matrix
+V <- build_sequential_ilr_V(n_parts)
+
+# View the basis matrix
+print(V)
+```
+
+::: {.callout-note}
+## Understanding the Basis Matrix
+The basis matrix V defines how parts are contrasted in the ILR transformation:
+
+- **Rows**: Original compositional parts (D parts)
+- **Columns**: ILR coordinates (D-1 coordinates)
+- **Values**: Weights for the log-ratio contrasts
+
+For 5 parts, you get 4 ILR coordinates.
+:::
+
+### Step 5: Apply ILR Transformation with ds.ilr()
+
+Apply the ILR transformation to convert the composition to unconstrained Euclidean coordinates:
+
+```{r}
+#| results: hide
+
+# Apply ILR transformation
+ds.ilr(
+  X = "D5",
+  V = V,
+  objectname = "ilr_coords"
+)
+```
+
+```{r}
+# Check the result
+ds.class("ilr_coords")
+ds.dim("ilr_coords")
+```
+
+The ILR transformation creates D-1 = 4 coordinates from the 5-part composition.
+
+### Step 6: Combine with Covariates for Analysis
+
+To perform survival analysis, combine the ILR coordinates with outcome and covariate data:
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Load survival analysis package
+library(dsSurvivalClient)
+
+# Merge ILR coordinates back with original data
+ds.dataFrame(
+  x = c("D2", "ilr_coords"),
+  newobj = "analysis_data"
+)
+
+# Convert covariates to appropriate types
+ds.asFactor(input.var.name = "analysis_data$sex", newobj.name = "sex_factor")
+ds.asNumeric(x.name = "analysis_data$age", newobj = "age_num")
+ds.asFactor(input.var.name = "analysis_data$condition_competing_risk", newobj.name = "event_factor")
+ds.asNumeric(x.name = "analysis_data$condition_fup", newobj = "fup_num")
+
+# Combine into final analysis dataset
+ds.dataFrame(
+  x = c("analysis_data", "sex_factor", "age_num", "event_factor", "fup_num"),
+  newobj = "dat_coda"
+)
+
+# Rename the ILR coordinate columns to meaningful names
+# Based on sequential binary partition with order: vpa, mpa, lipa, sleep, sb
+ds.rename(
+  df.name = "dat_coda",
+  tidy_expr = list(
+    VPAvsAll = `ilr_coords`,        # VPA vs (mpa, lipa, sleep, sb)
+    MPAvsRemaining = `NA.`,         # MPA vs (lipa, sleep, sb)
+    LIPAvsRemaining = `NA..1`,      # LIPA vs (sleep, sb)
+    SLEEPvsSB = `NA..2`             # Sleep vs SB
+  ),
+  newobj = "dat_coda"
+)
+
+# Select only the columns needed for survival analysis
+# This avoids issues with variables that have too many missing values
+ds.select(
+  df.name = "dat_coda",
+  tidy_expr = list(VPAvsAll, MPAvsRemaining, LIPAvsRemaining, SLEEPvsSB, age_num, sex_factor, event_factor, fup_num),
+  newobj = "dat_coda_clean"
+)
+```
+
+```{r}
+# Check the analysis data
+ds.colnames("dat_coda_clean")
+ds.dim("dat_coda_clean")
+```
+
+### Step 7: Survival Analysis with ILR Coordinates
+
+Now we fit a Fine-Gray competing risks model using the ILR coordinates as exposures:
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Setup datadist for rms functions
+# Center ILR coordinates at the compositional mean (geometric center)
+ds.datadist(
+  data = "dat_coda_clean",
+  adjust_to = list(
+    age_num = "mean"
+  )
+)
+ds.useDatadist(datadist = "datadist_dat_coda_clean")
+
+# Create Fine-Gray object for competing risks analysis
+# etype = "1" specifies the event of interest
+ds.finegray(
+  formula = "Surv(fup_num, event_factor) ~ .",
+  data = "dat_coda_clean",
+  etype = "1",
+  newobj = "fg_coda"
+)
+```
+
+```{r}
+#| message: false
+#| warning: false
+#| output: false
+
+# Fit Cox model on Fine-Gray data with ILR coordinates
+# Each ILR coordinate represents a specific time-use contrast
+ds.coxphSLMAassign(
+  formula = "survival::Surv(fgstart, fgstop, fgstatus) ~ VPAvsAll + MPAvsRemaining + LIPAvsRemaining + SLEEPvsSB + age_num + sex_factor",
+  dataName = "fg_coda",
+  objectname = "cph_coda",
+  use.rms = TRUE
+)
+```
+
+```{r}
+# View model results
+ds.coxphSummary("cph_coda")
+```
+
+::: {.callout-note}
+## ILR Coordinate Interpretation
+The ILR coordinates in the Cox model represent log-ratio contrasts based on the sequential binary partition:
+
+| Coordinate | Contrast | Interpretation |
+|------------|----------|----------------|
+| **VPAvsAll** | VPA vs (mpa, lipa, sleep, sb) | Effect of increasing VPA relative to all other activities |
+| **MPAvsRemaining** | MPA vs (lipa, sleep, sb) | Effect of increasing MPA relative to lighter activities |
+| **LIPAvsRemaining** | LIPA vs (sleep, sb) | Effect of increasing LIPA relative to inactive time |
+| **SLEEPvsSB** | Sleep vs SB | Effect of increasing sleep relative to sedentary behavior |
+
+A positive coefficient means higher hazard ratio when that ILR coordinate increases.
+:::
+
+## Basis Rotation
+
+The order of compositional parts determines the ILR interpretation. **Rotation is simply done by reordering the variables in `ds.select()`** - this changes which component is contrasted first:
+
+```{r}
+#| eval: false
+
+# ============================================================
+# ROTATION IS CONTROLLED BY VARIABLE ORDER IN ds.select()
+# ============================================================
+
+# Rotation 1: VPA first (default in ProPASS)
+ds.select(df.name = "D2", tidy_expr = list(vpa, mpa, lipa, sleep, sb), newobj = "comp_rot1")
+
+# Rotation 2: Sleep first (to study sleep effects)
+ds.select(df.name = "D2", tidy_expr = list(sleep, sb, lipa, mpa, vpa), newobj = "comp_rot2")
+
+# Rotation 3: Sedentary behavior first
+ds.select(df.name = "D2", tidy_expr = list(sb, sleep, lipa, mpa, vpa), newobj = "comp_rot3")
+```
+
+After selecting with a different order, apply the same workflow:
+
+```{r}
+#| eval: false
+
+# Example: Sleep-first rotation
+ds.select(df.name = "D2", tidy_expr = list(sleep, sb, lipa, mpa, vpa), newobj = "comp_rotated")
+
+# Same workflow applies - order of dl must match new variable order!
+ds.lrEM(
+  X = "comp_rotated",
+  label = 0,
+  dl = c(0.1667, 0.1667, 0.1667, 0.1667, 0.1667),
+  objectname = "comp_rotated_imp"
+)
+
+ds.acomp(X = "comp_rotated_imp", objectname = "comp_rotated_acomp")
+
+# Build basis and transform (same function, interpretation changes)
+V_rot <- build_sequential_ilr_V(5)
+ds.ilr(X = "comp_rotated_acomp", V = V_rot, objectname = "ilr_rotated")
+```
+
+::: {.callout-tip}
+## How Rotation Works
+Rotation is **not** a separate function - it's simply the order you specify in `ds.select()`:
+
+| Variable Order | First ILR Interprets |
+|----------------|---------------------|
+| `vpa, mpa, lipa, sleep, sb` | VPA vs. all other activities |
+| `sleep, sb, lipa, mpa, vpa` | Sleep vs. all waking activities |
+| `sb, sleep, lipa, mpa, vpa` | Sedentary vs. all other behaviors |
+
+**Strategy**: Put your exposure of interest first to get its specific contrast in `ilr1`.
+:::
+
+## Interpreting CoDA Results
+
+### ILR Coefficient Interpretation
+
+ILR coefficients are not directly interpretable in terms of original parts. They represent:
+
+- **ilr1**: Log-ratio contrast between first part and geometric mean of remaining parts
+- **ilr2**: Log-ratio contrast within the remaining parts
+- And so on...
+
+### Isotemporal Substitution
+
+To understand the effect of reallocating time between activities, use isotemporal substitution analysis. This is typically computed client-side using the ILR coefficients from the model.
+
+## Summary of Key Functions
+
+| Function | Purpose | Input | Output |
+|----------|---------|-------|--------|
+| `ds.lrEM()` | Impute zeros | Data frame with composition | Data frame with imputed values |
+| `ds.acomp()` | Create composition object | Data frame | acomp object |
+| `build_sequential_ilr_V()` | Build basis matrix | Number of parts (integer) | Matrix V |
+| `ds.ilr()` | ILR transformation | acomp object + V matrix | ILR coordinates |
+
+## Best Practices
+
+::: {.callout-tip}
+## CoDA Analysis Tips
+
+1. **Handle zeros properly**: Always use `ds.lrEM()` before transformation - zeros break log-ratios
+2. **Check closure**: Ensure compositional parts sum to expected total (e.g., 24 hours)
+3. **Choose rotation wisely**: Put your exposure of interest first for clearer interpretation
+4. **Set appropriate detection limits**: Use meaningful minimum values (e.g., 10 minutes for activities)
+5. **Report geometric means**: Present compositional means correctly (not arithmetic means)
+:::
+
+```{r}
+#| include: false
+
+# Cleanup
+datashield.logout(conns)
+```
+
+## References
+
+- Dumuid, D. et al. (2018). Compositional data analysis for physical activity, sedentary time and sleep research. *Statistical Methods in Medical Research*.
+- Chastin, S. et al. (2015). Combined effects of time spent in physical activity, sedentary behaviors and sleep on obesity and cardio-metabolic health markers.
+- [compositions R package](https://cran.r-project.org/package=compositions)
+- [zCompositions R package](https://cran.r-project.org/package=zCompositions) (for lrEM algorithm)
+
+## Next Steps
+
+Continue to the next chapter or return to [Survival Analysis](8-survival-analysis.qmd) to combine CoDA with time-to-event outcomes.

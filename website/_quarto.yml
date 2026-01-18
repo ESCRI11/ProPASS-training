@@ -1,0 +1,42 @@
+project:
+  type: book
+  output-dir: ../docs
+
+execute:
+  freeze: auto
+  cache: false
+
+book:
+  title: "ProPASS DataSHIELD Training"
+  author: Xavier Escribà Montagut & Stuart Wheater
+  repo-url: https://github.com/propass/propass-training
+  repo-actions: [issue]
+  sharing: [twitter, linkedin]
+  favicon: favicon.ico
+  chapters:
+    - index.qmd
+    - part: "Getting Started"
+      chapters:
+        - 1-prerequisites.qmd
+        - 2-getting-connected.qmd
+    - part: "Data Cleaning & Management"
+      chapters:
+        - 3-filtering-subsetting.qmd
+        - 4-conditional-operations.qmd
+        - 5-derived-variables.qmd
+        - 6-table-one.qmd
+    - part: "Statistical Modelling"
+      chapters:
+        - 7-glm-models.qmd
+        - 8-survival-analysis.qmd
+        - 9-coda-analysis.qmd
+
+format:
+  html:
+    theme:
+      light: [flatly]
+    number-sections: false
+    code-copy: true
+    code-overflow: wrap
+    highlight-style: github
+

@@ -1,0 +1,411 @@
+---
+title: "Generalized Linear Models"
+format: html
+engine: knitr
+---
+
+```{css}
+#| echo: false
+p {
+  text-align: justify
+}
+```
+
+This chapter covers fitting generalized linear models (GLM) using `ds.glm()` within the DataSHIELD framework.
+
+## Overview
+
+Generalized linear models extend linear regression to handle various outcome types:
+
+- **Gaussian** (identity link): Continuous outcomes (linear regression)
+- **Binomial** (logit link): Binary outcomes (logistic regression)
+- **Poisson** (log link): Count data
+- **Gamma**: Positive continuous outcomes with right skew
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+# Load required packages
+library(DSI)
+library(DSOpal)
+library(dsBaseClient)
+library(dsTidyverseClient)
+
+# Connect to the server
+builder <- DSI::newDSLoginBuilder()
+builder$append(
+  server = "demo",
+  url = "https://opal-demo.obiba.org",
+  user = "dsuser",
+  password = "P@ssw0rd",
+  table = "CNSIM.CNSIM1",
+  profile = "lemon-donkey"
+)
+logindata <- builder$build()
+conns <- datashield.login(logins = logindata, assign = TRUE, symbol = "D")
+```
+
+## The ds.glm() Function
+
+Basic syntax:
+
+```{r}
+#| eval: false
+
+model <- ds.glm(
+  formula = "outcome ~ predictor1 + predictor2",
+  data = "D",
+  family = "gaussian",  # or "binomial", "poisson", "Gamma"
+  viewIter = FALSE
+)
+```
+
+## Linear Regression (Continuous Outcomes)
+
+### Simple Linear Regression
+
+```{r}
+# BMI as a predictor of total cholesterol
+model_simple <- ds.glm(
+  formula = "LAB_TSC ~ PM_BMI_CONTINUOUS",
+  data = "D",
+  family = "gaussian"
+)
+
+# View results
+model_simple$coefficients
+```
+
+### Multiple Linear Regression
+
+```{r}
+# Cholesterol predicted by multiple factors
+model_multiple <- ds.glm(
+  formula = "LAB_TSC ~ PM_BMI_CONTINUOUS + LAB_HDL + GENDER",
+  data = "D",
+  family = "gaussian"
+)
+
+# Extract coefficients
+model_multiple$coefficients
+```
+
+### Interpreting Results
+
+```{r}
+#| eval: false
+
+# The coefficients output includes:
+# - Estimate: the regression coefficient
+# - Std. Error: standard error of the estimate
+# - z-value: test statistic
+# - p-value: significance level
+
+# Example interpretation:
+# PM_BMI_CONTINUOUS coefficient = 0.05 means:
+# For each 1 unit increase in BMI, cholesterol increases by 0.05 units
+```
+
+## Logistic Regression (Binary Outcomes)
+
+### Simple Logistic Regression
+
+```{r}
+# Diabetes predicted by BMI
+model_logistic <- ds.glm(
+  formula = "DIS_DIAB ~ PM_BMI_CONTINUOUS",
+  data = "D",
+  family = "binomial"
+)
+
+# Results are on log-odds scale
+model_logistic$coefficients
+
+# Convert to odds ratios
+exp(model_logistic$coefficients[, "Estimate"])
+```
+
+### Multiple Logistic Regression
+
+```{r}
+# Diabetes predicted by multiple risk factors
+model_diabetes <- ds.glm(
+  formula = "DIS_DIAB ~ PM_BMI_CONTINUOUS + LAB_TSC + GENDER",
+  data = "D",
+  family = "binomial"
+)
+
+# Extract and format results
+coefs <- model_diabetes$coefficients
+odds_ratios <- exp(coefs[, "Estimate"])
+ci_lower <- exp(coefs[, "Estimate"] - 1.96 * coefs[, "Std. Error"])
+ci_upper <- exp(coefs[, "Estimate"] + 1.96 * coefs[, "Std. Error"])
+
+results <- data.frame(
+  OR = round(odds_ratios, 3),
+  CI_lower = round(ci_lower, 3),
+  CI_upper = round(ci_upper, 3),
+  p_value = round(coefs[, "p-value"], 4)
+)
+
+print(results)
+```
+
+## Adjusting for Confounders
+
+### Building Adjusted Models
+
+```{r}
+# Unadjusted model
+model_unadj <- ds.glm(
+  formula = "DIS_DIAB ~ PM_BMI_CONTINUOUS",
+  data = "D",
+  family = "binomial"
+)
+
+# Gender adjusted
+model_adj1 <- ds.glm(
+  formula = "DIS_DIAB ~ PM_BMI_CONTINUOUS + GENDER",
+  data = "D",
+  family = "binomial"
+)
+
+# Adjusted for multiple factors
+model_adj2 <- ds.glm(
+  formula = "DIS_DIAB ~ PM_BMI_CONTINUOUS + GENDER + LAB_TSC",
+  data = "D",
+  family = "binomial"
+)
+
+# Compare estimates across models
+cat("Unadjusted OR for BMI:", round(exp(model_unadj$coefficients["PM_BMI_CONTINUOUS", "Estimate"]), 3), "\n")
+cat("Gender-adjusted OR:", round(exp(model_adj1$coefficients["PM_BMI_CONTINUOUS", "Estimate"]), 3), "\n")
+cat("Fully adjusted OR:", round(exp(model_adj2$coefficients["PM_BMI_CONTINUOUS", "Estimate"]), 3), "\n")
+```
+
+## Working with Factor Variables
+
+### Converting Variables to Factors
+
+```{r}
+#| eval: false
+
+# Ensure categorical variables are factors
+ds.asFactor("D$GENDER", newobj = "gender_f")
+ds.asFactor("D$DIS_DIAB", newobj = "diabetes_f")
+ds.asFactor("D$PM_BMI_CATEGORICAL", newobj = "bmi_cat_f")
+
+# Add to data frame
+ds.dataFrame(x = c("D", "gender_f", "diabetes_f", "bmi_cat_f"), newobj = "D_factors")
+```
+
+### Using Factors in Models
+
+```{r}
+#| eval: false
+
+# Model with factor predictors
+model_factors <- ds.glm(
+  formula = "DIS_DIAB ~ PM_BMI_CONTINUOUS + gender_f",
+  data = "D_factors",
+  family = "binomial"
+)
+
+# Each factor level (except reference) gets its own coefficient
+model_factors$coefficients
+```
+
+## Interaction Terms
+
+### Testing Interactions
+
+```{r}
+# Interaction between BMI and gender
+model_interaction <- ds.glm(
+  formula = "D$DIS_DIAB ~ D$PM_BMI_CONTINUOUS + D$GENDER + D$PM_BMI_CONTINUOUS:D$GENDER",
+  family = "binomial"
+)
+
+model_interaction$coefficients
+```
+
+The interaction term `PM_BMI_CONTINUOUS:GENDER` tests whether the effect of BMI on diabetes risk differs between males and females.
+
+## Model Diagnostics
+
+### Checking Model Fit
+
+```{r}
+#| eval: false
+
+# Deviance and degrees of freedom
+model_diabetes$dev  # Deviance
+model_diabetes$df   # Degrees of freedom
+
+# Number of valid observations
+model_diabetes$Nvalid
+```
+
+## Practical Example: Univariate and Multivariate Analysis
+
+```{r}
+#| eval: false
+
+# ============================================
+# Univariate Analysis (CNSIM Data)
+# ============================================
+
+# Model 1: Diabetes ~ BMI
+uni_bmi <- ds.glm(
+  formula = "DIS_DIAB ~ PM_BMI_CONTINUOUS",
+  data = "D",
+  family = "binomial"
+)
+
+# Model 2: Diabetes ~ Total Cholesterol
+uni_tsc <- ds.glm(
+  formula = "DIS_DIAB ~ LAB_TSC",
+  data = "D",
+  family = "binomial"
+)
+
+# Model 3: Diabetes ~ HDL
+uni_hdl <- ds.glm(
+  formula = "DIS_DIAB ~ LAB_HDL",
+  data = "D",
+  family = "binomial"
+)
+
+# Model 4: Diabetes ~ Triglycerides
+uni_trig <- ds.glm(
+  formula = "DIS_DIAB ~ LAB_TRIG",
+  data = "D",
+  family = "binomial"
+)
+
+# Collect univariate results
+cat("=== Univariate Analysis ===\n\n")
+cat("BMI OR:", round(exp(uni_bmi$coefficients[2, 1]), 3), 
+    "p =", round(uni_bmi$coefficients[2, 4], 4), "\n")
+cat("TSC OR:", round(exp(uni_tsc$coefficients[2, 1]), 3), 
+    "p =", round(uni_tsc$coefficients[2, 4], 4), "\n")
+cat("HDL OR:", round(exp(uni_hdl$coefficients[2, 1]), 3), 
+    "p =", round(uni_hdl$coefficients[2, 4], 4), "\n")
+cat("TRIG OR:", round(exp(uni_trig$coefficients[2, 1]), 3), 
+    "p =", round(uni_trig$coefficients[2, 4], 4), "\n")
+
+# ============================================
+# Multivariate Analysis
+# ============================================
+
+multi_model <- ds.glm(
+  formula = "DIS_DIAB ~ PM_BMI_CONTINUOUS + LAB_TSC + LAB_HDL + GENDER",
+  data = "D",
+  family = "binomial"
+)
+
+cat("\n=== Multivariate Analysis ===\n")
+print(multi_model$coefficients)
+```
+
+## Reporting Results
+
+### Creating Publication-Ready Tables
+
+```{r}
+#| eval: false
+
+# Format model results
+format_glm_results <- function(model, family = "binomial") {
+  coefs <- model$coefficients
+  
+  if (family == "binomial") {
+    results <- data.frame(
+      Variable = rownames(coefs),
+      OR = round(exp(coefs[, "Estimate"]), 2),
+      CI_95 = paste0(
+        round(exp(coefs[, "Estimate"] - 1.96 * coefs[, "Std. Error"]), 2),
+        "-",
+        round(exp(coefs[, "Estimate"] + 1.96 * coefs[, "Std. Error"]), 2)
+      ),
+      p = ifelse(coefs[, "p-value"] < 0.001, "<0.001", 
+                 round(coefs[, "p-value"], 3))
+    )
+  } else {
+    results <- data.frame(
+      Variable = rownames(coefs),
+      Beta = round(coefs[, "Estimate"], 3),
+      SE = round(coefs[, "Std. Error"], 3),
+      p = ifelse(coefs[, "p-value"] < 0.001, "<0.001",
+                 round(coefs[, "p-value"], 3))
+    )
+  }
+  
+  return(results)
+}
+
+# Usage
+formatted <- format_glm_results(multi_model, family = "binomial")
+print(formatted)
+```
+
+## ProPASS Script Workflow
+
+::: {.callout-note}
+## ProPASS Data
+The ProPASS analysis uses different variables than the CNSIM demo data. Here's how GLM models are used with ProPASS data:
+:::
+
+```{r}
+#| eval: false
+
+# Convert categorical variables to factors
+ds.asFactor(input.var.name = "D$edu", newobj.name = "edu")
+ds.asFactor(input.var.name = "D$smoke", newobj.name = "smoke")
+ds.asFactor(input.var.name = "D$sex", newobj.name = "sex")
+
+# Multivariate logistic regression with ProPASS covariates
+model_propass <- ds.glm(
+  formula = "acm ~ bmi + age + sex + smoke + edu + alc + med_combined + diet",
+  data = "D",
+  family = "binomial"
+)
+
+# Extract odds ratios
+exp(model_propass$coefficients[, "Estimate"])
+```
+
+## Best Practices
+
+::: {.callout-tip}
+## GLM Modeling Tips
+
+1. **Check variable types**: Ensure factors are properly coded with `ds.asFactor()`
+2. **Start simple**: Begin with univariate analyses
+3. **Build progressively**: Add confounders stepwise
+4. **Check multicollinearity**: Avoid highly correlated predictors
+5. **Report consistently**: Include OR, 95% CI, and p-values
+:::
+
+## Exercise
+
+Using the CNSIM data:
+
+1. Fit a univariate logistic regression of `DIS_DIAB` on `PM_BMI_CONTINUOUS`
+2. Fit a univariate logistic regression of `DIS_DIAB` on `LAB_TSC`
+3. Build a multivariate model with BMI, cholesterol, HDL, and gender
+4. Test for an interaction between BMI and gender
+5. Report your results in a publication-ready table with odds ratios and 95% CIs
+
+```{r}
+#| include: false
+
+# Cleanup
+datashield.logout(conns)
+```
+
+## Next Steps
+
+Continue to [Survival Analysis](8-survival-analysis.qmd) to learn about time-to-event modelling.

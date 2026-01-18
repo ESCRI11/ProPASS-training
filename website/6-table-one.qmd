@@ -1,0 +1,363 @@
+---
+title: "Creating Table 1"
+format: html
+engine: knitr
+---
+
+```{css}
+#| echo: false
+p {
+  text-align: justify
+}
+```
+
+This chapter covers producing descriptive summaries for "Table 1" of participant characteristics using group-level statistics in DataSHIELD.
+
+## Overview
+
+Table 1 is a standard component of epidemiological and clinical research papers, presenting baseline characteristics of study participants. In DataSHIELD, we construct Table 1 from aggregate statistics without accessing individual-level data.
+
+## Components of Table 1
+
+A typical Table 1 includes:
+
+- **Continuous variables**: Mean (SD) or Median (IQR)
+- **Categorical variables**: N (%)
+- **Stratification**: Often by exposure group or study site
+- **Missing data**: Documentation of missingness
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+# Load required packages
+library(DSI)
+library(DSOpal)
+library(dsBaseClient)
+library(dsTidyverseClient)
+
+# Connect to the server
+builder <- DSI::newDSLoginBuilder()
+builder$append(
+  server = "demo",
+  url = "https://opal-demo.obiba.org",
+  user = "dsuser",
+  password = "P@ssw0rd",
+  table = "CNSIM.CNSIM1",
+  profile = "lemon-donkey"
+)
+logindata <- builder$build()
+conns <- datashield.login(logins = logindata, assign = TRUE, symbol = "D")
+```
+
+## Basic Descriptive Statistics
+
+### Continuous Variables
+
+```{r}
+# Mean and standard deviation for BMI
+bmi_mean <- ds.mean("D$PM_BMI_CONTINUOUS", type = "combine")
+bmi_var <- ds.var("D$PM_BMI_CONTINUOUS", type = "combine")
+bmi_sd <- sqrt(bmi_var$Global.Variance[1])
+
+cat("BMI: ", round(bmi_mean$Global.Mean, 1), " (", round(bmi_sd, 1), ")\n")
+
+# Use ds.summary for quick overview
+ds.summary("D$PM_BMI_CONTINUOUS")
+
+# Quantiles for median and IQR
+ds.quantileMean("D$PM_BMI_CONTINUOUS", type = "combine")
+```
+
+### Categorical Variables
+
+```{r}
+# Frequency tables
+ds.table("D$GENDER")
+ds.table("D$DIS_DIAB")
+
+# Two-way tables (for stratified analysis)
+ds.table("D$GENDER", "D$DIS_DIAB")
+```
+
+## Stratified Statistics
+
+### By Single Grouping Variable
+
+```{r}
+# Mean BMI by gender
+ds.tapply(
+  X.name = "D$PM_BMI_CONTINUOUS",
+  INDEX.names = "D$GENDER",
+  FUN.name = "mean"
+)
+
+# SD of BMI by gender
+ds.tapply(
+  X.name = "D$PM_BMI_CONTINUOUS",
+  INDEX.names = "D$GENDER",
+  FUN.name = "sd"
+)
+
+# Mean cholesterol by gender
+ds.tapply(
+  X.name = "D$LAB_TSC",
+  INDEX.names = "D$GENDER",
+  FUN.name = "mean"
+)
+```
+
+### Cross-Tabulation
+
+```{r}
+# Get counts for diabetes by gender
+diab_by_gender <- ds.table("D$DIS_DIAB", "D$GENDER")
+print(diab_by_gender)
+```
+
+## Building Table 1 Programmatically
+
+### Helper Function for Continuous Variables
+
+```{r}
+
+# Helper function to extract statistics for continuous variables
+get_continuous_stats <- function(var_name) {
+  mean_val <- ds.mean(var_name, type = "combine")
+  var_val <- ds.var(var_name, type = "combine")
+  sd_val <- sqrt(var_val$Global.Variance[1])
+  n_val <- ds.length(var_name, type = "combine")
+  na_val <- ds.numNA(var_name)
+  
+  list(
+    n = n_val,
+    mean = round(mean_val$Global.Mean[1], 2),
+    sd = round(sd_val, 2),
+    missing = na_val
+  )
+}
+
+# Usage with CNSIM data
+bmi_stats <- get_continuous_stats("D$PM_BMI_CONTINUOUS")
+tsc_stats <- get_continuous_stats("D$LAB_TSC")
+hdl_stats <- get_continuous_stats("D$LAB_HDL")
+```
+
+### Complete Table 1 Workflow
+
+```{r}
+# ============================================
+# Table 1: Baseline Characteristics (CNSIM)
+# ============================================
+
+# Sample size
+n_total <- ds.length("D$PM_BMI_CONTINUOUS", type = "combine")
+
+# Continuous variables
+bmi_mean <- ds.mean("D$PM_BMI_CONTINUOUS", type = "combine")$Global.Mean
+bmi_sd <- sqrt(ds.var("D$PM_BMI_CONTINUOUS", type = "combine")$Global.Variance[1])
+
+tsc_mean <- ds.mean("D$LAB_TSC", type = "combine")$Global.Mean
+tsc_sd <- sqrt(ds.var("D$LAB_TSC", type = "combine")$Global.Variance[1])
+
+hdl_mean <- ds.mean("D$LAB_HDL", type = "combine")$Global.Mean
+hdl_sd <- sqrt(ds.var("D$LAB_HDL", type = "combine")$Global.Variance[1])
+
+trig_mean <- ds.mean("D$LAB_TRIG", type = "combine")$Global.Mean
+trig_sd <- sqrt(ds.var("D$LAB_TRIG", type = "combine")$Global.Variance[1])
+
+# Print results
+cat("=== Table 1: Baseline Characteristics ===\n\n")
+cat("N:", n_total$`length of D$PM_BMI_CONTINUOUS in combined studies`, "\n\n")
+cat("BMI, mean (SD):", round(bmi_mean, 1), "(", round(bmi_sd, 1), ")\n")
+cat("Total Cholesterol, mean (SD):", round(tsc_mean, 2), "(", round(tsc_sd, 2), ")\n")
+cat("HDL Cholesterol, mean (SD):", round(hdl_mean, 2), "(", round(hdl_sd, 2), ")\n")
+cat("Triglycerides, mean (SD):", round(trig_mean, 2), "(", round(trig_sd, 2), ")\n")
+```
+
+## Stratified Table 1 (By Gender)
+
+```{r}
+# ============================================
+# Table 1 Stratified by Gender
+# ============================================
+
+cat("=== BMI by Gender ===\n")
+bmi_by_gender <- ds.tapply(X.name = "D$PM_BMI_CONTINUOUS", INDEX.names = "D$GENDER", FUN.name = "mean")
+bmi_sd_by_gender <- ds.tapply(X.name = "D$PM_BMI_CONTINUOUS", INDEX.names = "D$GENDER", FUN.name = "sd")
+print(bmi_by_gender)
+
+cat("\n=== Total Cholesterol by Gender ===\n")
+tsc_by_gender <- ds.tapply(X.name = "D$LAB_TSC", INDEX.names = "D$GENDER", FUN.name = "mean")
+print(tsc_by_gender)
+
+cat("\n=== HDL by Gender ===\n")
+hdl_by_gender <- ds.tapply(X.name = "D$LAB_HDL", INDEX.names = "D$GENDER", FUN.name = "mean")
+print(hdl_by_gender)
+
+cat("\n=== Diabetes by Gender ===\n")
+print(ds.table("D$DIS_DIAB", "D$GENDER"))
+```
+
+## Handling Multiple Studies
+
+When analyzing federated data from multiple studies:
+
+```{r}
+#| eval: false
+
+# Get statistics per study (split)
+ds.mean("D$PM_BMI_CONTINUOUS", type = "split")  # Per-study means
+ds.mean("D$PM_BMI_CONTINUOUS", type = "combine")  # Pooled mean
+
+# Sample size per study
+ds.length("D$PM_BMI_CONTINUOUS", type = "split")
+
+# Variance per study
+ds.var("D$LAB_TSC", type = "split")
+```
+
+## Missing Data Summary
+
+Always report missing data in Table 1:
+
+```{r}
+# Check missing values for all key variables
+cat("=== Missing Data Summary ===\n\n")
+
+cat("PM_BMI_CONTINUOUS:", ds.numNA("D$PM_BMI_CONTINUOUS")$demo, "\n")
+cat("LAB_TSC:", ds.numNA("D$LAB_TSC")$demo, "\n")
+cat("LAB_HDL:", ds.numNA("D$LAB_HDL")$demo, "\n")
+cat("LAB_TRIG:", ds.numNA("D$LAB_TRIG")$demo, "\n")
+cat("GENDER:", ds.numNA("D$GENDER")$demo, "\n")
+cat("DIS_DIAB:", ds.numNA("D$DIS_DIAB")$demo, "\n")
+```
+
+## ProPASS Script Workflow
+
+::: {.callout-note}
+## ProPASS Data
+The ProPASS analysis uses different variables than the CNSIM demo data. Here's how you would create Table 1 with ProPASS data:
+:::
+
+```{r}
+#| eval: false
+
+# Sample size
+n_total <- ds.length("D$ID", type = "combine")
+
+# Demographics
+age_mean <- ds.mean("D$age", type = "combine")$Global.Mean
+age_sd <- sqrt(ds.var("D$age", type = "combine")$Global.Variance[1])
+
+# Clinical measurements
+bmi_mean <- ds.mean("D$bmi", type = "combine")$Global.Mean
+bmi_sd <- sqrt(ds.var("D$bmi", type = "combine")$Global.Variance[1])
+
+# Categorical variables
+sex_table <- ds.table("D$sex")
+smoke_table <- ds.table("D$smoke")
+edu_table <- ds.table("D$edu")
+
+# Stratified by exposure
+ds.tapply(X.name = "D$age", INDEX.names = "D$sex", FUN.name = "mean")
+ds.tapply(X.name = "D$bmi", INDEX.names = "D$sex", FUN.name = "mean")
+```
+
+## Best Practices
+
+::: {.callout-tip}
+## Table 1 Guidelines
+
+1. **Report both N and %** for categorical variables
+2. **Include missing data** counts or percentages
+3. **Use appropriate statistics**: Mean (SD) for normal distributions, Median (IQR) for skewed
+4. **Stratify meaningfully**: By exposure, outcome, or study site as appropriate
+5. **Be consistent**: Use the same decimal places throughout
+:::
+
+## Complete Table 1 Output
+
+Here we compile all the statistics into a formatted Table 1:
+
+```{r}
+# ============================================
+# COMPLETE TABLE 1: CNSIM Dataset
+# ============================================
+
+# Get sample sizes
+n_total_val <- ds.length("D$PM_BMI_CONTINUOUS", type = "combine")$`length of D$PM_BMI_CONTINUOUS in combined studies`
+gender_counts <- ds.table("D$GENDER")$output.list$TABLES.COMBINED_all.sources_counts
+
+# Get stratified means
+bmi_male <- bmi_by_gender$demo$output.list$Mean["0"]
+bmi_female <- bmi_by_gender$demo$output.list$Mean["1"]
+bmi_sd_male <- bmi_sd_by_gender$demo$output.list$SD["0"]
+bmi_sd_female <- bmi_sd_by_gender$demo$output.list$SD["1"]
+
+tsc_male <- tsc_by_gender$demo$output.list$Mean["0"]
+tsc_female <- tsc_by_gender$demo$output.list$Mean["1"]
+
+hdl_male <- hdl_by_gender$demo$output.list$Mean["0"]
+hdl_female <- hdl_by_gender$demo$output.list$Mean["1"]
+
+# Diabetes counts
+diab_counts <- ds.table("D$DIS_DIAB")$output.list$TABLES.COMBINED_all.sources_counts
+diab_n <- diab_counts["1"]
+diab_pct <- round(100 * diab_n / n_total_val, 1)
+
+# Build formatted output
+cat("======================================================================\n")
+cat("TABLE 1: Baseline Characteristics of CNSIM Study Participants\n")
+cat("======================================================================\n\n")
+
+cat(sprintf("%-28s %14s %14s %14s\n", "Characteristic", "Overall", "Male (0)", "Female (1)"))
+cat("----------------------------------------------------------------------\n")
+
+# Sample size
+cat(sprintf("%-28s %14d %14d %14d\n\n", "N", n_total_val, gender_counts["0"], gender_counts["1"]))
+
+# Continuous variables
+cat(sprintf("%-28s %11.1f (%.1f) %11.1f (%.1f) %11.1f (%.1f)\n", 
+    "BMI, mean (SD)", 
+    bmi_mean, bmi_sd, bmi_male, bmi_sd_male, bmi_female, bmi_sd_female))
+
+cat(sprintf("%-28s %11.2f (%.2f) %11.2f       %11.2f\n", 
+    "Total Cholesterol", tsc_mean, tsc_sd, tsc_male, tsc_female))
+
+cat(sprintf("%-28s %11.2f (%.2f) %11.2f       %11.2f\n", 
+    "HDL Cholesterol", hdl_mean, hdl_sd, hdl_male, hdl_female))
+
+cat(sprintf("%-28s %11.2f (%.2f)\n\n", 
+    "Triglycerides", trig_mean, trig_sd))
+
+# Categorical variables
+cat(sprintf("%-28s %11d (%.1f%%)\n", "Diabetes, n (%)", diab_n, diab_pct))
+
+cat("\n----------------------------------------------------------------------\n")
+cat("Values are mean (SD) for continuous variables, n (%) for categorical.\n")
+cat("Gender: 0 = Male, 1 = Female\n")
+```
+
+## Exercise
+
+Using the CNSIM data, create a Table 1 that includes:
+
+1. Sample size (overall and by gender)
+2. BMI (mean, SD) - overall and by gender
+3. Total cholesterol (mean, SD) - overall and by gender
+4. HDL cholesterol (mean, SD) - overall and by gender
+5. Diabetes prevalence (n, %) - overall and by gender
+6. Missing data counts for each variable
+
+```{r}
+#| include: false
+
+# Cleanup
+datashield.logout(conns)
+```
+
+## Next Steps
+
+Now that you can describe your data, proceed to [GLM Models](7-glm-models.qmd) to learn about statistical modelling.

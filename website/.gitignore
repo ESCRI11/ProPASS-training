@@ -1,0 +1,25 @@
+# Quarto output
+_site/
+_book/
+.quarto/
+
+# R
+.Rhistory
+.RData
+.Rproj.user/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+*.swp
+*.swo
+
+# Temporary files
+*~
+*.tmp
+
+
+/.quarto/

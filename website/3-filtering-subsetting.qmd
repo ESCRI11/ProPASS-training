@@ -1,0 +1,215 @@
+---
+title: "Filtering & Subsetting"
+format: html
+engine: knitr
+---
+
+```{css}
+#| echo: false
+p {
+  text-align: justify
+}
+```
+
+This chapter covers techniques for filtering and subsetting datasets in DataSHIELD based on specified conditions.
+
+## Overview
+
+In DataSHIELD, you cannot directly view individual-level data, but you can create subsets based on conditions. We use the tidyverse-style functions from `dsTidyverseClient`:
+
+- `ds.filter()` - Filter rows based on conditions
+- `ds.select()` - Select specific columns
+- `ds.arrange()` - Sort data by columns
+- `ds.dataFrameSubset()` - Subset with comparison operators (from dsBaseClient)
+
+```{r}
+#| label: setup
+#| message: false
+#| warning: false
+
+# Load required packages
+library(DSI)
+library(DSOpal)
+library(dsBaseClient)
+library(dsTidyverseClient)
+
+# Connect to the server
+builder <- DSI::newDSLoginBuilder()
+builder$append(
+  server = "demo",
+  url = "https://opal-demo.obiba.org",
+  user = "dsuser",
+  password = "P@ssw0rd",
+  table = "CNSIM.CNSIM1",
+  profile = "lemon-donkey"
+)
+logindata <- builder$build()
+conns <- datashield.login(logins = logindata, assign = TRUE, symbol = "D")
+```
+
+## Filtering Rows with ds.filter()
+
+Filter rows based on conditions using familiar tidyverse syntax:
+
+```{r}
+# Filter for participants with BMI >= 25
+ds.filter(
+  df.name = "D",
+  tidy_expr = list(D$PM_BMI_CONTINUOUS >= 25),
+  newobj = "D_overweight"
+)
+
+# Check how many rows remain
+ds.dim("D_overweight")
+```
+
+### Multiple Conditions
+
+```{r}
+# Filter for BMI between 20 and 35
+ds.filter(
+  df.name = "D",
+  tidy_expr = list(D$PM_BMI_CONTINUOUS >= 20, D$PM_BMI_CONTINUOUS <= 35),
+  newobj = "D_bmi_range"
+)
+
+ds.dim("D_bmi_range")
+```
+
+## Selecting Columns with ds.select()
+
+Select specific columns from your data frame:
+
+```{r}
+# Select variables needed for analysis
+ds.select(
+  df.name = "D",
+  tidy_expr = list(PM_BMI_CONTINUOUS, LAB_TSC, LAB_HDL, LAB_TRIG, GENDER, DIS_DIAB),
+  newobj = "D_selected"
+)
+
+# Check the result
+ds.colnames("D_selected")
+```
+
+## Sorting Data with ds.arrange()
+
+Sort your data by one or more columns:
+
+```{r}
+# Sort by BMI
+ds.arrange(
+  df.name = "D",
+  tidy_expr = list(PM_BMI_CONTINUOUS),
+  newobj = "D_sorted"
+)
+
+ds.dim("D_sorted")
+```
+
+## Subsetting with ds.dataFrameSubset()
+
+For subsetting based on comparison operators, use `ds.dataFrameSubset()`:
+
+```{r}
+# Keep only participants with BMI >= 25
+ds.dataFrameSubset(
+  df.name = "D",
+  V1.name = "D$PM_BMI_CONTINUOUS",
+  V2.name = "25",
+  Boolean.operator = ">=",
+  newobj = "D_bmi25plus"
+)
+
+# Check how many participants remain
+ds.dim("D_bmi25plus")
+```
+
+### Available Operators
+
+| Operator | Description |
+|----------|-------------|
+| `==` | Equal to |
+| `!=` | Not equal to |
+| `<` | Less than |
+| `<=` | Less than or equal |
+| `>` | Greater than |
+| `>=` | Greater than or equal |
+
+## Complete Case Analysis
+
+Remove rows with any missing values:
+
+```{r}
+ds.completeCases(
+  x1 = "D",
+  newobj = "D_complete"
+)
+
+ds.dim("D_complete")
+```
+
+## ProPASS Script Workflow
+
+::: {.callout-note}
+## ProPASS Data
+The ProPASS analysis uses different variables than the CNSIM demo data. Here's the workflow you'll use with ProPASS data:
+:::
+
+```{r}
+#| eval: false
+
+# 1. Sort data by ID
+ds.arrange(df.name = "D", tidy_expr = list(ID), newobj = "D")
+
+# 2. Filter out missing alcohol values
+ds.filter(df.name = "D", tidy_expr = list(D$alc != 'NA'), newobj = "D")
+
+# 3. Select variables needed for analysis
+ds.select(
+  df.name = "D",
+  tidy_expr = list(ID, age, sex, smoke, edu, bmi, alc, med_combined, diet),
+  newobj = "D2"
+)
+
+# 4. Filter for adequate follow-up (survival analysis)
+ds.dataFrameSubset(
+  df.name = "D",
+  V1.name = "D$fup",
+  V2.name = "1",
+  Boolean.operator = ">=",
+  newobj = "dat_ACM_BMI"
+)
+```
+
+## Best Practices
+
+::: {.callout-tip}
+## Subsetting Guidelines
+1. **Sort your data first**: Use `ds.arrange()` to ensure consistent ordering
+2. **Filter early**: Remove missing/invalid data before other operations
+3. **Check dimensions**: Always verify sample sizes after filtering
+4. **Document your filters**: Keep track of exclusion criteria
+5. **Consider disclosure**: Very small subsets may fail privacy checks
+:::
+
+## Exercise
+
+Using the CNSIM data:
+
+1. Filter for participants with BMI between 20 and 40 using `ds.filter()`
+2. Select only the lab variables (LAB_TSC, LAB_HDL, LAB_TRIG) using `ds.select()`
+3. Create a subset with cholesterol < 7 using `ds.dataFrameSubset()`
+
+Check the sample size at each step.
+
+```{r}
+#| include: false
+
+# Cleanup
+datashield.logout(conns)
+```
+
+## Next Steps
+
+Continue to [Conditional Operations](4-conditional-operations.qmd) to learn about creating conditional variables.
