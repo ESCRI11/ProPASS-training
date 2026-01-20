@@ -67,6 +67,10 @@ model <- ds.glm(
 ### Simple Linear Regression
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # BMI as a predictor of total cholesterol
 model_simple <- ds.glm(
   formula = "LAB_TSC ~ PM_BMI_CONTINUOUS",
@@ -74,6 +78,9 @@ model_simple <- ds.glm(
   family = "gaussian"
 )
 
+```
+
+```{r}
 # View results
 model_simple$coefficients
 ```
@@ -81,12 +88,21 @@ model_simple$coefficients
 ### Multiple Linear Regression
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Cholesterol predicted by multiple factors
 model_multiple <- ds.glm(
   formula = "LAB_TSC ~ PM_BMI_CONTINUOUS + LAB_HDL + GENDER",
   data = "D",
   family = "gaussian"
 )
+```
+```{r}
+# View results
+model_multiple$coefficients
+```
 
 # Extract coefficients
 model_multiple$coefficients
@@ -113,6 +129,10 @@ model_multiple$coefficients
 ### Simple Logistic Regression
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Diabetes predicted by BMI
 model_logistic <- ds.glm(
   formula = "DIS_DIAB ~ PM_BMI_CONTINUOUS",
@@ -120,6 +140,9 @@ model_logistic <- ds.glm(
   family = "binomial"
 )
 
+```
+
+```{r}
 # Results are on log-odds scale
 model_logistic$coefficients
 
@@ -130,6 +153,10 @@ exp(model_logistic$coefficients[, "Estimate"])
 ### Multiple Logistic Regression
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Diabetes predicted by multiple risk factors
 model_diabetes <- ds.glm(
   formula = "DIS_DIAB ~ PM_BMI_CONTINUOUS + LAB_TSC + GENDER",
@@ -137,6 +164,9 @@ model_diabetes <- ds.glm(
   family = "binomial"
 )
 
+```
+
+```{r}
 # Extract and format results
 coefs <- model_diabetes$coefficients
 odds_ratios <- exp(coefs[, "Estimate"])
@@ -158,6 +188,10 @@ print(results)
 ### Building Adjusted Models
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Unadjusted model
 model_unadj <- ds.glm(
   formula = "DIS_DIAB ~ PM_BMI_CONTINUOUS",
@@ -178,6 +212,11 @@ model_adj2 <- ds.glm(
   data = "D",
   family = "binomial"
 )
+
+```
+
+```{r}
+#| results: hold
 
 # Compare estimates across models
 cat("Unadjusted OR for BMI:", round(exp(model_unadj$coefficients["PM_BMI_CONTINUOUS", "Estimate"]), 3), "\n")
@@ -222,12 +261,18 @@ model_factors$coefficients
 ### Testing Interactions
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Interaction between BMI and gender
 model_interaction <- ds.glm(
   formula = "D$DIS_DIAB ~ D$PM_BMI_CONTINUOUS + D$GENDER + D$PM_BMI_CONTINUOUS:D$GENDER",
   family = "binomial"
 )
+```
 
+```{r}
 model_interaction$coefficients
 ```
 
@@ -351,32 +396,6 @@ formatted <- format_glm_results(multi_model, family = "binomial")
 print(formatted)
 ```
 
-## ProPASS Script Workflow
-
-::: {.callout-note}
-## ProPASS Data
-The ProPASS analysis uses different variables than the CNSIM demo data. Here's how GLM models are used with ProPASS data:
-:::
-
-```{r}
-#| eval: false
-
-# Convert categorical variables to factors
-ds.asFactor(input.var.name = "D$edu", newobj.name = "edu")
-ds.asFactor(input.var.name = "D$smoke", newobj.name = "smoke")
-ds.asFactor(input.var.name = "D$sex", newobj.name = "sex")
-
-# Multivariate logistic regression with ProPASS covariates
-model_propass <- ds.glm(
-  formula = "acm ~ bmi + age + sex + smoke + edu + alc + med_combined + diet",
-  data = "D",
-  family = "binomial"
-)
-
-# Extract odds ratios
-exp(model_propass$coefficients[, "Estimate"])
-```
-
 ## Best Practices
 
 ::: {.callout-tip}
@@ -388,16 +407,6 @@ exp(model_propass$coefficients[, "Estimate"])
 4. **Check multicollinearity**: Avoid highly correlated predictors
 5. **Report consistently**: Include OR, 95% CI, and p-values
 :::
-
-## Exercise
-
-Using the CNSIM data:
-
-1. Fit a univariate logistic regression of `DIS_DIAB` on `PM_BMI_CONTINUOUS`
-2. Fit a univariate logistic regression of `DIS_DIAB` on `LAB_TSC`
-3. Build a multivariate model with BMI, cholesterol, HDL, and gender
-4. Test for an interaction between BMI and gender
-5. Report your results in a publication-ready table with odds ratios and 95% CIs
 
 ```{r}
 #| include: false

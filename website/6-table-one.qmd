@@ -61,7 +61,7 @@ bmi_mean <- ds.mean("D$PM_BMI_CONTINUOUS", type = "combine")
 bmi_var <- ds.var("D$PM_BMI_CONTINUOUS", type = "combine")
 bmi_sd <- sqrt(bmi_var$Global.Variance[1])
 
-cat("BMI: ", round(bmi_mean$Global.Mean, 1), " (", round(bmi_sd, 1), ")\n")
+cat("BMI: ", round(bmi_mean$Global.Mean[1], 1), " (", round(bmi_sd, 1), ")\n")
 
 # Use ds.summary for quick overview
 ds.summary("D$PM_BMI_CONTINUOUS")
@@ -147,6 +147,9 @@ hdl_stats <- get_continuous_stats("D$LAB_HDL")
 ### Complete Table 1 Workflow
 
 ```{r}
+#| results: hold
+#| message: false
+
 # ============================================
 # Table 1: Baseline Characteristics (CNSIM)
 # ============================================
@@ -155,21 +158,21 @@ hdl_stats <- get_continuous_stats("D$LAB_HDL")
 n_total <- ds.length("D$PM_BMI_CONTINUOUS", type = "combine")
 
 # Continuous variables
-bmi_mean <- ds.mean("D$PM_BMI_CONTINUOUS", type = "combine")$Global.Mean
+bmi_mean <- ds.mean("D$PM_BMI_CONTINUOUS", type = "combine")$Global.Mean[1]
 bmi_sd <- sqrt(ds.var("D$PM_BMI_CONTINUOUS", type = "combine")$Global.Variance[1])
 
-tsc_mean <- ds.mean("D$LAB_TSC", type = "combine")$Global.Mean
+tsc_mean <- ds.mean("D$LAB_TSC", type = "combine")$Global.Mean[1]
 tsc_sd <- sqrt(ds.var("D$LAB_TSC", type = "combine")$Global.Variance[1])
 
-hdl_mean <- ds.mean("D$LAB_HDL", type = "combine")$Global.Mean
+hdl_mean <- ds.mean("D$LAB_HDL", type = "combine")$Global.Mean[1]
 hdl_sd <- sqrt(ds.var("D$LAB_HDL", type = "combine")$Global.Variance[1])
 
-trig_mean <- ds.mean("D$LAB_TRIG", type = "combine")$Global.Mean
+trig_mean <- ds.mean("D$LAB_TRIG", type = "combine")$Global.Mean[1]
 trig_sd <- sqrt(ds.var("D$LAB_TRIG", type = "combine")$Global.Variance[1])
 
 # Print results
 cat("=== Table 1: Baseline Characteristics ===\n\n")
-cat("N:", n_total$`length of D$PM_BMI_CONTINUOUS in combined studies`, "\n\n")
+cat("N:", n_total$`total length of D$PM_BMI_CONTINUOUS in all studies combined`, "\n\n")
 cat("BMI, mean (SD):", round(bmi_mean, 1), "(", round(bmi_sd, 1), ")\n")
 cat("Total Cholesterol, mean (SD):", round(tsc_mean, 2), "(", round(tsc_sd, 2), ")\n")
 cat("HDL Cholesterol, mean (SD):", round(hdl_mean, 2), "(", round(hdl_sd, 2), ")\n")
@@ -179,6 +182,9 @@ cat("Triglycerides, mean (SD):", round(trig_mean, 2), "(", round(trig_sd, 2), ")
 ## Stratified Table 1 (By Gender)
 
 ```{r}
+#| results: hold
+#| message: false
+
 # ============================================
 # Table 1 Stratified by Gender
 # ============================================
@@ -223,6 +229,9 @@ ds.var("D$LAB_TSC", type = "split")
 Always report missing data in Table 1:
 
 ```{r}
+#| results: hold
+#| message: false
+
 # Check missing values for all key variables
 cat("=== Missing Data Summary ===\n\n")
 
@@ -232,37 +241,6 @@ cat("LAB_HDL:", ds.numNA("D$LAB_HDL")$demo, "\n")
 cat("LAB_TRIG:", ds.numNA("D$LAB_TRIG")$demo, "\n")
 cat("GENDER:", ds.numNA("D$GENDER")$demo, "\n")
 cat("DIS_DIAB:", ds.numNA("D$DIS_DIAB")$demo, "\n")
-```
-
-## ProPASS Script Workflow
-
-::: {.callout-note}
-## ProPASS Data
-The ProPASS analysis uses different variables than the CNSIM demo data. Here's how you would create Table 1 with ProPASS data:
-:::
-
-```{r}
-#| eval: false
-
-# Sample size
-n_total <- ds.length("D$ID", type = "combine")
-
-# Demographics
-age_mean <- ds.mean("D$age", type = "combine")$Global.Mean
-age_sd <- sqrt(ds.var("D$age", type = "combine")$Global.Variance[1])
-
-# Clinical measurements
-bmi_mean <- ds.mean("D$bmi", type = "combine")$Global.Mean
-bmi_sd <- sqrt(ds.var("D$bmi", type = "combine")$Global.Variance[1])
-
-# Categorical variables
-sex_table <- ds.table("D$sex")
-smoke_table <- ds.table("D$smoke")
-edu_table <- ds.table("D$edu")
-
-# Stratified by exposure
-ds.tapply(X.name = "D$age", INDEX.names = "D$sex", FUN.name = "mean")
-ds.tapply(X.name = "D$bmi", INDEX.names = "D$sex", FUN.name = "mean")
 ```
 
 ## Best Practices
@@ -282,25 +260,36 @@ ds.tapply(X.name = "D$bmi", INDEX.names = "D$sex", FUN.name = "mean")
 Here we compile all the statistics into a formatted Table 1:
 
 ```{r}
+#| results: hold
+
 # ============================================
 # COMPLETE TABLE 1: CNSIM Dataset
 # ============================================
 
 # Get sample sizes
-n_total_val <- ds.length("D$PM_BMI_CONTINUOUS", type = "combine")$`length of D$PM_BMI_CONTINUOUS in combined studies`
+n_total_val <- ds.length("D$PM_BMI_CONTINUOUS", type = "combine")$`total length of D$PM_BMI_CONTINUOUS in all studies combined`
 gender_counts <- ds.table("D$GENDER")$output.list$TABLES.COMBINED_all.sources_counts
 
-# Get stratified means
-bmi_male <- bmi_by_gender$demo$output.list$Mean["0"]
-bmi_female <- bmi_by_gender$demo$output.list$Mean["1"]
-bmi_sd_male <- bmi_sd_by_gender$demo$output.list$SD["0"]
-bmi_sd_female <- bmi_sd_by_gender$demo$output.list$SD["1"]
+# Get stratified SD for cholesterol variables
+tsc_sd_by_gender <- ds.tapply(X.name = "D$LAB_TSC", INDEX.names = "D$GENDER", FUN.name = "sd")
+hdl_sd_by_gender <- ds.tapply(X.name = "D$LAB_HDL", INDEX.names = "D$GENDER", FUN.name = "sd")
 
-tsc_male <- tsc_by_gender$demo$output.list$Mean["0"]
-tsc_female <- tsc_by_gender$demo$output.list$Mean["1"]
+# Get stratified means (from previous chunk)
+# Note: GENDER values are 0 and 1, but ds.tapply uses 1-indexed keys "D$GENDER.1" and "D$GENDER.2"
+bmi_g1 <- bmi_by_gender$demo$Mean["D$GENDER.1"]
+bmi_g2 <- bmi_by_gender$demo$Mean["D$GENDER.2"]
+bmi_sd_g1 <- bmi_sd_by_gender$demo$SD["D$GENDER.1"]
+bmi_sd_g2 <- bmi_sd_by_gender$demo$SD["D$GENDER.2"]
 
-hdl_male <- hdl_by_gender$demo$output.list$Mean["0"]
-hdl_female <- hdl_by_gender$demo$output.list$Mean["1"]
+tsc_g1 <- tsc_by_gender$demo$Mean["D$GENDER.1"]
+tsc_g2 <- tsc_by_gender$demo$Mean["D$GENDER.2"]
+tsc_sd_g1 <- tsc_sd_by_gender$demo$SD["D$GENDER.1"]
+tsc_sd_g2 <- tsc_sd_by_gender$demo$SD["D$GENDER.2"]
+
+hdl_g1 <- hdl_by_gender$demo$Mean["D$GENDER.1"]
+hdl_g2 <- hdl_by_gender$demo$Mean["D$GENDER.2"]
+hdl_sd_g1 <- hdl_sd_by_gender$demo$SD["D$GENDER.1"]
+hdl_sd_g2 <- hdl_sd_by_gender$demo$SD["D$GENDER.2"]
 
 # Diabetes counts
 diab_counts <- ds.table("D$DIS_DIAB")$output.list$TABLES.COMBINED_all.sources_counts
@@ -312,7 +301,7 @@ cat("======================================================================\n")
 cat("TABLE 1: Baseline Characteristics of CNSIM Study Participants\n")
 cat("======================================================================\n\n")
 
-cat(sprintf("%-28s %14s %14s %14s\n", "Characteristic", "Overall", "Male (0)", "Female (1)"))
+cat(sprintf("%-28s %14s %14s %14s\n", "Characteristic", "Overall", "Gender=0", "Gender=1"))
 cat("----------------------------------------------------------------------\n")
 
 # Sample size
@@ -321,13 +310,13 @@ cat(sprintf("%-28s %14d %14d %14d\n\n", "N", n_total_val, gender_counts["0"], ge
 # Continuous variables
 cat(sprintf("%-28s %11.1f (%.1f) %11.1f (%.1f) %11.1f (%.1f)\n", 
     "BMI, mean (SD)", 
-    bmi_mean, bmi_sd, bmi_male, bmi_sd_male, bmi_female, bmi_sd_female))
+    bmi_mean, bmi_sd, bmi_g1, bmi_sd_g1, bmi_g2, bmi_sd_g2))
 
-cat(sprintf("%-28s %11.2f (%.2f) %11.2f       %11.2f\n", 
-    "Total Cholesterol", tsc_mean, tsc_sd, tsc_male, tsc_female))
+cat(sprintf("%-28s %11.2f (%.2f) %11.2f (%.2f) %11.2f (%.2f)\n", 
+    "Total Cholesterol", tsc_mean, tsc_sd, tsc_g1, tsc_sd_g1, tsc_g2, tsc_sd_g2))
 
-cat(sprintf("%-28s %11.2f (%.2f) %11.2f       %11.2f\n", 
-    "HDL Cholesterol", hdl_mean, hdl_sd, hdl_male, hdl_female))
+cat(sprintf("%-28s %11.2f (%.2f) %11.2f (%.2f) %11.2f (%.2f)\n", 
+    "HDL Cholesterol", hdl_mean, hdl_sd, hdl_g1, hdl_sd_g1, hdl_g2, hdl_sd_g2))
 
 cat(sprintf("%-28s %11.2f (%.2f)\n\n", 
     "Triglycerides", trig_mean, trig_sd))
@@ -337,19 +326,7 @@ cat(sprintf("%-28s %11d (%.1f%%)\n", "Diabetes, n (%)", diab_n, diab_pct))
 
 cat("\n----------------------------------------------------------------------\n")
 cat("Values are mean (SD) for continuous variables, n (%) for categorical.\n")
-cat("Gender: 0 = Male, 1 = Female\n")
 ```
-
-## Exercise
-
-Using the CNSIM data, create a Table 1 that includes:
-
-1. Sample size (overall and by gender)
-2. BMI (mean, SD) - overall and by gender
-3. Total cholesterol (mean, SD) - overall and by gender
-4. HDL cholesterol (mean, SD) - overall and by gender
-5. Diabetes prevalence (n, %) - overall and by gender
-6. Missing data counts for each variable
 
 ```{r}
 #| include: false

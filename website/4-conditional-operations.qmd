@@ -61,6 +61,10 @@ ds.quantileMean(x = "D$PM_BMI_CONTINUOUS", type = "combine")
 ```
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Winsorize BMI: cap values above 40
 ds.case_when(
   tidy_expr = list(
@@ -73,6 +77,8 @@ ds.case_when(
 # Add the new variable to the data frame
 ds.dataFrame(x = c("D", "bmi_capped"), newobj = "D")
 
+```
+```{r}
 # Check the result
 ds.summary("D$bmi_capped")
 ```
@@ -80,6 +86,10 @@ ds.summary("D$bmi_capped")
 ### Creating Categories
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Create cholesterol categories based on LAB_TSC
 # Normal: < 5.2, Borderline: 5.2-6.2, High: > 6.2
 ds.case_when(
@@ -90,8 +100,9 @@ ds.case_when(
   ),
   newobj = "chol_category"
 )
-
 ds.dataFrame(x = c("D", "chol_category"), newobj = "D")
+```
+```{r}
 ds.table("D$chol_category")
 ```
 
@@ -102,6 +113,10 @@ ds.table("D$chol_category")
 ### Creating Binary Indicators
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Create overweight indicator (BMI >= 25)
 ds.if_else(
   condition = list(D$PM_BMI_CONTINUOUS >= 25),
@@ -112,7 +127,8 @@ ds.if_else(
 
 # Add to data frame
 ds.dataFrame(x = c("D", "is_overweight"), newobj = "D")
-
+```
+```{r}
 # Check the result
 ds.table("D$is_overweight")
 ```
@@ -120,6 +136,10 @@ ds.table("D$is_overweight")
 ### Creating Combined Indicators
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Create indicator for metabolic risk (diabetes OR high cholesterol)
 ds.if_else(
   condition = list(D$DIS_DIAB == 1 | D$LAB_TSC > 6.5),
@@ -129,6 +149,8 @@ ds.if_else(
 )
 
 ds.dataFrame(x = c("D", "metabolic_risk"), newobj = "D")
+```
+```{r}
 ds.table("D$metabolic_risk")
 ```
 
@@ -139,6 +161,10 @@ Recode specific values in a variable:
 ### Single Value Replacement
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Recode GENDER: 0,1 -> 1,2
 ds.recodeValues(
   var.name = "D$GENDER",
@@ -147,6 +173,8 @@ ds.recodeValues(
   newobj = "gender_recoded"
 )
 
+```
+```{r}
 ds.table("gender_recoded")
 ```
 
@@ -173,13 +201,18 @@ Use `ds.make()` for arithmetic operations and creating variable copies:
 ### Arithmetic Operations
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Create HDL to total cholesterol ratio
 ds.make(
   toAssign = "D$LAB_HDL / D$LAB_TSC",
   newobj = "hdl_ratio"
 )
-
 ds.dataFrame(x = c("D", "hdl_ratio"), newobj = "D")
+```
+```{r}
 ds.summary("D$hdl_ratio")
 ```
 
@@ -204,6 +237,10 @@ ds.dataFrame(x = c("D", "Primary_exposure"), newobj = "D")
 Convert categorical variables to factors for modeling:
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Convert GENDER to factor
 ds.asFactor(input.var.name = "D$GENDER", newobj.name = "gender_f")
 
@@ -212,7 +249,8 @@ ds.asFactor(input.var.name = "D$DIS_DIAB", newobj.name = "diabetes_f")
 
 # Add factors to data frame
 ds.dataFrame(x = c("D", "gender_f", "diabetes_f"), newobj = "D")
-
+```
+```{r}
 # Check levels
 ds.levels("gender_f")
 ```
@@ -247,51 +285,6 @@ ds.mice(
 # imputed_data.1, imputed_data.2, ..., imputed_data.5
 ```
 
-::: {.callout-note}
-## Note on ds.mice()
-`ds.mice()` requires the dsTidyverse server-side package. It may not be available on all servers.
-:::
-
-## ProPASS Script Workflow
-
-::: {.callout-note}
-## ProPASS Data
-The ProPASS analysis uses different variables than the CNSIM demo data. Here's the workflow you'll use with ProPASS data:
-:::
-
-```{r}
-#| eval: false
-
-# 1. Winsorize BMI at the 95th percentile
-ds.case_when(
-  tidy_expr = list(
-    D$bmi <= 37.16 ~ D$bmi,
-    D$bmi > 37.16 ~ 37.16
-  ),
-  newobj = "bmi_revised"
-)
-ds.dataFrame(x = c("D", "bmi_revised"), newobj = "D")
-
-# 2. Create combined medication indicator
-ds.if_else(
-  condition = list(D$med_lipid == 1 | D$med_bp == 1 | D$med_glucose == 1),
-  true = 1,
-  false = 0,
-  newobj = "med_combined"
-)
-ds.dataFrame(x = c("D", "med_combined"), newobj = "D")
-
-# 3. Create diet score
-ds.asNumeric(x.name = "D$veg", newobj = "veg_n")
-ds.asNumeric(x.name = "D$fruit", newobj = "fruit_n")
-ds.make(toAssign = "fruit_n + veg_n", newobj = "diet")
-ds.dataFrame(x = c("D", "diet"), newobj = "D")
-
-# 4. Convert categorical variables to factors
-ds.asFactor(input.var.name = "D$edu", newobj.name = "edu")
-ds.asFactor(input.var.name = "D$smoke", newobj.name = "smoke")
-ds.asFactor(input.var.name = "D$sex", newobj.name = "sex")
-```
 
 ## Best Practices
 
@@ -303,15 +296,6 @@ ds.asFactor(input.var.name = "D$sex", newobj.name = "sex")
 4. **Convert to factors** before modeling categorical variables
 5. **Check your results** with `ds.table()` or `ds.summary()`
 :::
-
-## Exercise
-
-Using the CNSIM data:
-
-1. Winsorize BMI at 40 using `ds.case_when()`
-2. Create a binary indicator for high cholesterol (LAB_TSC > 6.5) using `ds.if_else()`
-3. Create an HDL ratio using `ds.make()`
-4. Convert GENDER to a factor using `ds.asFactor()`
 
 ```{r}
 #| include: false

@@ -112,6 +112,10 @@ ds.dim("D_sorted")
 For subsetting based on comparison operators, use `ds.dataFrameSubset()`:
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Keep only participants with BMI >= 25
 ds.dataFrameSubset(
   df.name = "D",
@@ -120,7 +124,9 @@ ds.dataFrameSubset(
   Boolean.operator = ">=",
   newobj = "D_bmi25plus"
 )
+```
 
+```{r}
 # Check how many participants remain
 ds.dim("D_bmi25plus")
 ```
@@ -141,45 +147,18 @@ ds.dim("D_bmi25plus")
 Remove rows with any missing values:
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 ds.completeCases(
   x1 = "D",
   newobj = "D_complete"
 )
-
-ds.dim("D_complete")
 ```
 
-## ProPASS Script Workflow
-
-::: {.callout-note}
-## ProPASS Data
-The ProPASS analysis uses different variables than the CNSIM demo data. Here's the workflow you'll use with ProPASS data:
-:::
-
 ```{r}
-#| eval: false
-
-# 1. Sort data by ID
-ds.arrange(df.name = "D", tidy_expr = list(ID), newobj = "D")
-
-# 2. Filter out missing alcohol values
-ds.filter(df.name = "D", tidy_expr = list(D$alc != 'NA'), newobj = "D")
-
-# 3. Select variables needed for analysis
-ds.select(
-  df.name = "D",
-  tidy_expr = list(ID, age, sex, smoke, edu, bmi, alc, med_combined, diet),
-  newobj = "D2"
-)
-
-# 4. Filter for adequate follow-up (survival analysis)
-ds.dataFrameSubset(
-  df.name = "D",
-  V1.name = "D$fup",
-  V2.name = "1",
-  Boolean.operator = ">=",
-  newobj = "dat_ACM_BMI"
-)
+ds.dim("D_complete")
 ```
 
 ## Best Practices
@@ -192,16 +171,6 @@ ds.dataFrameSubset(
 4. **Document your filters**: Keep track of exclusion criteria
 5. **Consider disclosure**: Very small subsets may fail privacy checks
 :::
-
-## Exercise
-
-Using the CNSIM data:
-
-1. Filter for participants with BMI between 20 and 40 using `ds.filter()`
-2. Select only the lab variables (LAB_TSC, LAB_HDL, LAB_TRIG) using `ds.select()`
-3. Create a subset with cholesterol < 7 using `ds.dataFrameSubset()`
-
-Check the sample size at each step.
 
 ```{r}
 #| include: false

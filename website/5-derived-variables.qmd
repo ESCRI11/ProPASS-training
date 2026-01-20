@@ -54,26 +54,36 @@ Use `ds.make()` to create new variables from arithmetic expressions:
 ### Ratios and Calculations
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Create HDL to total cholesterol ratio
 ds.make(
   toAssign = "D$LAB_HDL / D$LAB_TSC",
   newobj = "hdl_ratio"
 )
-
 ds.dataFrame(x = c("D", "hdl_ratio"), newobj = "D")
+```
+```{r}
 ds.summary("D$hdl_ratio")
 ```
 
 ### Log Transformations
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Log-transform triglycerides (common for skewed distributions)
 ds.make(
   toAssign = "log(D$LAB_TRIG)",
   newobj = "log_trig"
 )
-
 ds.dataFrame(x = c("D", "log_trig"), newobj = "D")
+```
+```{r}
 ds.summary("D$log_trig")
 ```
 
@@ -82,6 +92,10 @@ ds.summary("D$log_trig")
 Create copies of variables with new names (useful for analysis):
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Create primary exposure variable
 ds.make(
   toAssign = "D$PM_BMI_CONTINUOUS",
@@ -89,6 +103,8 @@ ds.make(
 )
 
 ds.dataFrame(x = c("D", "Primary_exposure"), newobj = "D")
+```
+```{r}
 ds.colnames("D")
 ```
 
@@ -181,12 +197,17 @@ ds.table(
 ### Creating New Data Frames
 
 ```{r}
+#| message: false
+#| warning: false
+#| output: false
+
 # Combine variables into a new data frame
 ds.dataFrame(
   x = c("D$PM_BMI_CONTINUOUS", "D$LAB_TSC", "D$LAB_HDL", "D$LAB_TRIG", "D$GENDER", "D$DIS_DIAB"),
   newobj = "D_analysis"
 )
-
+```
+```{r}
 ds.colnames("D_analysis")
 ds.dim("D_analysis")
 ```
@@ -221,32 +242,6 @@ ds.cor(
 )
 ```
 
-## ProPASS Script Workflow
-
-::: {.callout-note}
-## ProPASS Data
-The ProPASS analysis uses different variables than the CNSIM demo data. Here's the workflow you'll use with ProPASS data:
-:::
-
-```{r}
-#| eval: false
-
-# 1. Create diet score from fruit and vegetable intake
-ds.asNumeric(x.name = "D$veg", newobj = "veg_n")
-ds.asNumeric(x.name = "D$fruit", newobj = "fruit_n")
-ds.make(toAssign = "fruit_n + veg_n", newobj = "diet")
-ds.dataFrame(x = c("D", "diet"), newobj = "D")
-
-# 2. Create primary exposure variable for survival model
-ds.make(toAssign = "D$bmi", newobj = "Primary_exposure")
-ds.dataFrame(x = c("D", "Primary_exposure"), newobj = "D")
-
-# 3. Get quantiles for spline knots
-ds.quantileMean(x = "D$Primary_exposure", type = "combine")
-# Use 10th, 50th, 90th percentiles as knots
-ds.make(toAssign = "c(23.5, 27.5, 32.8)", newobj = "knots")
-```
-
 ## Best Practices
 
 ::: {.callout-tip}
@@ -257,16 +252,6 @@ ds.make(toAssign = "c(23.5, 27.5, 32.8)", newobj = "knots")
 4. **Get quantiles** for setting appropriate knots in spline models
 5. **Verify your work** with `ds.summary()` and `ds.dim()`
 :::
-
-## Exercise
-
-Using the CNSIM data:
-
-1. Create an HDL/TSC ratio using `ds.make()`
-2. Log-transform LAB_TRIG using `ds.make()`
-3. Get the quantiles of BMI using `ds.quantileMean()`
-4. Calculate mean cholesterol by gender using `ds.tapply()`
-5. Create a cross-tabulation of GENDER by DIS_DIAB using `ds.table()`
 
 ```{r}
 #| include: false

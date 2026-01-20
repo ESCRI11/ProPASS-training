@@ -281,9 +281,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#factor-to-numeric" id="toc-factor-to-numeric" class="nav-link" data-scroll-target="#factor-to-numeric">Factor to Numeric</a></li>
   </ul></li>
   <li><a href="#multiple-imputation-with-ds.mice" id="toc-multiple-imputation-with-ds.mice" class="nav-link" data-scroll-target="#multiple-imputation-with-ds.mice">Multiple Imputation with ds.mice()</a></li>
-  <li><a href="#propass-script-workflow" id="toc-propass-script-workflow" class="nav-link" data-scroll-target="#propass-script-workflow">ProPASS Script Workflow</a></li>
   <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices">Best Practices</a></li>
-  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/propass/propass-training/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -377,15 +375,10 @@ p {
 <span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Add the new variable to the data frame</span></span>
 <span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"bmi_capped"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$is.object.created
-[1] "A data object &lt;D&gt; has been created in all specified data sources"
-
-$validity.check
-[1] "&lt;D&gt; appears valid in all sources"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the result</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.summary</span>(<span class="st">"D$bmi_capped"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the result</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.summary</span>(<span class="st">"D$bmi_capped"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$demo
 $demo$class
@@ -403,26 +396,20 @@ $demo$`quantiles &amp; mean`
 <section id="creating-categories" class="level3">
 <h3 class="anchored" data-anchor-id="creating-categories">Creating Categories</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create cholesterol categories based on LAB_TSC</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Normal: &lt; 5.2, Borderline: 5.2-6.2, High: &gt; 6.2</span></span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.case_when</span>(</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">tidy_expr =</span> <span class="fu">list</span>(</span>
-<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    D<span class="sc">$</span>LAB_TSC <span class="sc">&lt;</span> <span class="fl">5.2</span> <span class="sc">~</span> <span class="dv">1</span>,          <span class="co"># Normal</span></span>
-<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>    D<span class="sc">$</span>LAB_TSC <span class="sc">&gt;=</span> <span class="fl">5.2</span> <span class="sc">&amp;</span> D<span class="sc">$</span>LAB_TSC <span class="sc">&lt;=</span> <span class="fl">6.2</span> <span class="sc">~</span> <span class="dv">2</span>,  <span class="co"># Borderline</span></span>
-<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    D<span class="sc">$</span>LAB_TSC <span class="sc">&gt;</span> <span class="fl">6.2</span> <span class="sc">~</span> <span class="dv">3</span>           <span class="co"># High</span></span>
-<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"chol_category"</span></span>
-<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"chol_category"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$is.object.created
-[1] "A data object &lt;D&gt; has been created in all specified data sources"
-
-$validity.check
-[1] "&lt;D&gt; appears valid in all sources"</code></pre>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create cholesterol categories based on LAB_TSC</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Normal: &lt; 5.2, Borderline: 5.2-6.2, High: &gt; 6.2</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.case_when</span>(</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">tidy_expr =</span> <span class="fu">list</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    D<span class="sc">$</span>LAB_TSC <span class="sc">&lt;</span> <span class="fl">5.2</span> <span class="sc">~</span> <span class="dv">1</span>,          <span class="co"># Normal</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    D<span class="sc">$</span>LAB_TSC <span class="sc">&gt;=</span> <span class="fl">5.2</span> <span class="sc">&amp;</span> D<span class="sc">$</span>LAB_TSC <span class="sc">&lt;=</span> <span class="fl">6.2</span> <span class="sc">~</span> <span class="dv">2</span>,  <span class="co"># Borderline</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    D<span class="sc">$</span>LAB_TSC <span class="sc">&gt;</span> <span class="fl">6.2</span> <span class="sc">~</span> <span class="dv">3</span>           <span class="co"># High</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"chol_category"</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"chol_category"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.table</span>(<span class="st">"D$chol_category"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.table</span>(<span class="st">"D$chol_category"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
  Data in all studies were valid 
@@ -478,25 +465,20 @@ $validity.message
 <section id="creating-binary-indicators" class="level3">
 <h3 class="anchored" data-anchor-id="creating-binary-indicators">Creating Binary Indicators</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create overweight indicator (BMI &gt;= 25)</span></span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.if_else</span>(</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">condition =</span> <span class="fu">list</span>(D<span class="sc">$</span>PM_BMI_CONTINUOUS <span class="sc">&gt;=</span> <span class="dv">25</span>),</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">true =</span> <span class="dv">1</span>,</span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">false =</span> <span class="dv">0</span>,</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"is_overweight"</span></span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Add to data frame</span></span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"is_overweight"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$is.object.created
-[1] "A data object &lt;D&gt; has been created in all specified data sources"
-
-$validity.check
-[1] "&lt;D&gt; appears valid in all sources"</code></pre>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create overweight indicator (BMI &gt;= 25)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.if_else</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">condition =</span> <span class="fu">list</span>(D<span class="sc">$</span>PM_BMI_CONTINUOUS <span class="sc">&gt;=</span> <span class="dv">25</span>),</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">true =</span> <span class="dv">1</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">false =</span> <span class="dv">0</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"is_overweight"</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Add to data frame</span></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"is_overweight"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the result</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.table</span>(<span class="st">"D$is_overweight"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check the result</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.table</span>(<span class="st">"D$is_overweight"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
  Data in all studies were valid 
@@ -545,23 +527,18 @@ $validity.message
 <section id="creating-combined-indicators" class="level3">
 <h3 class="anchored" data-anchor-id="creating-combined-indicators">Creating Combined Indicators</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create indicator for metabolic risk (diabetes OR high cholesterol)</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.if_else</span>(</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">condition =</span> <span class="fu">list</span>(D<span class="sc">$</span>DIS_DIAB <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> D<span class="sc">$</span>LAB_TSC <span class="sc">&gt;</span> <span class="fl">6.5</span>),</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">true =</span> <span class="dv">1</span>,</span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">false =</span> <span class="dv">0</span>,</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"metabolic_risk"</span></span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"metabolic_risk"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$is.object.created
-[1] "A data object &lt;D&gt; has been created in all specified data sources"
-
-$validity.check
-[1] "&lt;D&gt; appears valid in all sources"</code></pre>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create indicator for metabolic risk (diabetes OR high cholesterol)</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.if_else</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">condition =</span> <span class="fu">list</span>(D<span class="sc">$</span>DIS_DIAB <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> D<span class="sc">$</span>LAB_TSC <span class="sc">&gt;</span> <span class="fl">6.5</span>),</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">true =</span> <span class="dv">1</span>,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">false =</span> <span class="dv">0</span>,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"metabolic_risk"</span></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"metabolic_risk"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.table</span>(<span class="st">"D$metabolic_risk"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.table</span>(<span class="st">"D$metabolic_risk"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
  Data in all studies were valid 
@@ -614,21 +591,16 @@ $validity.message
 <section id="single-value-replacement" class="level3">
 <h3 class="anchored" data-anchor-id="single-value-replacement">Single Value Replacement</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recode GENDER: 0,1 -&gt; 1,2</span></span>
-<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.recodeValues</span>(</span>
-<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">var.name =</span> <span class="st">"D$GENDER"</span>,</span>
-<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">values2replace.vector =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
-<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">new.values.vector =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
-<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"gender_recoded"</span></span>
-<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$is.object.created
-[1] "A data object &lt;gender_recoded&gt; has been created in all specified data sources"
-
-$validity.check
-[1] "&lt;gender_recoded&gt; appears valid in all sources"</code></pre>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recode GENDER: 0,1 -&gt; 1,2</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.recodeValues</span>(</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">var.name =</span> <span class="st">"D$GENDER"</span>,</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">values2replace.vector =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>),</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">new.values.vector =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>),</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"gender_recoded"</span></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.table</span>(<span class="st">"gender_recoded"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.table</span>(<span class="st">"gender_recoded"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>
  Data in all studies were valid 
@@ -677,15 +649,15 @@ $validity.message
 <section id="recoding-to-binary" class="level3">
 <h3 class="anchored" data-anchor-id="recoding-to-binary">Recoding to Binary</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recode PM_BMI_CATEGORICAL to binary (normal vs overweight/obese)</span></span>
-<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.recodeValues</span>(</span>
-<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">var.name =</span> <span class="st">"D$PM_BMI_CATEGORICAL"</span>,</span>
-<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">values2replace.vector =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>),</span>
-<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">new.values.vector =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
-<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"bmi_binary"</span></span>
-<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.table</span>(<span class="st">"bmi_binary"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Recode PM_BMI_CATEGORICAL to binary (normal vs overweight/obese)</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.recodeValues</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">var.name =</span> <span class="st">"D$PM_BMI_CATEGORICAL"</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">values2replace.vector =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>),</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">new.values.vector =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"bmi_binary"</span></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.table</span>(<span class="st">"bmi_binary"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -695,27 +667,15 @@ $validity.message
 <section id="arithmetic-operations" class="level3">
 <h3 class="anchored" data-anchor-id="arithmetic-operations">Arithmetic Operations</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create HDL to total cholesterol ratio</span></span>
-<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.make</span>(</span>
-<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">toAssign =</span> <span class="st">"D$LAB_HDL / D$LAB_TSC"</span>,</span>
-<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"hdl_ratio"</span></span>
-<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$is.object.created
-[1] "A data object &lt;hdl_ratio&gt; has been created in all specified data sources"
-
-$validity.check
-[1] "&lt;hdl_ratio&gt; appears valid in all sources"</code></pre>
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create HDL to total cholesterol ratio</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.make</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">toAssign =</span> <span class="st">"D$LAB_HDL / D$LAB_TSC"</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"hdl_ratio"</span></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"hdl_ratio"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"hdl_ratio"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$is.object.created
-[1] "A data object &lt;D&gt; has been created in all specified data sources"
-
-$validity.check
-[1] "&lt;D&gt; appears valid in all sources"</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.summary</span>(<span class="st">"D$hdl_ratio"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.summary</span>(<span class="st">"D$hdl_ratio"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$demo
 $demo$class
@@ -733,13 +693,13 @@ $demo$`quantiles &amp; mean`
 <section id="creating-variable-copies" class="level3">
 <h3 class="anchored" data-anchor-id="creating-variable-copies">Creating Variable Copies</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a copy of BMI as the primary exposure variable</span></span>
-<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.make</span>(</span>
-<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">toAssign =</span> <span class="st">"D$PM_BMI_CONTINUOUS"</span>,</span>
-<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"Primary_exposure"</span></span>
-<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"Primary_exposure"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a copy of BMI as the primary exposure variable</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.make</span>(</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">toAssign =</span> <span class="st">"D$PM_BMI_CONTINUOUS"</span>,</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"Primary_exposure"</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"Primary_exposure"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -749,35 +709,18 @@ $demo$`quantiles &amp; mean`
 <h3 class="anchored" data-anchor-id="numeric-to-factor">Numeric to Factor</h3>
 <p>Convert categorical variables to factors for modeling:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert GENDER to factor</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="at">input.var.name =</span> <span class="st">"D$GENDER"</span>, <span class="at">newobj.name =</span> <span class="st">"gender_f"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$all.unique.levels
-[1] "0" "1"
-
-$return.message
-[1] "Data object &lt;gender_f&gt; correctly created in all specified data sources"</code></pre>
+<div class="sourceCode cell-code" id="cb29"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert GENDER to factor</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="at">input.var.name =</span> <span class="st">"D$GENDER"</span>, <span class="at">newobj.name =</span> <span class="st">"gender_f"</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert DIS_DIAB to factor</span></span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="at">input.var.name =</span> <span class="st">"D$DIS_DIAB"</span>, <span class="at">newobj.name =</span> <span class="st">"diabetes_f"</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Add factors to data frame</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"gender_f"</span>, <span class="st">"diabetes_f"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert DIS_DIAB to factor</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="at">input.var.name =</span> <span class="st">"D$DIS_DIAB"</span>, <span class="at">newobj.name =</span> <span class="st">"diabetes_f"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$all.unique.levels
-[1] "0" "1"
-
-$return.message
-[1] "Data object &lt;diabetes_f&gt; correctly created in all specified data sources"</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add factors to data frame</span></span>
-<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"gender_f"</span>, <span class="st">"diabetes_f"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$is.object.created
-[1] "A data object &lt;D&gt; has been created in all specified data sources"
-
-$validity.check
-[1] "&lt;D&gt; appears valid in all sources"</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check levels</span></span>
-<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.levels</span>(<span class="st">"gender_f"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check levels</span></span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.levels</span>(<span class="st">"gender_f"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$demo
 $demo$Levels
@@ -791,8 +734,8 @@ $demo$ValidityMessage
 <section id="factor-to-numeric" class="level3">
 <h3 class="anchored" data-anchor-id="factor-to-numeric">Factor to Numeric</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert back to numeric</span></span>
-<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asNumeric</span>(<span class="at">x.name =</span> <span class="st">"D$DIS_DIAB"</span>, <span class="at">newobj =</span> <span class="st">"diabetes_numeric"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert back to numeric</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asNumeric</span>(<span class="at">x.name =</span> <span class="st">"D$DIS_DIAB"</span>, <span class="at">newobj =</span> <span class="st">"diabetes_numeric"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -800,78 +743,18 @@ $demo$ValidityMessage
 <h2 class="anchored" data-anchor-id="multiple-imputation-with-ds.mice">Multiple Imputation with ds.mice()</h2>
 <p>For handling missing data, use <code>ds.mice()</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform multiple imputation using random forest method</span></span>
-<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.mice</span>(</span>
-<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
-<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">m =</span> <span class="dv">5</span>,                       <span class="co"># Number of imputations</span></span>
-<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"rf"</span>,               <span class="co"># Random forest method</span></span>
-<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj_df =</span> <span class="st">"imputed_data"</span>,  <span class="co"># Output data frame prefix</span></span>
-<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="st">"fixed"</span>,              <span class="co"># For reproducibility</span></span>
-<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj_mids =</span> <span class="st">"imputed_mids"</span> <span class="co"># MICE object for diagnostics</span></span>
-<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="co"># The function creates multiple imputed datasets:</span></span>
-<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a><span class="co"># imputed_data.1, imputed_data.2, ..., imputed_data.5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Note on ds.mice()
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p><code>ds.mice()</code> requires the dsTidyverse server-side package. It may not be available on all servers.</p>
-</div>
-</div>
-</section>
-<section id="propass-script-workflow" class="level2">
-<h2 class="anchored" data-anchor-id="propass-script-workflow">ProPASS Script Workflow</h2>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-ProPASS Data
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The ProPASS analysis uses different variables than the CNSIM demo data. Here’s the workflow you’ll use with ProPASS data:</p>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Winsorize BMI at the 95th percentile</span></span>
-<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.case_when</span>(</span>
-<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">tidy_expr =</span> <span class="fu">list</span>(</span>
-<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>    D<span class="sc">$</span>bmi <span class="sc">&lt;=</span> <span class="fl">37.16</span> <span class="sc">~</span> D<span class="sc">$</span>bmi,</span>
-<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    D<span class="sc">$</span>bmi <span class="sc">&gt;</span> <span class="fl">37.16</span> <span class="sc">~</span> <span class="fl">37.16</span></span>
-<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"bmi_revised"</span></span>
-<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"bmi_revised"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span>
-<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Create combined medication indicator</span></span>
-<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.if_else</span>(</span>
-<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">condition =</span> <span class="fu">list</span>(D<span class="sc">$</span>med_lipid <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> D<span class="sc">$</span>med_bp <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> D<span class="sc">$</span>med_glucose <span class="sc">==</span> <span class="dv">1</span>),</span>
-<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">true =</span> <span class="dv">1</span>,</span>
-<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">false =</span> <span class="dv">0</span>,</span>
-<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"med_combined"</span></span>
-<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"med_combined"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span>
-<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Create diet score</span></span>
-<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asNumeric</span>(<span class="at">x.name =</span> <span class="st">"D$veg"</span>, <span class="at">newobj =</span> <span class="st">"veg_n"</span>)</span>
-<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asNumeric</span>(<span class="at">x.name =</span> <span class="st">"D$fruit"</span>, <span class="at">newobj =</span> <span class="st">"fruit_n"</span>)</span>
-<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.make</span>(<span class="at">toAssign =</span> <span class="st">"fruit_n + veg_n"</span>, <span class="at">newobj =</span> <span class="st">"diet"</span>)</span>
-<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"diet"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span>
-<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Convert categorical variables to factors</span></span>
-<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="at">input.var.name =</span> <span class="st">"D$edu"</span>, <span class="at">newobj.name =</span> <span class="st">"edu"</span>)</span>
-<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="at">input.var.name =</span> <span class="st">"D$smoke"</span>, <span class="at">newobj.name =</span> <span class="st">"smoke"</span>)</span>
-<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="at">input.var.name =</span> <span class="st">"D$sex"</span>, <span class="at">newobj.name =</span> <span class="st">"sex"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform multiple imputation using random forest method</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.mice</span>(</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">m =</span> <span class="dv">5</span>,                       <span class="co"># Number of imputations</span></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"rf"</span>,               <span class="co"># Random forest method</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj_df =</span> <span class="st">"imputed_data"</span>,  <span class="co"># Output data frame prefix</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="st">"fixed"</span>,              <span class="co"># For reproducibility</span></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj_mids =</span> <span class="st">"imputed_mids"</span> <span class="co"># MICE object for diagnostics</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="co"># The function creates multiple imputed datasets:</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a><span class="co"># imputed_data.1, imputed_data.2, ..., imputed_data.5</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="best-practices" class="level2">
@@ -895,16 +778,6 @@ Conditional Operations Tips
 </ol>
 </div>
 </div>
-</section>
-<section id="exercise" class="level2">
-<h2 class="anchored" data-anchor-id="exercise">Exercise</h2>
-<p>Using the CNSIM data:</p>
-<ol type="1">
-<li>Winsorize BMI at 40 using <code>ds.case_when()</code></li>
-<li>Create a binary indicator for high cholesterol (LAB_TSC &gt; 6.5) using <code>ds.if_else()</code></li>
-<li>Create an HDL ratio using <code>ds.make()</code></li>
-<li>Convert GENDER to a factor using <code>ds.asFactor()</code></li>
-</ol>
 </section>
 <section id="next-steps" class="level2">
 <h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>

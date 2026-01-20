@@ -266,9 +266,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#available-operators" id="toc-available-operators" class="nav-link" data-scroll-target="#available-operators">Available Operators</a></li>
   </ul></li>
   <li><a href="#complete-case-analysis" id="toc-complete-case-analysis" class="nav-link" data-scroll-target="#complete-case-analysis">Complete Case Analysis</a></li>
-  <li><a href="#propass-script-workflow" id="toc-propass-script-workflow" class="nav-link" data-scroll-target="#propass-script-workflow">ProPASS Script Workflow</a></li>
   <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices">Best Practices</a></li>
-  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/propass/propass-training/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
@@ -428,15 +426,10 @@ $`dimensions of D_sorted in combined studies`
 <span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Boolean.operator =</span> <span class="st">"&gt;="</span>,</span>
 <span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"D_bmi25plus"</span></span>
 <span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$is.object.created
-[1] "A data object &lt;D_bmi25plus&gt; has been created in all specified data sources"
-
-$validity.check
-[1] "&lt;D_bmi25plus&gt; appears valid in all sources"</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check how many participants remain</span></span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dim</span>(<span class="st">"D_bmi25plus"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check how many participants remain</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dim</span>(<span class="st">"D_bmi25plus"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$`dimensions of D_bmi25plus in demo`
 [1] 1425   11
@@ -487,18 +480,13 @@ $`dimensions of D_bmi25plus in combined studies`
 <h2 class="anchored" data-anchor-id="complete-case-analysis">Complete Case Analysis</h2>
 <p>Remove rows with any missing values:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.completeCases</span>(</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="st">"D"</span>,</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"D_complete"</span></span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>$is.object.created
-[1] "A data object &lt;D_complete&gt; has been created in all specified data sources"
-
-$validity.check
-[1] "&lt;D_complete&gt; appears valid in all sources"</code></pre>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.completeCases</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">x1 =</span> <span class="st">"D"</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"D_complete"</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dim</span>(<span class="st">"D_complete"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dim</span>(<span class="st">"D_complete"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>$`dimensions of D_complete in demo`
 [1] 1701   11
@@ -506,45 +494,6 @@ $validity.check
 $`dimensions of D_complete in combined studies`
 [1] 1701   11</code></pre>
 </div>
-</div>
-</section>
-<section id="propass-script-workflow" class="level2">
-<h2 class="anchored" data-anchor-id="propass-script-workflow">ProPASS Script Workflow</h2>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-ProPASS Data
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The ProPASS analysis uses different variables than the CNSIM demo data. Here’s the workflow you’ll use with ProPASS data:</p>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 1. Sort data by ID</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.arrange</span>(<span class="at">df.name =</span> <span class="st">"D"</span>, <span class="at">tidy_expr =</span> <span class="fu">list</span>(ID), <span class="at">newobj =</span> <span class="st">"D"</span>)</span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 2. Filter out missing alcohol values</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.filter</span>(<span class="at">df.name =</span> <span class="st">"D"</span>, <span class="at">tidy_expr =</span> <span class="fu">list</span>(D<span class="sc">$</span>alc <span class="sc">!=</span> <span class="st">'NA'</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 3. Select variables needed for analysis</span></span>
-<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.select</span>(</span>
-<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">df.name =</span> <span class="st">"D"</span>,</span>
-<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">tidy_expr =</span> <span class="fu">list</span>(ID, age, sex, smoke, edu, bmi, alc, med_combined, diet),</span>
-<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"D2"</span></span>
-<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 4. Filter for adequate follow-up (survival analysis)</span></span>
-<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrameSubset</span>(</span>
-<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">df.name =</span> <span class="st">"D"</span>,</span>
-<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">V1.name =</span> <span class="st">"D$fup"</span>,</span>
-<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">V2.name =</span> <span class="st">"1"</span>,</span>
-<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">Boolean.operator =</span> <span class="st">"&gt;="</span>,</span>
-<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"dat_ACM_BMI"</span></span>
-<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="best-practices" class="level2">
@@ -568,16 +517,6 @@ Subsetting Guidelines
 </ol>
 </div>
 </div>
-</section>
-<section id="exercise" class="level2">
-<h2 class="anchored" data-anchor-id="exercise">Exercise</h2>
-<p>Using the CNSIM data:</p>
-<ol type="1">
-<li>Filter for participants with BMI between 20 and 40 using <code>ds.filter()</code></li>
-<li>Select only the lab variables (LAB_TSC, LAB_HDL, LAB_TRIG) using <code>ds.select()</code></li>
-<li>Create a subset with cholesterol &lt; 7 using <code>ds.dataFrameSubset()</code></li>
-</ol>
-<p>Check the sample size at each step.</p>
 </section>
 <section id="next-steps" class="level2">
 <h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>

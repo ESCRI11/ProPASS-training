@@ -260,8 +260,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#simple-linear-regression" id="toc-simple-linear-regression" class="nav-link" data-scroll-target="#simple-linear-regression">Simple Linear Regression</a></li>
   <li><a href="#multiple-linear-regression" id="toc-multiple-linear-regression" class="nav-link" data-scroll-target="#multiple-linear-regression">Multiple Linear Regression</a></li>
-  <li><a href="#interpreting-results" id="toc-interpreting-results" class="nav-link" data-scroll-target="#interpreting-results">Interpreting Results</a></li>
   </ul></li>
+  <li><a href="#extract-coefficients" id="toc-extract-coefficients" class="nav-link" data-scroll-target="#extract-coefficients">Extract coefficients</a>
+  <ul class="collapse">
   <li><a href="#logistic-regression-binary-outcomes" id="toc-logistic-regression-binary-outcomes" class="nav-link" data-scroll-target="#logistic-regression-binary-outcomes">Logistic Regression (Binary Outcomes)</a>
   <ul class="collapse">
   <li><a href="#simple-logistic-regression" id="toc-simple-logistic-regression" class="nav-link" data-scroll-target="#simple-logistic-regression">Simple Logistic Regression</a></li>
@@ -289,10 +290,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul class="collapse">
   <li><a href="#creating-publication-ready-tables" id="toc-creating-publication-ready-tables" class="nav-link" data-scroll-target="#creating-publication-ready-tables">Creating Publication-Ready Tables</a></li>
   </ul></li>
-  <li><a href="#propass-script-workflow" id="toc-propass-script-workflow" class="nav-link" data-scroll-target="#propass-script-workflow">ProPASS Script Workflow</a></li>
   <li><a href="#best-practices" id="toc-best-practices" class="nav-link" data-scroll-target="#best-practices">Best Practices</a></li>
-  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
   <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
+  </ul></li>
   </ul>
 <div class="toc-actions"><ul><li><a href="https://github.com/propass/propass-training/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
     </div>
@@ -379,61 +379,10 @@ p {
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"gaussian"</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 1...</code></pre>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      61934.059686</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 2...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      2108.63554456376</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 3...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      2108.63554456376</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>SUMMARY OF MODEL STATE after iteration 3</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Current deviance 2108.63554456376 on 1734 degrees of freedom</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Convergence criterion TRUE (0)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-beta: 5.79402724015325 0.00278425122047829</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Information matrix overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                  (Intercept) PM_BMI_CONTINUOUS
-(Intercept)           1736.00          47611.62
-PM_BMI_CONTINUOUS    47611.62        1348718.80</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Score vector overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                           [,1]
-(Intercept)       -7.036149e-12
-PM_BMI_CONTINUOUS -1.923866e-10</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Current deviance: 2108.63554456376</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View results</span></span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>model_simple<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View results</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>model_simple<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                     Estimate  Std. Error    z-value   p-value   low0.95CI
 (Intercept)       5.794027240 0.148364905 39.0525457 0.0000000  5.50323737
@@ -447,71 +396,16 @@ PM_BMI_CONTINUOUS 0.01321687</code></pre>
 <section id="multiple-linear-regression" class="level3">
 <h3 class="anchored" data-anchor-id="multiple-linear-regression">Multiple Linear Regression</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cholesterol predicted by multiple factors</span></span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>model_multiple <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"LAB_TSC ~ PM_BMI_CONTINUOUS + LAB_HDL + GENDER"</span>,</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
-<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"gaussian"</span></span>
-<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 1...</code></pre>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Cholesterol predicted by multiple factors</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>model_multiple <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"LAB_TSC ~ PM_BMI_CONTINUOUS + LAB_HDL + GENDER"</span>,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"gaussian"</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      61595.4536</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 2...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      1996.60708106983</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 3...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      1996.60708106983</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>SUMMARY OF MODEL STATE after iteration 3</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Current deviance 1996.60708106983 on 1728 degrees of freedom</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Convergence criterion TRUE (0)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-beta: 6.85318985113947 -0.00880153517619878 -0.474658587820022 -0.00610281948608032</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Information matrix overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                  (Intercept) PM_BMI_CONTINUOUS   LAB_HDL   GENDER1
-(Intercept)          1732.000          47418.98  2723.499   866.000
-PM_BMI_CONTINUOUS   47418.980        1339350.67 74131.285 23255.810
-LAB_HDL              2723.499          74131.29  4576.719  1406.812
-GENDER1               866.000          23255.81  1406.812   866.000</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Score vector overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                          [,1]
-(Intercept)       1.125500e-11
-PM_BMI_CONTINUOUS 3.079172e-10
-LAB_HDL           1.760903e-11
-GENDER1           5.540457e-12</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Current deviance: 1996.60708106983</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb37"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract coefficients</span></span>
-<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>model_multiple<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># View results</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>model_multiple<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                      Estimate  Std. Error    z-value       p-value   low0.95CI
 (Intercept)        6.853189851 0.190688944 35.9391043 7.490106e-283  6.47944639
@@ -526,123 +420,41 @@ GENDER1            0.096407195</code></pre>
 </div>
 </div>
 </section>
-<section id="interpreting-results" class="level3">
-<h3 class="anchored" data-anchor-id="interpreting-results">Interpreting Results</h3>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="co"># The coefficients output includes:</span></span>
-<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="co"># - Estimate: the regression coefficient</span></span>
-<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="co"># - Std. Error: standard error of the estimate</span></span>
-<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a><span class="co"># - z-value: test statistic</span></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="co"># - p-value: significance level</span></span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Example interpretation:</span></span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co"># PM_BMI_CONTINUOUS coefficient = 0.05 means:</span></span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="co"># For each 1 unit increase in BMI, cholesterol increases by 0.05 units</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 </section>
-</section>
+<section id="extract-coefficients" class="level1">
+<h1>Extract coefficients</h1>
+<p>model_multiple$coefficients</p>
+<pre><code>
+### Interpreting Results
+
+::: {.cell}
+
+```{.r .cell-code}
+# The coefficients output includes:
+# - Estimate: the regression coefficient
+# - Std. Error: standard error of the estimate
+# - z-value: test statistic
+# - p-value: significance level
+
+# Example interpretation:
+# PM_BMI_CONTINUOUS coefficient = 0.05 means:
+# For each 1 unit increase in BMI, cholesterol increases by 0.05 units</code></pre>
+<p>:::</p>
 <section id="logistic-regression-binary-outcomes" class="level2">
 <h2 class="anchored" data-anchor-id="logistic-regression-binary-outcomes">Logistic Regression (Binary Outcomes)</h2>
 <section id="simple-logistic-regression" class="level3">
 <h3 class="anchored" data-anchor-id="simple-logistic-regression">Simple Logistic Regression</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diabetes predicted by BMI</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>model_logistic <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS"</span>,</span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
-<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 1...</code></pre>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diabetes predicted by BMI</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>model_logistic <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS"</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      2864.08415007369</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 2...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      664.29240022525</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 3...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      376.697280364928</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 4...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      306.438153897246</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 5...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      292.639535998019</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 6...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      291.331982353567</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 7...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      291.314338097214</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 8...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      291.314334147146</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 9...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      291.314334147146</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>SUMMARY OF MODEL STATE after iteration 9</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Current deviance 291.314334147146 on 2064 degrees of freedom</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Convergence criterion TRUE (7.80241905768514e-16)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-beta: -7.97564060620008 0.128164950163299</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Information matrix overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                  (Intercept) PM_BMI_CONTINUOUS
-(Intercept)          28.29673          871.4757
-PM_BMI_CONTINUOUS   871.47574        27750.8489</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Score vector overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                          [,1]
-(Intercept)       3.356430e-13
-PM_BMI_CONTINUOUS 1.092246e-11</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Current deviance: 291.314334147146</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Results are on log-odds scale</span></span>
-<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>model_logistic<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Results are on log-odds scale</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>model_logistic<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                   Estimate Std. Error   z-value      p-value low0.95CI.LP
 (Intercept)       -7.975641 1.03735570 -7.688434 1.489471e-14 -10.00882041
@@ -651,8 +463,8 @@ PM_BMI_CONTINUOUS  0.128165 0.03312513  3.869115 1.092312e-04   0.06324088
 (Intercept)           -5.942461 0.0003436165   4.499922e-05     0.002618685
 PM_BMI_CONTINUOUS      0.193089 1.1367404928   1.065283e+00     1.212990770</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb70"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to odds ratios</span></span>
-<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(model_logistic<span class="sc">$</span>coefficients[, <span class="st">"Estimate"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert to odds ratios</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(model_logistic<span class="sc">$</span>coefficients[, <span class="st">"Estimate"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>      (Intercept) PM_BMI_CONTINUOUS 
      0.0003437346      1.1367404928 </code></pre>
@@ -662,119 +474,28 @@ PM_BMI_CONTINUOUS      0.193089 1.1367404928   1.065283e+00     1.212990770</cod
 <section id="multiple-logistic-regression" class="level3">
 <h3 class="anchored" data-anchor-id="multiple-logistic-regression">Multiple Logistic Regression</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diabetes predicted by multiple risk factors</span></span>
-<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a>model_diabetes <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
-<span id="cb72-3"><a href="#cb72-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS + LAB_TSC + GENDER"</span>,</span>
-<span id="cb72-4"><a href="#cb72-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
-<span id="cb72-5"><a href="#cb72-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
-<span id="cb72-6"><a href="#cb72-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 1...</code></pre>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Diabetes predicted by multiple risk factors</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>model_diabetes <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS + LAB_TSC + GENDER"</span>,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      2406.60701090413</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 2...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      560.909237342004</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 3...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      319.925807987188</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 4...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      260.761811075199</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 5...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      249.020431449224</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 6...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      247.965547009566</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 7...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      247.951679627053</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 8...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      247.951676112782</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 9...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      247.951676112781</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>SUMMARY OF MODEL STATE after iteration 9</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Current deviance 247.951676112781 on 1732 degrees of freedom</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Convergence criterion TRUE (1.03121812713466e-15)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-beta: -8.17499120062243 0.121259330650184 0.0994449436744155 -0.38653486743053</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Information matrix overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                  (Intercept) PM_BMI_CONTINUOUS    LAB_TSC   GENDER1
-(Intercept)          24.27406          748.0070  147.42266   8.87059
-PM_BMI_CONTINUOUS   748.00701        23885.4256 4585.78813 262.28757
-LAB_TSC             147.42266         4585.7881  932.01485  52.21114
-GENDER1               8.87059          262.2876   52.21114   8.87059</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Score vector overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                           [,1]
-(Intercept)       -1.602065e-13
-PM_BMI_CONTINUOUS -4.346995e-12
-LAB_TSC           -1.018725e-12
-GENDER1           -1.064578e-13</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Current deviance: 247.951676112781</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract and format results</span></span>
-<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">&lt;-</span> model_diabetes<span class="sc">$</span>coefficients</span>
-<span id="cb100-3"><a href="#cb100-3" aria-hidden="true" tabindex="-1"></a>odds_ratios <span class="ot">&lt;-</span> <span class="fu">exp</span>(coefs[, <span class="st">"Estimate"</span>])</span>
-<span id="cb100-4"><a href="#cb100-4" aria-hidden="true" tabindex="-1"></a>ci_lower <span class="ot">&lt;-</span> <span class="fu">exp</span>(coefs[, <span class="st">"Estimate"</span>] <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> coefs[, <span class="st">"Std. Error"</span>])</span>
-<span id="cb100-5"><a href="#cb100-5" aria-hidden="true" tabindex="-1"></a>ci_upper <span class="ot">&lt;-</span> <span class="fu">exp</span>(coefs[, <span class="st">"Estimate"</span>] <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> coefs[, <span class="st">"Std. Error"</span>])</span>
-<span id="cb100-6"><a href="#cb100-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb100-7"><a href="#cb100-7" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb100-8"><a href="#cb100-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">OR =</span> <span class="fu">round</span>(odds_ratios, <span class="dv">3</span>),</span>
-<span id="cb100-9"><a href="#cb100-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">CI_lower =</span> <span class="fu">round</span>(ci_lower, <span class="dv">3</span>),</span>
-<span id="cb100-10"><a href="#cb100-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">CI_upper =</span> <span class="fu">round</span>(ci_upper, <span class="dv">3</span>),</span>
-<span id="cb100-11"><a href="#cb100-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">p_value =</span> <span class="fu">round</span>(coefs[, <span class="st">"p-value"</span>], <span class="dv">4</span>)</span>
-<span id="cb100-12"><a href="#cb100-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb100-13"><a href="#cb100-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb100-14"><a href="#cb100-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract and format results</span></span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>coefs <span class="ot">&lt;-</span> model_diabetes<span class="sc">$</span>coefficients</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>odds_ratios <span class="ot">&lt;-</span> <span class="fu">exp</span>(coefs[, <span class="st">"Estimate"</span>])</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>ci_lower <span class="ot">&lt;-</span> <span class="fu">exp</span>(coefs[, <span class="st">"Estimate"</span>] <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> coefs[, <span class="st">"Std. Error"</span>])</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>ci_upper <span class="ot">&lt;-</span> <span class="fu">exp</span>(coefs[, <span class="st">"Estimate"</span>] <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> coefs[, <span class="st">"Std. Error"</span>])</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">OR =</span> <span class="fu">round</span>(odds_ratios, <span class="dv">3</span>),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">CI_lower =</span> <span class="fu">round</span>(ci_lower, <span class="dv">3</span>),</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">CI_upper =</span> <span class="fu">round</span>(ci_upper, <span class="dv">3</span>),</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">p_value =</span> <span class="fu">round</span>(coefs[, <span class="st">"p-value"</span>], <span class="dv">4</span>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(results)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                     OR CI_lower CI_upper p_value
 (Intercept)       0.000    0.000    0.004  0.0000
@@ -790,309 +511,36 @@ GENDER1           0.679    0.293    1.573  0.3670</code></pre>
 <section id="building-adjusted-models" class="level3">
 <h3 class="anchored" data-anchor-id="building-adjusted-models">Building Adjusted Models</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Unadjusted model</span></span>
-<span id="cb102-2"><a href="#cb102-2" aria-hidden="true" tabindex="-1"></a>model_unadj <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
-<span id="cb102-3"><a href="#cb102-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS"</span>,</span>
-<span id="cb102-4"><a href="#cb102-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
-<span id="cb102-5"><a href="#cb102-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
-<span id="cb102-6"><a href="#cb102-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 1...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      2864.08415007369</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 2...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      664.29240022525</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 3...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      376.697280364928</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 4...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      306.438153897246</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 5...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      292.639535998019</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 6...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      291.331982353567</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 7...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      291.314338097214</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 8...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      291.314334147146</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 9...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      291.314334147146</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>SUMMARY OF MODEL STATE after iteration 9</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Current deviance 291.314334147146 on 2064 degrees of freedom</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Convergence criterion TRUE (7.80241905768514e-16)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-beta: -7.97564060620008 0.128164950163299</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Information matrix overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                  (Intercept) PM_BMI_CONTINUOUS
-(Intercept)          28.29673          871.4757
-PM_BMI_CONTINUOUS   871.47574        27750.8489</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Score vector overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                          [,1]
-(Intercept)       3.356430e-13
-PM_BMI_CONTINUOUS 1.092246e-11</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Current deviance: 291.314334147146</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb130"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Gender adjusted</span></span>
-<span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a>model_adj1 <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
-<span id="cb130-3"><a href="#cb130-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS + GENDER"</span>,</span>
-<span id="cb130-4"><a href="#cb130-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
-<span id="cb130-5"><a href="#cb130-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
-<span id="cb130-6"><a href="#cb130-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 1...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      2864.08415007369</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 2...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      664.091745207646</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 3...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      376.077873636942</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 4...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      305.060218021482</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 5...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      290.53336981469</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 6...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      289.008148333213</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 7...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      288.981069589415</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 8...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      288.981056969819</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 9...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      288.981056969815</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>SUMMARY OF MODEL STATE after iteration 9</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Current deviance 288.981056969815 on 2063 degrees of freedom</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Convergence criterion TRUE (1.21913625413999e-14)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-beta: -7.46199544706331 0.119009703477005 -0.609693778835752</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Information matrix overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                  (Intercept) PM_BMI_CONTINUOUS    GENDER1
-(Intercept)         28.247764          869.6887   8.891516
-PM_BMI_CONTINUOUS  869.688718        27696.7482 261.610627
-GENDER1              8.891516          261.6106   8.891516</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Score vector overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                           [,1]
-(Intercept)       -1.662210e-12
-PM_BMI_CONTINUOUS -4.706158e-11
-GENDER1           -1.632526e-12</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Current deviance: 288.981056969815</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb158"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb158-1"><a href="#cb158-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Adjusted for multiple factors</span></span>
-<span id="cb158-2"><a href="#cb158-2" aria-hidden="true" tabindex="-1"></a>model_adj2 <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
-<span id="cb158-3"><a href="#cb158-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS + GENDER + LAB_TSC"</span>,</span>
-<span id="cb158-4"><a href="#cb158-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
-<span id="cb158-5"><a href="#cb158-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
-<span id="cb158-6"><a href="#cb158-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 1...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      2406.60701090413</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 2...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      560.909237342012</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 3...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      319.925807987189</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 4...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      260.761811075199</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 5...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      249.020431449225</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 6...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      247.965547009566</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 7...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      247.951679627053</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 8...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      247.951676112782</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 9...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      247.951676112781</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>SUMMARY OF MODEL STATE after iteration 9</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Current deviance 247.951676112781 on 1732 degrees of freedom</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Convergence criterion TRUE (1.03121812713466e-15)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-beta: -8.17499120062243 0.121259330650184 -0.38653486743053 0.0994449436744149</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Information matrix overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                  (Intercept) PM_BMI_CONTINUOUS   GENDER1    LAB_TSC
-(Intercept)          24.27406          748.0070   8.87059  147.42266
-PM_BMI_CONTINUOUS   748.00701        23885.4256 262.28757 4585.78813
-GENDER1               8.87059          262.2876   8.87059   52.21114
-LAB_TSC             147.42266         4585.7881  52.21114  932.01485</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Score vector overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                           [,1]
-(Intercept)       -8.427677e-14
-PM_BMI_CONTINUOUS -1.959183e-12
-GENDER1           -8.945318e-14
-LAB_TSC           -6.018311e-13</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Current deviance: 247.951676112781</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb186"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb186-1"><a href="#cb186-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare estimates across models</span></span>
-<span id="cb186-2"><a href="#cb186-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Unadjusted OR for BMI:"</span>, <span class="fu">round</span>(<span class="fu">exp</span>(model_unadj<span class="sc">$</span>coefficients[<span class="st">"PM_BMI_CONTINUOUS"</span>, <span class="st">"Estimate"</span>]), <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Unadjusted model</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>model_unadj <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS"</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Gender adjusted</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>model_adj1 <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS + GENDER"</span>,</span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Adjusted for multiple factors</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>model_adj2 <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS + GENDER + LAB_TSC"</span>,</span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare estimates across models</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Unadjusted OR for BMI:"</span>, <span class="fu">round</span>(<span class="fu">exp</span>(model_unadj<span class="sc">$</span>coefficients[<span class="st">"PM_BMI_CONTINUOUS"</span>, <span class="st">"Estimate"</span>]), <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Gender-adjusted OR:"</span>, <span class="fu">round</span>(<span class="fu">exp</span>(model_adj1<span class="sc">$</span>coefficients[<span class="st">"PM_BMI_CONTINUOUS"</span>, <span class="st">"Estimate"</span>]), <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Fully adjusted OR:"</span>, <span class="fu">round</span>(<span class="fu">exp</span>(model_adj2<span class="sc">$</span>coefficients[<span class="st">"PM_BMI_CONTINUOUS"</span>, <span class="st">"Estimate"</span>]), <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>Unadjusted OR for BMI: 1.137 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb188"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb188-1"><a href="#cb188-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Gender-adjusted OR:"</span>, <span class="fu">round</span>(<span class="fu">exp</span>(model_adj1<span class="sc">$</span>coefficients[<span class="st">"PM_BMI_CONTINUOUS"</span>, <span class="st">"Estimate"</span>]), <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Gender-adjusted OR: 1.126 </code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb190"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb190-1"><a href="#cb190-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Fully adjusted OR:"</span>, <span class="fu">round</span>(<span class="fu">exp</span>(model_adj2<span class="sc">$</span>coefficients[<span class="st">"PM_BMI_CONTINUOUS"</span>, <span class="st">"Estimate"</span>]), <span class="dv">3</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Fully adjusted OR: 1.129 </code></pre>
+<pre><code>Unadjusted OR for BMI: 1.137 
+Gender-adjusted OR: 1.126 
+Fully adjusted OR: 1.129 </code></pre>
 </div>
 </div>
 </section>
@@ -1102,27 +550,27 @@ Current deviance: 247.951676112781</code></pre>
 <section id="converting-variables-to-factors" class="level3">
 <h3 class="anchored" data-anchor-id="converting-variables-to-factors">Converting Variables to Factors</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb192"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb192-1"><a href="#cb192-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure categorical variables are factors</span></span>
-<span id="cb192-2"><a href="#cb192-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="st">"D$GENDER"</span>, <span class="at">newobj =</span> <span class="st">"gender_f"</span>)</span>
-<span id="cb192-3"><a href="#cb192-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="st">"D$DIS_DIAB"</span>, <span class="at">newobj =</span> <span class="st">"diabetes_f"</span>)</span>
-<span id="cb192-4"><a href="#cb192-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="st">"D$PM_BMI_CATEGORICAL"</span>, <span class="at">newobj =</span> <span class="st">"bmi_cat_f"</span>)</span>
-<span id="cb192-5"><a href="#cb192-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb192-6"><a href="#cb192-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add to data frame</span></span>
-<span id="cb192-7"><a href="#cb192-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"gender_f"</span>, <span class="st">"diabetes_f"</span>, <span class="st">"bmi_cat_f"</span>), <span class="at">newobj =</span> <span class="st">"D_factors"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Ensure categorical variables are factors</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="st">"D$GENDER"</span>, <span class="at">newobj =</span> <span class="st">"gender_f"</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="st">"D$DIS_DIAB"</span>, <span class="at">newobj =</span> <span class="st">"diabetes_f"</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="st">"D$PM_BMI_CATEGORICAL"</span>, <span class="at">newobj =</span> <span class="st">"bmi_cat_f"</span>)</span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Add to data frame</span></span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"gender_f"</span>, <span class="st">"diabetes_f"</span>, <span class="st">"bmi_cat_f"</span>), <span class="at">newobj =</span> <span class="st">"D_factors"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="using-factors-in-models" class="level3">
 <h3 class="anchored" data-anchor-id="using-factors-in-models">Using Factors in Models</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb193"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb193-1"><a href="#cb193-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model with factor predictors</span></span>
-<span id="cb193-2"><a href="#cb193-2" aria-hidden="true" tabindex="-1"></a>model_factors <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
-<span id="cb193-3"><a href="#cb193-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS + gender_f"</span>,</span>
-<span id="cb193-4"><a href="#cb193-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D_factors"</span>,</span>
-<span id="cb193-5"><a href="#cb193-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
-<span id="cb193-6"><a href="#cb193-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb193-7"><a href="#cb193-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb193-8"><a href="#cb193-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Each factor level (except reference) gets its own coefficient</span></span>
-<span id="cb193-9"><a href="#cb193-9" aria-hidden="true" tabindex="-1"></a>model_factors<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Model with factor predictors</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>model_factors <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS + gender_f"</span>,</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D_factors"</span>,</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Each factor level (except reference) gets its own coefficient</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a>model_factors<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
@@ -1131,110 +579,14 @@ Current deviance: 247.951676112781</code></pre>
 <section id="testing-interactions" class="level3">
 <h3 class="anchored" data-anchor-id="testing-interactions">Testing Interactions</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb194"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb194-1"><a href="#cb194-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Interaction between BMI and gender</span></span>
-<span id="cb194-2"><a href="#cb194-2" aria-hidden="true" tabindex="-1"></a>model_interaction <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
-<span id="cb194-3"><a href="#cb194-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"D$DIS_DIAB ~ D$PM_BMI_CONTINUOUS + D$GENDER + D$PM_BMI_CONTINUOUS:D$GENDER"</span>,</span>
-<span id="cb194-4"><a href="#cb194-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
-<span id="cb194-5"><a href="#cb194-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 1...</code></pre>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Interaction between BMI and gender</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>model_interaction <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"D$DIS_DIAB ~ D$PM_BMI_CONTINUOUS + D$GENDER + D$PM_BMI_CONTINUOUS:D$GENDER"</span>,</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      2864.08415007369</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 2...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      663.64903038877</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 3...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      374.912930736829</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 4...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      303.419209135154</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 5...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      289.592337227501</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 6...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      288.353029162793</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 7...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      288.326338557291</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 8...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      288.326307172945</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Iteration 9...</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>CURRENT DEVIANCE:      288.326307172892</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>SUMMARY OF MODEL STATE after iteration 9</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Current deviance 288.326307172892 on 2062 degrees of freedom</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>Convergence criterion TRUE (1.85453461829877e-13)</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-beta: -7.92542541105242 0.133660437389928 1.27087964660502 -0.0637498408875636</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Information matrix overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                              (Intercept) D$PM_BMI_CONTINUOUS D$GENDER1
-(Intercept)                      28.15728            865.1230   8.91207
-D$PM_BMI_CONTINUOUS             865.12297          27575.7058 252.21723
-D$GENDER1                         8.91207            252.2172   8.91207
-D$PM_BMI_CONTINUOUS:D$GENDER1   252.21723           7347.2810 252.21723
-                              D$PM_BMI_CONTINUOUS:D$GENDER1
-(Intercept)                                        252.2172
-D$PM_BMI_CONTINUOUS                               7347.2810
-D$GENDER1                                          252.2172
-D$PM_BMI_CONTINUOUS:D$GENDER1                     7347.2810</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Score vector overall:</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>                                       [,1]
-(Intercept)                   -2.709960e-11
-D$PM_BMI_CONTINUOUS           -6.415722e-10
-D$GENDER1                     -2.657315e-11
-D$PM_BMI_CONTINUOUS:D$GENDER1 -6.242105e-10</code></pre>
-</div>
-<div class="cell-output cell-output-stderr">
-<pre><code>
-Current deviance: 288.326307172892</code></pre>
-</div>
-<div class="sourceCode cell-code" id="cb222"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb222-1"><a href="#cb222-1" aria-hidden="true" tabindex="-1"></a>model_interaction<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>model_interaction<span class="sc">$</span>coefficients</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                                 Estimate Std. Error    z-value      p-value
 (Intercept)                   -7.92542541 1.21749187 -6.5096331 7.533457e-11
@@ -1261,73 +613,73 @@ D$PM_BMI_CONTINUOUS:D$GENDER1   8.041994e-01    1.094621e+00</code></pre>
 <section id="checking-model-fit" class="level3">
 <h3 class="anchored" data-anchor-id="checking-model-fit">Checking Model Fit</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb224"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb224-1"><a href="#cb224-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Deviance and degrees of freedom</span></span>
-<span id="cb224-2"><a href="#cb224-2" aria-hidden="true" tabindex="-1"></a>model_diabetes<span class="sc">$</span>dev  <span class="co"># Deviance</span></span>
-<span id="cb224-3"><a href="#cb224-3" aria-hidden="true" tabindex="-1"></a>model_diabetes<span class="sc">$</span>df   <span class="co"># Degrees of freedom</span></span>
-<span id="cb224-4"><a href="#cb224-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb224-5"><a href="#cb224-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of valid observations</span></span>
-<span id="cb224-6"><a href="#cb224-6" aria-hidden="true" tabindex="-1"></a>model_diabetes<span class="sc">$</span>Nvalid</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Deviance and degrees of freedom</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>model_diabetes<span class="sc">$</span>dev  <span class="co"># Deviance</span></span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>model_diabetes<span class="sc">$</span>df   <span class="co"># Degrees of freedom</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Number of valid observations</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>model_diabetes<span class="sc">$</span>Nvalid</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 </section>
 <section id="practical-example-univariate-and-multivariate-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="practical-example-univariate-and-multivariate-analysis">Practical Example: Univariate and Multivariate Analysis</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb225"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb225-1"><a href="#cb225-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
-<span id="cb225-2"><a href="#cb225-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Univariate Analysis (CNSIM Data)</span></span>
-<span id="cb225-3"><a href="#cb225-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
-<span id="cb225-4"><a href="#cb225-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb225-5"><a href="#cb225-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 1: Diabetes ~ BMI</span></span>
-<span id="cb225-6"><a href="#cb225-6" aria-hidden="true" tabindex="-1"></a>uni_bmi <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
-<span id="cb225-7"><a href="#cb225-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS"</span>,</span>
-<span id="cb225-8"><a href="#cb225-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
-<span id="cb225-9"><a href="#cb225-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
-<span id="cb225-10"><a href="#cb225-10" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb225-11"><a href="#cb225-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb225-12"><a href="#cb225-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 2: Diabetes ~ Total Cholesterol</span></span>
-<span id="cb225-13"><a href="#cb225-13" aria-hidden="true" tabindex="-1"></a>uni_tsc <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
-<span id="cb225-14"><a href="#cb225-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ LAB_TSC"</span>,</span>
-<span id="cb225-15"><a href="#cb225-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
-<span id="cb225-16"><a href="#cb225-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
-<span id="cb225-17"><a href="#cb225-17" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb225-18"><a href="#cb225-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb225-19"><a href="#cb225-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 3: Diabetes ~ HDL</span></span>
-<span id="cb225-20"><a href="#cb225-20" aria-hidden="true" tabindex="-1"></a>uni_hdl <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
-<span id="cb225-21"><a href="#cb225-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ LAB_HDL"</span>,</span>
-<span id="cb225-22"><a href="#cb225-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
-<span id="cb225-23"><a href="#cb225-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
-<span id="cb225-24"><a href="#cb225-24" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb225-25"><a href="#cb225-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb225-26"><a href="#cb225-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 4: Diabetes ~ Triglycerides</span></span>
-<span id="cb225-27"><a href="#cb225-27" aria-hidden="true" tabindex="-1"></a>uni_trig <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
-<span id="cb225-28"><a href="#cb225-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ LAB_TRIG"</span>,</span>
-<span id="cb225-29"><a href="#cb225-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
-<span id="cb225-30"><a href="#cb225-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
-<span id="cb225-31"><a href="#cb225-31" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb225-32"><a href="#cb225-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb225-33"><a href="#cb225-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Collect univariate results</span></span>
-<span id="cb225-34"><a href="#cb225-34" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== Univariate Analysis ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
-<span id="cb225-35"><a href="#cb225-35" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"BMI OR:"</span>, <span class="fu">round</span>(<span class="fu">exp</span>(uni_bmi<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">1</span>]), <span class="dv">3</span>), </span>
-<span id="cb225-36"><a href="#cb225-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">"p ="</span>, <span class="fu">round</span>(uni_bmi<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">4</span>], <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb225-37"><a href="#cb225-37" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"TSC OR:"</span>, <span class="fu">round</span>(<span class="fu">exp</span>(uni_tsc<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">1</span>]), <span class="dv">3</span>), </span>
-<span id="cb225-38"><a href="#cb225-38" aria-hidden="true" tabindex="-1"></a>    <span class="st">"p ="</span>, <span class="fu">round</span>(uni_tsc<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">4</span>], <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb225-39"><a href="#cb225-39" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"HDL OR:"</span>, <span class="fu">round</span>(<span class="fu">exp</span>(uni_hdl<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">1</span>]), <span class="dv">3</span>), </span>
-<span id="cb225-40"><a href="#cb225-40" aria-hidden="true" tabindex="-1"></a>    <span class="st">"p ="</span>, <span class="fu">round</span>(uni_hdl<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">4</span>], <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb225-41"><a href="#cb225-41" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"TRIG OR:"</span>, <span class="fu">round</span>(<span class="fu">exp</span>(uni_trig<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">1</span>]), <span class="dv">3</span>), </span>
-<span id="cb225-42"><a href="#cb225-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">"p ="</span>, <span class="fu">round</span>(uni_trig<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">4</span>], <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb225-43"><a href="#cb225-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb225-44"><a href="#cb225-44" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
-<span id="cb225-45"><a href="#cb225-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Multivariate Analysis</span></span>
-<span id="cb225-46"><a href="#cb225-46" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
-<span id="cb225-47"><a href="#cb225-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb225-48"><a href="#cb225-48" aria-hidden="true" tabindex="-1"></a>multi_model <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
-<span id="cb225-49"><a href="#cb225-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS + LAB_TSC + LAB_HDL + GENDER"</span>,</span>
-<span id="cb225-50"><a href="#cb225-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
-<span id="cb225-51"><a href="#cb225-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
-<span id="cb225-52"><a href="#cb225-52" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb225-53"><a href="#cb225-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb225-54"><a href="#cb225-54" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== Multivariate Analysis ===</span><span class="sc">\n</span><span class="st">"</span>)</span>
-<span id="cb225-55"><a href="#cb225-55" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(multi_model<span class="sc">$</span>coefficients)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Univariate Analysis (CNSIM Data)</span></span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 1: Diabetes ~ BMI</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>uni_bmi <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS"</span>,</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 2: Diabetes ~ Total Cholesterol</span></span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>uni_tsc <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ LAB_TSC"</span>,</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 3: Diabetes ~ HDL</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>uni_hdl <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ LAB_HDL"</span>,</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Model 4: Diabetes ~ Triglycerides</span></span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>uni_trig <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ LAB_TRIG"</span>,</span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Collect univariate results</span></span>
+<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"=== Univariate Analysis ===</span><span class="sc">\n\n</span><span class="st">"</span>)</span>
+<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"BMI OR:"</span>, <span class="fu">round</span>(<span class="fu">exp</span>(uni_bmi<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">1</span>]), <span class="dv">3</span>), </span>
+<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>    <span class="st">"p ="</span>, <span class="fu">round</span>(uni_bmi<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">4</span>], <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"TSC OR:"</span>, <span class="fu">round</span>(<span class="fu">exp</span>(uni_tsc<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">1</span>]), <span class="dv">3</span>), </span>
+<span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a>    <span class="st">"p ="</span>, <span class="fu">round</span>(uni_tsc<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">4</span>], <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"HDL OR:"</span>, <span class="fu">round</span>(<span class="fu">exp</span>(uni_hdl<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">1</span>]), <span class="dv">3</span>), </span>
+<span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a>    <span class="st">"p ="</span>, <span class="fu">round</span>(uni_hdl<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">4</span>], <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"TRIG OR:"</span>, <span class="fu">round</span>(<span class="fu">exp</span>(uni_trig<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">1</span>]), <span class="dv">3</span>), </span>
+<span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">"p ="</span>, <span class="fu">round</span>(uni_trig<span class="sc">$</span>coefficients[<span class="dv">2</span>, <span class="dv">4</span>], <span class="dv">4</span>), <span class="st">"</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb27-43"><a href="#cb27-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-44"><a href="#cb27-44" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
+<span id="cb27-45"><a href="#cb27-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Multivariate Analysis</span></span>
+<span id="cb27-46"><a href="#cb27-46" aria-hidden="true" tabindex="-1"></a><span class="co"># ============================================</span></span>
+<span id="cb27-47"><a href="#cb27-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-48"><a href="#cb27-48" aria-hidden="true" tabindex="-1"></a>multi_model <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
+<span id="cb27-49"><a href="#cb27-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"DIS_DIAB ~ PM_BMI_CONTINUOUS + LAB_TSC + LAB_HDL + GENDER"</span>,</span>
+<span id="cb27-50"><a href="#cb27-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
+<span id="cb27-51"><a href="#cb27-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
+<span id="cb27-52"><a href="#cb27-52" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-53"><a href="#cb27-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-54"><a href="#cb27-54" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"</span><span class="sc">\n</span><span class="st">=== Multivariate Analysis ===</span><span class="sc">\n</span><span class="st">"</span>)</span>
+<span id="cb27-55"><a href="#cb27-55" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(multi_model<span class="sc">$</span>coefficients)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="reporting-results" class="level2">
@@ -1335,72 +687,40 @@ D$PM_BMI_CONTINUOUS:D$GENDER1   8.041994e-01    1.094621e+00</code></pre>
 <section id="creating-publication-ready-tables" class="level3">
 <h3 class="anchored" data-anchor-id="creating-publication-ready-tables">Creating Publication-Ready Tables</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb226"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb226-1"><a href="#cb226-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Format model results</span></span>
-<span id="cb226-2"><a href="#cb226-2" aria-hidden="true" tabindex="-1"></a>format_glm_results <span class="ot">&lt;-</span> <span class="cf">function</span>(model, <span class="at">family =</span> <span class="st">"binomial"</span>) {</span>
-<span id="cb226-3"><a href="#cb226-3" aria-hidden="true" tabindex="-1"></a>  coefs <span class="ot">&lt;-</span> model<span class="sc">$</span>coefficients</span>
-<span id="cb226-4"><a href="#cb226-4" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb226-5"><a href="#cb226-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (family <span class="sc">==</span> <span class="st">"binomial"</span>) {</span>
-<span id="cb226-6"><a href="#cb226-6" aria-hidden="true" tabindex="-1"></a>    results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb226-7"><a href="#cb226-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">Variable =</span> <span class="fu">rownames</span>(coefs),</span>
-<span id="cb226-8"><a href="#cb226-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">OR =</span> <span class="fu">round</span>(<span class="fu">exp</span>(coefs[, <span class="st">"Estimate"</span>]), <span class="dv">2</span>),</span>
-<span id="cb226-9"><a href="#cb226-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">CI_95 =</span> <span class="fu">paste0</span>(</span>
-<span id="cb226-10"><a href="#cb226-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">round</span>(<span class="fu">exp</span>(coefs[, <span class="st">"Estimate"</span>] <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> coefs[, <span class="st">"Std. Error"</span>]), <span class="dv">2</span>),</span>
-<span id="cb226-11"><a href="#cb226-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"-"</span>,</span>
-<span id="cb226-12"><a href="#cb226-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">round</span>(<span class="fu">exp</span>(coefs[, <span class="st">"Estimate"</span>] <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> coefs[, <span class="st">"Std. Error"</span>]), <span class="dv">2</span>)</span>
-<span id="cb226-13"><a href="#cb226-13" aria-hidden="true" tabindex="-1"></a>      ),</span>
-<span id="cb226-14"><a href="#cb226-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">p =</span> <span class="fu">ifelse</span>(coefs[, <span class="st">"p-value"</span>] <span class="sc">&lt;</span> <span class="fl">0.001</span>, <span class="st">"&lt;0.001"</span>, </span>
-<span id="cb226-15"><a href="#cb226-15" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">round</span>(coefs[, <span class="st">"p-value"</span>], <span class="dv">3</span>))</span>
-<span id="cb226-16"><a href="#cb226-16" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb226-17"><a href="#cb226-17" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
-<span id="cb226-18"><a href="#cb226-18" aria-hidden="true" tabindex="-1"></a>    results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
-<span id="cb226-19"><a href="#cb226-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">Variable =</span> <span class="fu">rownames</span>(coefs),</span>
-<span id="cb226-20"><a href="#cb226-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">Beta =</span> <span class="fu">round</span>(coefs[, <span class="st">"Estimate"</span>], <span class="dv">3</span>),</span>
-<span id="cb226-21"><a href="#cb226-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">SE =</span> <span class="fu">round</span>(coefs[, <span class="st">"Std. Error"</span>], <span class="dv">3</span>),</span>
-<span id="cb226-22"><a href="#cb226-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">p =</span> <span class="fu">ifelse</span>(coefs[, <span class="st">"p-value"</span>] <span class="sc">&lt;</span> <span class="fl">0.001</span>, <span class="st">"&lt;0.001"</span>,</span>
-<span id="cb226-23"><a href="#cb226-23" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">round</span>(coefs[, <span class="st">"p-value"</span>], <span class="dv">3</span>))</span>
-<span id="cb226-24"><a href="#cb226-24" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb226-25"><a href="#cb226-25" aria-hidden="true" tabindex="-1"></a>  }</span>
-<span id="cb226-26"><a href="#cb226-26" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb226-27"><a href="#cb226-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(results)</span>
-<span id="cb226-28"><a href="#cb226-28" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb226-29"><a href="#cb226-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb226-30"><a href="#cb226-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Usage</span></span>
-<span id="cb226-31"><a href="#cb226-31" aria-hidden="true" tabindex="-1"></a>formatted <span class="ot">&lt;-</span> <span class="fu">format_glm_results</span>(multi_model, <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
-<span id="cb226-32"><a href="#cb226-32" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(formatted)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Format model results</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>format_glm_results <span class="ot">&lt;-</span> <span class="cf">function</span>(model, <span class="at">family =</span> <span class="st">"binomial"</span>) {</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>  coefs <span class="ot">&lt;-</span> model<span class="sc">$</span>coefficients</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (family <span class="sc">==</span> <span class="st">"binomial"</span>) {</span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a>    results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">Variable =</span> <span class="fu">rownames</span>(coefs),</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">OR =</span> <span class="fu">round</span>(<span class="fu">exp</span>(coefs[, <span class="st">"Estimate"</span>]), <span class="dv">2</span>),</span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">CI_95 =</span> <span class="fu">paste0</span>(</span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">round</span>(<span class="fu">exp</span>(coefs[, <span class="st">"Estimate"</span>] <span class="sc">-</span> <span class="fl">1.96</span> <span class="sc">*</span> coefs[, <span class="st">"Std. Error"</span>]), <span class="dv">2</span>),</span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">"-"</span>,</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>        <span class="fu">round</span>(<span class="fu">exp</span>(coefs[, <span class="st">"Estimate"</span>] <span class="sc">+</span> <span class="fl">1.96</span> <span class="sc">*</span> coefs[, <span class="st">"Std. Error"</span>]), <span class="dv">2</span>)</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a>      <span class="at">p =</span> <span class="fu">ifelse</span>(coefs[, <span class="st">"p-value"</span>] <span class="sc">&lt;</span> <span class="fl">0.001</span>, <span class="st">"&lt;0.001"</span>, </span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">round</span>(coefs[, <span class="st">"p-value"</span>], <span class="dv">3</span>))</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a>    results <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(</span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>      <span class="at">Variable =</span> <span class="fu">rownames</span>(coefs),</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a>      <span class="at">Beta =</span> <span class="fu">round</span>(coefs[, <span class="st">"Estimate"</span>], <span class="dv">3</span>),</span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a>      <span class="at">SE =</span> <span class="fu">round</span>(coefs[, <span class="st">"Std. Error"</span>], <span class="dv">3</span>),</span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">p =</span> <span class="fu">ifelse</span>(coefs[, <span class="st">"p-value"</span>] <span class="sc">&lt;</span> <span class="fl">0.001</span>, <span class="st">"&lt;0.001"</span>,</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>                 <span class="fu">round</span>(coefs[, <span class="st">"p-value"</span>], <span class="dv">3</span>))</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(results)</span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Usage</span></span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a>formatted <span class="ot">&lt;-</span> <span class="fu">format_glm_results</span>(multi_model, <span class="at">family =</span> <span class="st">"binomial"</span>)</span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(formatted)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
-</section>
-<section id="propass-script-workflow" class="level2">
-<h2 class="anchored" data-anchor-id="propass-script-workflow">ProPASS Script Workflow</h2>
-<div class="callout callout-style-default callout-note callout-titled">
-<div class="callout-header d-flex align-content-center">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-ProPASS Data
-</div>
-</div>
-<div class="callout-body-container callout-body">
-<p>The ProPASS analysis uses different variables than the CNSIM demo data. Here’s how GLM models are used with ProPASS data:</p>
-</div>
-</div>
-<div class="cell">
-<div class="sourceCode cell-code" id="cb227"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb227-1"><a href="#cb227-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert categorical variables to factors</span></span>
-<span id="cb227-2"><a href="#cb227-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="at">input.var.name =</span> <span class="st">"D$edu"</span>, <span class="at">newobj.name =</span> <span class="st">"edu"</span>)</span>
-<span id="cb227-3"><a href="#cb227-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="at">input.var.name =</span> <span class="st">"D$smoke"</span>, <span class="at">newobj.name =</span> <span class="st">"smoke"</span>)</span>
-<span id="cb227-4"><a href="#cb227-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="at">input.var.name =</span> <span class="st">"D$sex"</span>, <span class="at">newobj.name =</span> <span class="st">"sex"</span>)</span>
-<span id="cb227-5"><a href="#cb227-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb227-6"><a href="#cb227-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Multivariate logistic regression with ProPASS covariates</span></span>
-<span id="cb227-7"><a href="#cb227-7" aria-hidden="true" tabindex="-1"></a>model_propass <span class="ot">&lt;-</span> <span class="fu">ds.glm</span>(</span>
-<span id="cb227-8"><a href="#cb227-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"acm ~ bmi + age + sex + smoke + edu + alc + med_combined + diet"</span>,</span>
-<span id="cb227-9"><a href="#cb227-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D"</span>,</span>
-<span id="cb227-10"><a href="#cb227-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">family =</span> <span class="st">"binomial"</span></span>
-<span id="cb227-11"><a href="#cb227-11" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb227-12"><a href="#cb227-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb227-13"><a href="#cb227-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Extract odds ratios</span></span>
-<span id="cb227-14"><a href="#cb227-14" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(model_propass<span class="sc">$</span>coefficients[, <span class="st">"Estimate"</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</div>
 </section>
 <section id="best-practices" class="level2">
 <h2 class="anchored" data-anchor-id="best-practices">Best Practices</h2>
@@ -1424,22 +744,12 @@ GLM Modeling Tips
 </div>
 </div>
 </section>
-<section id="exercise" class="level2">
-<h2 class="anchored" data-anchor-id="exercise">Exercise</h2>
-<p>Using the CNSIM data:</p>
-<ol type="1">
-<li>Fit a univariate logistic regression of <code>DIS_DIAB</code> on <code>PM_BMI_CONTINUOUS</code></li>
-<li>Fit a univariate logistic regression of <code>DIS_DIAB</code> on <code>LAB_TSC</code></li>
-<li>Build a multivariate model with BMI, cholesterol, HDL, and gender</li>
-<li>Test for an interaction between BMI and gender</li>
-<li>Report your results in a publication-ready table with odds ratios and 95% CIs</li>
-</ol>
-</section>
 <section id="next-steps" class="level2">
 <h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>
 <p>Continue to <a href="./8-survival-analysis.html">Survival Analysis</a> to learn about time-to-event modelling.</p>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
