@@ -1,0 +1,1107 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "ProPASS DataSHIELD Training",
+    "section": "",
+    "text": "Overview\nThis materials cover two main modules:",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Welcome</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#overview",
+    "href": "index.html#overview",
+    "title": "ProPASS DataSHIELD Training",
+    "section": "",
+    "text": "Module 1: Data Cleaning\nLearn to prepare your data within the DataSHIELD environment:\n\nFiltering & Subsetting: Use filtering tools to subset datasets based on specified conditions\nConditional Operations: Apply ifelse()-style conditional operations across variables and datasets\nDerived Variables: Create derived variables and perform grouped summaries\nTable 1 Creation: Produce descriptive summaries for participant characteristics using group-level statistics\n\n\n\nModule 2: Statistical Modelling\nMaster the statistical analysis tools available in DataSHIELD:\n\nGeneralized Linear Models: Fit ds.glm() models within the DataSHIELD framework\nSurvival Analysis: Run survival models using ds.Surv() and related functions\nCompositional Data Analysis: Execute CoDA scripts for compositional data",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Welcome</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#target-audience",
+    "href": "index.html#target-audience",
+    "title": "ProPASS DataSHIELD Training",
+    "section": "Target Audience",
+    "text": "Target Audience\n\nResearchers working with the ProPASS consortium data\nEpidemiologists and biostatisticians new to DataSHIELD\nAnyone interested in federated data analysis techniques",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Welcome</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#prerequisites",
+    "href": "index.html#prerequisites",
+    "title": "ProPASS DataSHIELD Training",
+    "section": "Prerequisites",
+    "text": "Prerequisites\nBefore starting, please ensure you have:\n\nR (≥ 4.3.0) and RStudio installed\nBasic familiarity with R programming\nUnderstanding of basic statistical concepts (regression, survival analysis)\n\nSee Prerequisites for detailed setup instructions.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Welcome</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#training-server",
+    "href": "index.html#training-server",
+    "title": "ProPASS DataSHIELD Training",
+    "section": "Training Server",
+    "text": "Training Server\nFor this workshop, we use the public OBiBa Opal demo server:\n\n\n\nSetting\nValue\n\n\n\n\nURL\nhttps://opal-demo.obiba.org\n\n\nUsername\ndsuser\n\n\nPassword\nP@ssw0rd\n\n\nProfile\nlemon-donkey\n\n\n\n\n\n\n\n\n\nWhy lemon-donkey?\n\n\n\nThe lemon-donkey profile includes the required DataSHIELD packages to follow the materials.",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Welcome</span>"
+    ]
+  },
+  {
+    "objectID": "index.html#resources",
+    "href": "index.html#resources",
+    "title": "ProPASS DataSHIELD Training",
+    "section": "Resources",
+    "text": "Resources\n\nDataSHIELD Documentation\ndsBaseClient Package\ndsSurvival Package\nWorkshop Repository",
+    "crumbs": [
+      "<span class='chapter-number'>1</span>  <span class='chapter-title'>Welcome</span>"
+    ]
+  },
+  {
+    "objectID": "1-prerequisites.html",
+    "href": "1-prerequisites.html",
+    "title": "Prerequisites",
+    "section": "",
+    "text": "Software Requirements",
+    "crumbs": [
+      "Getting Started",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Prerequisites</span>"
+    ]
+  },
+  {
+    "objectID": "1-prerequisites.html#software-requirements",
+    "href": "1-prerequisites.html#software-requirements",
+    "title": "Prerequisites",
+    "section": "",
+    "text": "R and RStudio\nYou will need:\n\nR version 4.3.0 or later\n\nDownload from CRAN\n\nRStudio Desktop (recommended)\n\nDownload from Posit\n\n\n\n\nRequired R Packages\nInstall the following R packages:\n\n# Core DataSHIELD packages\ninstall.packages(\"DSI\")\ninstall.packages(\"DSOpal\")\n\n# DataSHIELD client packages\ninstall.packages(\"devtools\")\ndevtools::install_github(\"datashield/dsBaseClient\", force = TRUE)\n\n# Tidyverse-style data manipulation (used in ProPASS scripts)\ndevtools::install_github(\"molgenis/dsTidyverseClient\")\n\n# Survival analysis (for Module 2)\ndevtools::install_github(\"neelsoumya/dsSurvivalClient\")\n\n# Helper packages\ndevtools::install_github(\"timcadman/ds-helper\")\n\n# Meta-analysis (for pooling results)\ninstall.packages(\"metafor\")\n\n\n\nVerify Installation\nRun the following to confirm your packages are installed correctly:\n\nlibrary(DSI)\nlibrary(DSOpal)\nlibrary(dsBaseClient)\nlibrary(dsTidyverseClient)\n\n# Check versions\npackageVersion(\"dsBaseClient\")\npackageVersion(\"dsTidyverseClient\")",
+    "crumbs": [
+      "Getting Started",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Prerequisites</span>"
+    ]
+  },
+  {
+    "objectID": "1-prerequisites.html#server-access",
+    "href": "1-prerequisites.html#server-access",
+    "title": "Prerequisites",
+    "section": "Server Access",
+    "text": "Server Access\nFor this training, we will use the public Opal demo server provided by OBiBa:\n\n\n\nSetting\nValue\n\n\n\n\nServer URL\nhttps://opal-demo.obiba.org\n\n\nUsername\ndsuser\n\n\nPassword\nP@ssw0rd\n\n\nProfile\nlemon-donkey\n\n\n\n\n\n\n\n\n\nPublic Demo Server\n\n\n\nThese credentials are publicly available for demonstration and training purposes.\n\n\n\nTesting Your Connection\nTest your connection with the demo server:\n\nlibrary(DSI)\nlibrary(DSOpal)\n\n# Build login credentials for the demo server\nbuilder &lt;- DSI::newDSLoginBuilder()\nbuilder$append(\n  server = \"demo\",\n  url = \"https://opal-demo.obiba.org\",\n  user = \"dsuser\",\n  password = \"P@ssw0rd\",\n  table = \"CNSIM.CNSIM1\",\n  profile = \"lemon-donkey\"\n)\n\nlogindata &lt;- builder$build()\n\n# Test connection\nconns &lt;- datashield.login(logins = logindata, assign = TRUE, symbol = \"D\")\n\n# Verify connection\nds.ls()\nds.dim(\"D\")\n\n# Clean up\ndatashield.logout(conns)",
+    "crumbs": [
+      "Getting Started",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Prerequisites</span>"
+    ]
+  },
+  {
+    "objectID": "1-prerequisites.html#knowledge-prerequisites",
+    "href": "1-prerequisites.html#knowledge-prerequisites",
+    "title": "Prerequisites",
+    "section": "Knowledge Prerequisites",
+    "text": "Knowledge Prerequisites\nThis workshop assumes familiarity with:\n\nR Programming\n\nData manipulation with base R or tidyverse\nWriting and calling functions\nWorking with data frames\n\n\n\nStatistics\n\nDescriptive statistics (mean, median, standard deviation)\nLinear and logistic regression\nBasic survival analysis concepts\n\n\n\nDataSHIELD Basics (Helpful but not required)\n\nUnderstanding of federated analysis concepts\nBasic DataSHIELD workflow (login, assign, analyze, logout)",
+    "crumbs": [
+      "Getting Started",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Prerequisites</span>"
+    ]
+  },
+  {
+    "objectID": "1-prerequisites.html#additional-resources",
+    "href": "1-prerequisites.html#additional-resources",
+    "title": "Prerequisites",
+    "section": "Additional Resources",
+    "text": "Additional Resources\n\nDataSHIELD Wiki\ndsBaseClient Reference Manual\nDataSHIELD Training Materials",
+    "crumbs": [
+      "Getting Started",
+      "<span class='chapter-number'>2</span>  <span class='chapter-title'>Prerequisites</span>"
+    ]
+  },
+  {
+    "objectID": "2-getting-connected.html",
+    "href": "2-getting-connected.html",
+    "title": "Getting Connected",
+    "section": "",
+    "text": "The DataSHIELD Workflow\nA typical DataSHIELD session follows this pattern:\nflowchart LR\n    A[Build Login] --&gt; B[Connect]\n    B --&gt; C[Assign Data]\n    C --&gt; D[Analyze]\n    D --&gt; E[Logout]",
+    "crumbs": [
+      "Getting Started",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Getting Connected</span>"
+    ]
+  },
+  {
+    "objectID": "2-getting-connected.html#loading-required-libraries",
+    "href": "2-getting-connected.html#loading-required-libraries",
+    "title": "Getting Connected",
+    "section": "Loading Required Libraries",
+    "text": "Loading Required Libraries\n\n# Connection libraries\nlibrary(DSI)\nlibrary(DSOpal)\n\n# Analysis libraries\nlibrary(dsBaseClient)\nlibrary(dsTidyverseClient)",
+    "crumbs": [
+      "Getting Started",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Getting Connected</span>"
+    ]
+  },
+  {
+    "objectID": "2-getting-connected.html#building-login-credentials",
+    "href": "2-getting-connected.html#building-login-credentials",
+    "title": "Getting Connected",
+    "section": "Building Login Credentials",
+    "text": "Building Login Credentials\nUse the DSLoginBuilder to create your connection configuration.\n\nTraining Server Credentials\nFor this training, we use the public Opal demo server:\n\n# Create a new login builder\nbuilder &lt;- DSI::newDSLoginBuilder()\n\n# Add the demo server\nbuilder$append(\n  server = \"demo\",\n  url = \"https://opal-demo.obiba.org\",\n  user = \"dsuser\",\n  password = \"P@ssw0rd\",\n  table = \"CNSIM.CNSIM1\",\n  profile = \"lemon-donkey\"\n)\n\n# Build the login data frame\nlogindata &lt;- builder$build()\n\n\n\n\n\n\n\nProfile: lemon-donkey\n\n\n\nWe use the lemon-donkey profile which includes additional packages for survival analysis (dsSurvival) and other advanced methods not available in the default profile.\n\n\n\n\nMultiple Sites Example\nIn real federated analyses, you connect to multiple sites:\n\nbuilder &lt;- DSI::newDSLoginBuilder()\n\n# Site 1\nbuilder$append(\n  server = \"site1\",\n  url = \"https://opal-demo.obiba.org\",\n  user = \"dsuser\",\n  password = \"P@ssw0rd\",\n  table = \"CNSIM.CNSIM1\",\n  profile = \"lemon-donkey\"\n)\n\n# Site 2 (same server, different table for demo)\nbuilder$append(\n  server = \"site2\", \n  url = \"https://opal-demo.obiba.org\",\n  user = \"dsuser\",\n  password = \"P@ssw0rd\",\n  table = \"CNSIM.CNSIM2\",\n  profile = \"lemon-donkey\"\n)\n\nlogindata &lt;- builder$build()\n\n\n\n\n\n\n\nUsing Environment Variables (Production)\n\n\n\nFor production analyses, store credentials securely:\n\nbuilder$append(\n  server = \"site1\",\n  url = Sys.getenv(\"OPAL_URL\"),\n  user = Sys.getenv(\"OPAL_USER\"),\n  password = Sys.getenv(\"OPAL_PASSWORD\"),\n  table = \"PROJECT.DATASET\",\n  profile = \"lemon-donkey\"\n)",
+    "crumbs": [
+      "Getting Started",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Getting Connected</span>"
+    ]
+  },
+  {
+    "objectID": "2-getting-connected.html#connecting-and-assigning-data",
+    "href": "2-getting-connected.html#connecting-and-assigning-data",
+    "title": "Getting Connected",
+    "section": "Connecting and Assigning Data",
+    "text": "Connecting and Assigning Data\n\nBasic Connection\n\n# Connect and assign data to symbol \"D\"\nconns &lt;- datashield.login(logins = logindata, assign = TRUE, symbol = \"D\")\n\n# Verify the connection\nds.ls()\n\n$demo\n$demo$environment.searched\n[1] \"R_GlobalEnv\"\n\n$demo$objects.found\n[1] \"D\"\n\n\n\n\nWorking with Resources\nFor resource-based data (e.g., files, databases), you assign a resource instead of a table:\n\n# Login with resource assignment\nbuilder &lt;- DSI::newDSLoginBuilder()\nbuilder$append(\n  server = \"demo\",\n  url = \"https://opal-demo.obiba.org\",\n  user = \"dsuser\",\n  password = \"P@ssw0rd\",\n  resource = \"RSRC.CNSIM1\",\n  profile = \"lemon-donkey\"\n)\n\nlogindata &lt;- builder$build()\nconns &lt;- datashield.login(logins = logindata, assign = TRUE, symbol = \"res\")\n\n# Check the class of assigned object\nds.class(\"res\")\n\n# Convert resource to data frame\ndatashield.assign.expr(\n  conns, \n  symbol = \"D\",\n  expr = quote(as.resource.data.frame(res, strict = TRUE))\n)\n\n# Verify conversion\nds.class(\"D\")\nds.colnames(\"D\")\n\n\n\nAvailable Demo Datasets\nThe Opal demo server has several datasets available:\n\n\n\n\n\n\n\n\nProject\nTable/Resource\nDescription\n\n\n\n\nCNSIM\nCNSIM1, CNSIM2, CNSIM3\nSimulated health data (tables)\n\n\nRSRC\nCNSIM1, CNSIM2, CNSIM3\nSame data as resources\n\n\nCORDELIA\ncordelia45\nCardiovascular study (resource)\n\n\nGWAS\nega_phenotypes_1/2/3\nGWAS phenotype data",
+    "crumbs": [
+      "Getting Started",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Getting Connected</span>"
+    ]
+  },
+  {
+    "objectID": "2-getting-connected.html#exploring-your-data",
+    "href": "2-getting-connected.html#exploring-your-data",
+    "title": "Getting Connected",
+    "section": "Exploring Your Data",
+    "text": "Exploring Your Data\nOnce connected, explore what’s available:\n\n# List assigned objects\nds.ls()\n\n$demo\n$demo$environment.searched\n[1] \"R_GlobalEnv\"\n\n$demo$objects.found\n[1] \"D\"\n\n# Check data dimensions\nds.dim(\"D\")\n\n$`dimensions of D in demo`\n[1] 2163   11\n\n$`dimensions of D in combined studies`\n[1] 2163   11\n\n# List column names\nds.colnames(\"D\")\n\n$demo\n [1] \"LAB_TSC\"            \"LAB_TRIG\"           \"LAB_HDL\"           \n [4] \"LAB_GLUC_ADJUSTED\"  \"PM_BMI_CONTINUOUS\"  \"DIS_CVA\"           \n [7] \"MEDI_LPD\"           \"DIS_DIAB\"           \"DIS_AMI\"           \n[10] \"GENDER\"             \"PM_BMI_CATEGORICAL\"",
+    "crumbs": [
+      "Getting Started",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Getting Connected</span>"
+    ]
+  },
+  {
+    "objectID": "2-getting-connected.html#managing-sessions",
+    "href": "2-getting-connected.html#managing-sessions",
+    "title": "Getting Connected",
+    "section": "Managing Sessions",
+    "text": "Managing Sessions\n\nSaving Workspaces\nSave your session for later:\n\n# Save workspace\ndatashield.workspace_save(conns, ws = \"my_analysis_2024\")\n\n# Logout\ndatashield.logout(conns)\n\n\n\nRestoring Workspaces\nResume a saved session:\n\n# Login and restore\nconns &lt;- datashield.login(logins = logindata, restore = \"my_analysis_2024\")\n\n# Check what's available\nds.ls()\n\n\n\nProper Logout\nAlways logout when finished:\n\n# Clean logout\ndatashield.logout(conns)\n\n\n\n\n\n\n\nSession Cleanup\n\n\n\nAlways logout properly to release server resources. Abandoned sessions consume memory and may prevent other users from connecting.",
+    "crumbs": [
+      "Getting Started",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Getting Connected</span>"
+    ]
+  },
+  {
+    "objectID": "2-getting-connected.html#next-steps",
+    "href": "2-getting-connected.html#next-steps",
+    "title": "Getting Connected",
+    "section": "Next Steps",
+    "text": "Next Steps\nNow that you’re connected, proceed to Filtering & Subsetting to start working with your data.",
+    "crumbs": [
+      "Getting Started",
+      "<span class='chapter-number'>3</span>  <span class='chapter-title'>Getting Connected</span>"
+    ]
+  },
+  {
+    "objectID": "3-filtering-subsetting.html",
+    "href": "3-filtering-subsetting.html",
+    "title": "Filtering & Subsetting",
+    "section": "",
+    "text": "Overview\nIn DataSHIELD, you cannot directly view individual-level data, but you can create subsets based on conditions. We use the tidyverse-style functions from dsTidyverseClient:\n# Load required packages\nlibrary(DSI)\nlibrary(DSOpal)\nlibrary(dsBaseClient)\nlibrary(dsTidyverseClient)\n\n# Connect to the server\nbuilder &lt;- DSI::newDSLoginBuilder()\nbuilder$append(\n  server = \"demo\",\n  url = \"https://opal-demo.obiba.org\",\n  user = \"dsuser\",\n  password = \"P@ssw0rd\",\n  table = \"CNSIM.CNSIM1\",\n  profile = \"lemon-donkey\"\n)\nlogindata &lt;- builder$build()\nconns &lt;- datashield.login(logins = logindata, assign = TRUE, symbol = \"D\")",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Filtering & Subsetting</span>"
+    ]
+  },
+  {
+    "objectID": "3-filtering-subsetting.html#overview",
+    "href": "3-filtering-subsetting.html#overview",
+    "title": "Filtering & Subsetting",
+    "section": "",
+    "text": "ds.filter() - Filter rows based on conditions\nds.select() - Select specific columns\nds.arrange() - Sort data by columns\nds.dataFrameSubset() - Subset with comparison operators (from dsBaseClient)",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Filtering & Subsetting</span>"
+    ]
+  },
+  {
+    "objectID": "3-filtering-subsetting.html#filtering-rows-with-ds.filter",
+    "href": "3-filtering-subsetting.html#filtering-rows-with-ds.filter",
+    "title": "Filtering & Subsetting",
+    "section": "Filtering Rows with ds.filter()",
+    "text": "Filtering Rows with ds.filter()\nFilter rows based on conditions using familiar tidyverse syntax:\n\n# Filter for participants with BMI &gt;= 25\nds.filter(\n  df.name = \"D\",\n  tidy_expr = list(D$PM_BMI_CONTINUOUS &gt;= 25),\n  newobj = \"D_overweight\"\n)\n\n# Check how many rows remain\nds.dim(\"D_overweight\")\n\n$`dimensions of D_overweight in demo`\n[1] 1425   11\n\n$`dimensions of D_overweight in combined studies`\n[1] 1425   11\n\n\n\nMultiple Conditions\n\n# Filter for BMI between 20 and 35\nds.filter(\n  df.name = \"D\",\n  tidy_expr = list(D$PM_BMI_CONTINUOUS &gt;= 20, D$PM_BMI_CONTINUOUS &lt;= 35),\n  newobj = \"D_bmi_range\"\n)\n\nds.dim(\"D_bmi_range\")\n\n$`dimensions of D_bmi_range in demo`\n[1] 1809   11\n\n$`dimensions of D_bmi_range in combined studies`\n[1] 1809   11",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Filtering & Subsetting</span>"
+    ]
+  },
+  {
+    "objectID": "3-filtering-subsetting.html#selecting-columns-with-ds.select",
+    "href": "3-filtering-subsetting.html#selecting-columns-with-ds.select",
+    "title": "Filtering & Subsetting",
+    "section": "Selecting Columns with ds.select()",
+    "text": "Selecting Columns with ds.select()\nSelect specific columns from your data frame:\n\n# Select variables needed for analysis\nds.select(\n  df.name = \"D\",\n  tidy_expr = list(PM_BMI_CONTINUOUS, LAB_TSC, LAB_HDL, LAB_TRIG, GENDER, DIS_DIAB),\n  newobj = \"D_selected\"\n)\n\n# Check the result\nds.colnames(\"D_selected\")\n\n$demo\n[1] \"PM_BMI_CONTINUOUS\" \"LAB_TSC\"           \"LAB_HDL\"          \n[4] \"LAB_TRIG\"          \"GENDER\"            \"DIS_DIAB\"",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Filtering & Subsetting</span>"
+    ]
+  },
+  {
+    "objectID": "3-filtering-subsetting.html#sorting-data-with-ds.arrange",
+    "href": "3-filtering-subsetting.html#sorting-data-with-ds.arrange",
+    "title": "Filtering & Subsetting",
+    "section": "Sorting Data with ds.arrange()",
+    "text": "Sorting Data with ds.arrange()\nSort your data by one or more columns:\n\n# Sort by BMI\nds.arrange(\n  df.name = \"D\",\n  tidy_expr = list(PM_BMI_CONTINUOUS),\n  newobj = \"D_sorted\"\n)\n\nds.dim(\"D_sorted\")\n\n$`dimensions of D_sorted in demo`\n[1] 2163   11\n\n$`dimensions of D_sorted in combined studies`\n[1] 2163   11",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Filtering & Subsetting</span>"
+    ]
+  },
+  {
+    "objectID": "3-filtering-subsetting.html#subsetting-with-ds.dataframesubset",
+    "href": "3-filtering-subsetting.html#subsetting-with-ds.dataframesubset",
+    "title": "Filtering & Subsetting",
+    "section": "Subsetting with ds.dataFrameSubset()",
+    "text": "Subsetting with ds.dataFrameSubset()\nFor subsetting based on comparison operators, use ds.dataFrameSubset():\n\n# Keep only participants with BMI &gt;= 25\nds.dataFrameSubset(\n  df.name = \"D\",\n  V1.name = \"D$PM_BMI_CONTINUOUS\",\n  V2.name = \"25\",\n  Boolean.operator = \"&gt;=\",\n  newobj = \"D_bmi25plus\"\n)\n\n$is.object.created\n[1] \"A data object &lt;D_bmi25plus&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;D_bmi25plus&gt; appears valid in all sources\"\n\n# Check how many participants remain\nds.dim(\"D_bmi25plus\")\n\n$`dimensions of D_bmi25plus in demo`\n[1] 1425   11\n\n$`dimensions of D_bmi25plus in combined studies`\n[1] 1425   11\n\n\n\nAvailable Operators\n\n\n\nOperator\nDescription\n\n\n\n\n==\nEqual to\n\n\n!=\nNot equal to\n\n\n&lt;\nLess than\n\n\n&lt;=\nLess than or equal\n\n\n&gt;\nGreater than\n\n\n&gt;=\nGreater than or equal",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Filtering & Subsetting</span>"
+    ]
+  },
+  {
+    "objectID": "3-filtering-subsetting.html#complete-case-analysis",
+    "href": "3-filtering-subsetting.html#complete-case-analysis",
+    "title": "Filtering & Subsetting",
+    "section": "Complete Case Analysis",
+    "text": "Complete Case Analysis\nRemove rows with any missing values:\n\nds.completeCases(\n  x1 = \"D\",\n  newobj = \"D_complete\"\n)\n\n$is.object.created\n[1] \"A data object &lt;D_complete&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;D_complete&gt; appears valid in all sources\"\n\nds.dim(\"D_complete\")\n\n$`dimensions of D_complete in demo`\n[1] 1701   11\n\n$`dimensions of D_complete in combined studies`\n[1] 1701   11",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Filtering & Subsetting</span>"
+    ]
+  },
+  {
+    "objectID": "3-filtering-subsetting.html#propass-script-workflow",
+    "href": "3-filtering-subsetting.html#propass-script-workflow",
+    "title": "Filtering & Subsetting",
+    "section": "ProPASS Script Workflow",
+    "text": "ProPASS Script Workflow\n\n\n\n\n\n\nProPASS Data\n\n\n\nThe ProPASS analysis uses different variables than the CNSIM demo data. Here’s the workflow you’ll use with ProPASS data:\n\n\n\n# 1. Sort data by ID\nds.arrange(df.name = \"D\", tidy_expr = list(ID), newobj = \"D\")\n\n# 2. Filter out missing alcohol values\nds.filter(df.name = \"D\", tidy_expr = list(D$alc != 'NA'), newobj = \"D\")\n\n# 3. Select variables needed for analysis\nds.select(\n  df.name = \"D\",\n  tidy_expr = list(ID, age, sex, smoke, edu, bmi, alc, med_combined, diet),\n  newobj = \"D2\"\n)\n\n# 4. Filter for adequate follow-up (survival analysis)\nds.dataFrameSubset(\n  df.name = \"D\",\n  V1.name = \"D$fup\",\n  V2.name = \"1\",\n  Boolean.operator = \"&gt;=\",\n  newobj = \"dat_ACM_BMI\"\n)",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Filtering & Subsetting</span>"
+    ]
+  },
+  {
+    "objectID": "3-filtering-subsetting.html#best-practices",
+    "href": "3-filtering-subsetting.html#best-practices",
+    "title": "Filtering & Subsetting",
+    "section": "Best Practices",
+    "text": "Best Practices\n\n\n\n\n\n\nSubsetting Guidelines\n\n\n\n\nSort your data first: Use ds.arrange() to ensure consistent ordering\nFilter early: Remove missing/invalid data before other operations\nCheck dimensions: Always verify sample sizes after filtering\nDocument your filters: Keep track of exclusion criteria\nConsider disclosure: Very small subsets may fail privacy checks",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Filtering & Subsetting</span>"
+    ]
+  },
+  {
+    "objectID": "3-filtering-subsetting.html#exercise",
+    "href": "3-filtering-subsetting.html#exercise",
+    "title": "Filtering & Subsetting",
+    "section": "Exercise",
+    "text": "Exercise\nUsing the CNSIM data:\n\nFilter for participants with BMI between 20 and 40 using ds.filter()\nSelect only the lab variables (LAB_TSC, LAB_HDL, LAB_TRIG) using ds.select()\nCreate a subset with cholesterol &lt; 7 using ds.dataFrameSubset()\n\nCheck the sample size at each step.",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Filtering & Subsetting</span>"
+    ]
+  },
+  {
+    "objectID": "3-filtering-subsetting.html#next-steps",
+    "href": "3-filtering-subsetting.html#next-steps",
+    "title": "Filtering & Subsetting",
+    "section": "Next Steps",
+    "text": "Next Steps\nContinue to Conditional Operations to learn about creating conditional variables.",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>4</span>  <span class='chapter-title'>Filtering & Subsetting</span>"
+    ]
+  },
+  {
+    "objectID": "4-conditional-operations.html",
+    "href": "4-conditional-operations.html",
+    "title": "Conditional Operations",
+    "section": "",
+    "text": "Overview\nConditional operations allow you to create new variables based on conditions applied to existing variables. We use the tidyverse-style functions from dsTidyverseClient:\n# Load required packages\nlibrary(DSI)\nlibrary(DSOpal)\nlibrary(dsBaseClient)\nlibrary(dsTidyverseClient)\n\n# Connect to the server\nbuilder &lt;- DSI::newDSLoginBuilder()\nbuilder$append(\n  server = \"demo\",\n  url = \"https://opal-demo.obiba.org\",\n  user = \"dsuser\",\n  password = \"P@ssw0rd\",\n  table = \"CNSIM.CNSIM1\",\n  profile = \"lemon-donkey\"\n)\nlogindata &lt;- builder$build()\nconns &lt;- datashield.login(logins = logindata, assign = TRUE, symbol = \"D\")",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conditional Operations</span>"
+    ]
+  },
+  {
+    "objectID": "4-conditional-operations.html#overview",
+    "href": "4-conditional-operations.html#overview",
+    "title": "Conditional Operations",
+    "section": "",
+    "text": "ds.case_when() - Multiple conditions (like SQL CASE WHEN)\nds.if_else() - Simple binary if-else logic\nds.recodeValues() - Recode specific values\nds.asNumeric() / ds.asFactor() - Convert variable types",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conditional Operations</span>"
+    ]
+  },
+  {
+    "objectID": "4-conditional-operations.html#conditional-logic-with-ds.case_when",
+    "href": "4-conditional-operations.html#conditional-logic-with-ds.case_when",
+    "title": "Conditional Operations",
+    "section": "Conditional Logic with ds.case_when()",
+    "text": "Conditional Logic with ds.case_when()\nds.case_when() allows multiple conditions, similar to SQL’s CASE WHEN or dplyr’s case_when():\n\nWinsorizing Variables\nCap extreme values at a threshold (common for BMI):\n\n# First, get the 95th percentile\nds.quantileMean(x = \"D$PM_BMI_CONTINUOUS\", type = \"combine\")\n\n Quantiles of the pooled data\n\n\n      5%      10%      25%      50%      75%      90%      95%     Mean \n19.49500 21.06500 24.10500 27.33000 30.66750 33.76000 35.66750 27.39804 \n\n\n\n# Winsorize BMI: cap values above 40\nds.case_when(\n  tidy_expr = list(\n    D$PM_BMI_CONTINUOUS &lt;= 40 ~ D$PM_BMI_CONTINUOUS,  # Keep original if &lt;= 40\n    D$PM_BMI_CONTINUOUS &gt; 40 ~ 40                      # Cap at 40 if above\n  ),\n  newobj = \"bmi_capped\"\n)\n\n# Add the new variable to the data frame\nds.dataFrame(x = c(\"D\", \"bmi_capped\"), newobj = \"D\")\n\n$is.object.created\n[1] \"A data object &lt;D&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;D&gt; appears valid in all sources\"\n\n# Check the result\nds.summary(\"D$bmi_capped\")\n\n$demo\n$demo$class\n[1] \"numeric\"\n\n$demo$length\n[1] 2163\n\n$demo$`quantiles & mean`\n      5%      10%      25%      50%      75%      90%      95%     Mean \n19.49500 21.06500 24.10500 27.33000 30.66750 33.76000 35.66750 27.37089 \n\n\n\n\nCreating Categories\n\n# Create cholesterol categories based on LAB_TSC\n# Normal: &lt; 5.2, Borderline: 5.2-6.2, High: &gt; 6.2\nds.case_when(\n  tidy_expr = list(\n    D$LAB_TSC &lt; 5.2 ~ 1,          # Normal\n    D$LAB_TSC &gt;= 5.2 & D$LAB_TSC &lt;= 6.2 ~ 2,  # Borderline\n    D$LAB_TSC &gt; 6.2 ~ 3           # High\n  ),\n  newobj = \"chol_category\"\n)\n\nds.dataFrame(x = c(\"D\", \"chol_category\"), newobj = \"D\")\n\n$is.object.created\n[1] \"A data object &lt;D&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;D&gt; appears valid in all sources\"\n\nds.table(\"D$chol_category\")\n\n\n Data in all studies were valid \n\nStudy 1 :  No errors reported from this study\n\n\n$output.list\n$output.list$TABLE_rvar.by.study_row.props\n               study\nD$chol_category demo\n             1     1\n             2     1\n             3     1\n             NA    1\n\n$output.list$TABLE_rvar.by.study_col.props\n               study\nD$chol_category      demo\n             1  0.2306981\n             2  0.2935737\n             3  0.3111419\n             NA 0.1645862\n\n$output.list$TABLE_rvar.by.study_counts\n               study\nD$chol_category demo\n             1   499\n             2   635\n             3   673\n             NA  356\n\n$output.list$TABLES.COMBINED_all.sources_proportions\nD$chol_category\n    1     2     3    NA \n0.231 0.294 0.311 0.165 \n\n$output.list$TABLES.COMBINED_all.sources_counts\nD$chol_category\n  1   2   3  NA \n499 635 673 356 \n\n\n$validity.message\n[1] \"Data in all studies were valid\"",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conditional Operations</span>"
+    ]
+  },
+  {
+    "objectID": "4-conditional-operations.html#binary-conditions-with-ds.if_else",
+    "href": "4-conditional-operations.html#binary-conditions-with-ds.if_else",
+    "title": "Conditional Operations",
+    "section": "Binary Conditions with ds.if_else()",
+    "text": "Binary Conditions with ds.if_else()\nds.if_else() provides simple if-else logic for binary conditions:\n\nCreating Binary Indicators\n\n# Create overweight indicator (BMI &gt;= 25)\nds.if_else(\n  condition = list(D$PM_BMI_CONTINUOUS &gt;= 25),\n  true = 1,\n  false = 0,\n  newobj = \"is_overweight\"\n)\n\n# Add to data frame\nds.dataFrame(x = c(\"D\", \"is_overweight\"), newobj = \"D\")\n\n$is.object.created\n[1] \"A data object &lt;D&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;D&gt; appears valid in all sources\"\n\n# Check the result\nds.table(\"D$is_overweight\")\n\n\n Data in all studies were valid \n\nStudy 1 :  No errors reported from this study\n\n\n$output.list\n$output.list$TABLE_rvar.by.study_row.props\n               study\nD$is_overweight demo\n             0     1\n             1     1\n             NA    1\n\n$output.list$TABLE_rvar.by.study_col.props\n               study\nD$is_overweight       demo\n             0  0.29634767\n             1  0.65880721\n             NA 0.04484512\n\n$output.list$TABLE_rvar.by.study_counts\n               study\nD$is_overweight demo\n             0   641\n             1  1425\n             NA   97\n\n$output.list$TABLES.COMBINED_all.sources_proportions\nD$is_overweight\n     0      1     NA \n0.2960 0.6590 0.0448 \n\n$output.list$TABLES.COMBINED_all.sources_counts\nD$is_overweight\n   0    1   NA \n 641 1425   97 \n\n\n$validity.message\n[1] \"Data in all studies were valid\"\n\n\n\n\nCreating Combined Indicators\n\n# Create indicator for metabolic risk (diabetes OR high cholesterol)\nds.if_else(\n  condition = list(D$DIS_DIAB == 1 | D$LAB_TSC &gt; 6.5),\n  true = 1,\n  false = 0,\n  newobj = \"metabolic_risk\"\n)\n\nds.dataFrame(x = c(\"D\", \"metabolic_risk\"), newobj = \"D\")\n\n$is.object.created\n[1] \"A data object &lt;D&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;D&gt; appears valid in all sources\"\n\nds.table(\"D$metabolic_risk\")\n\n\n Data in all studies were valid \n\nStudy 1 :  No errors reported from this study\n\n\n$output.list\n$output.list$TABLE_rvar.by.study_row.props\n                study\nD$metabolic_risk demo\n              0     1\n              1     1\n              NA    1\n\n$output.list$TABLE_rvar.by.study_col.props\n                study\nD$metabolic_risk      demo\n              0  0.5982432\n              1  0.2390199\n              NA 0.1627369\n\n$output.list$TABLE_rvar.by.study_counts\n                study\nD$metabolic_risk demo\n              0  1294\n              1   517\n              NA  352\n\n$output.list$TABLES.COMBINED_all.sources_proportions\nD$metabolic_risk\n    0     1    NA \n0.598 0.239 0.163 \n\n$output.list$TABLES.COMBINED_all.sources_counts\nD$metabolic_risk\n   0    1   NA \n1294  517  352 \n\n\n$validity.message\n[1] \"Data in all studies were valid\"",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conditional Operations</span>"
+    ]
+  },
+  {
+    "objectID": "4-conditional-operations.html#recoding-values-with-ds.recodevalues",
+    "href": "4-conditional-operations.html#recoding-values-with-ds.recodevalues",
+    "title": "Conditional Operations",
+    "section": "Recoding Values with ds.recodeValues()",
+    "text": "Recoding Values with ds.recodeValues()\nRecode specific values in a variable:\n\nSingle Value Replacement\n\n# Recode GENDER: 0,1 -&gt; 1,2\nds.recodeValues(\n  var.name = \"D$GENDER\",\n  values2replace.vector = c(0, 1),\n  new.values.vector = c(1, 2),\n  newobj = \"gender_recoded\"\n)\n\n$is.object.created\n[1] \"A data object &lt;gender_recoded&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;gender_recoded&gt; appears valid in all sources\"\n\nds.table(\"gender_recoded\")\n\n\n Data in all studies were valid \n\nStudy 1 :  No errors reported from this study\n\n\n$output.list\n$output.list$TABLE_rvar.by.study_row.props\n              study\ngender_recoded demo\n            1     1\n            2     1\n            NA  NaN\n\n$output.list$TABLE_rvar.by.study_col.props\n              study\ngender_recoded      demo\n            1  0.5048544\n            2  0.4951456\n            NA 0.0000000\n\n$output.list$TABLE_rvar.by.study_counts\n              study\ngender_recoded demo\n            1  1092\n            2  1071\n            NA    0\n\n$output.list$TABLES.COMBINED_all.sources_proportions\ngender_recoded\n    1     2    NA \n0.505 0.495 0.000 \n\n$output.list$TABLES.COMBINED_all.sources_counts\ngender_recoded\n   1    2   NA \n1092 1071    0 \n\n\n$validity.message\n[1] \"Data in all studies were valid\"\n\n\n\n\nRecoding to Binary\n\n# Recode PM_BMI_CATEGORICAL to binary (normal vs overweight/obese)\nds.recodeValues(\n  var.name = \"D$PM_BMI_CATEGORICAL\",\n  values2replace.vector = c(1, 2, 3),\n  new.values.vector = c(0, 1, 1),\n  newobj = \"bmi_binary\"\n)\n\nds.table(\"bmi_binary\")",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conditional Operations</span>"
+    ]
+  },
+  {
+    "objectID": "4-conditional-operations.html#creating-derived-variables-with-ds.make",
+    "href": "4-conditional-operations.html#creating-derived-variables-with-ds.make",
+    "title": "Conditional Operations",
+    "section": "Creating Derived Variables with ds.make()",
+    "text": "Creating Derived Variables with ds.make()\nUse ds.make() for arithmetic operations and creating variable copies:\n\nArithmetic Operations\n\n# Create HDL to total cholesterol ratio\nds.make(\n  toAssign = \"D$LAB_HDL / D$LAB_TSC\",\n  newobj = \"hdl_ratio\"\n)\n\n$is.object.created\n[1] \"A data object &lt;hdl_ratio&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;hdl_ratio&gt; appears valid in all sources\"\n\nds.dataFrame(x = c(\"D\", \"hdl_ratio\"), newobj = \"D\")\n\n$is.object.created\n[1] \"A data object &lt;D&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;D&gt; appears valid in all sources\"\n\nds.summary(\"D$hdl_ratio\")\n\n$demo\n$demo$class\n[1] \"numeric\"\n\n$demo$length\n[1] 2163\n\n$demo$`quantiles & mean`\n       5%       10%       25%       50%       75%       90%       95%      Mean \n0.1313137 0.1655379 0.2145864 0.2730897 0.3371916 0.4000319 0.4549046 0.2799964 \n\n\n\n\nCreating Variable Copies\n\n# Create a copy of BMI as the primary exposure variable\nds.make(\n  toAssign = \"D$PM_BMI_CONTINUOUS\",\n  newobj = \"Primary_exposure\"\n)\n\nds.dataFrame(x = c(\"D\", \"Primary_exposure\"), newobj = \"D\")",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conditional Operations</span>"
+    ]
+  },
+  {
+    "objectID": "4-conditional-operations.html#converting-variable-types",
+    "href": "4-conditional-operations.html#converting-variable-types",
+    "title": "Conditional Operations",
+    "section": "Converting Variable Types",
+    "text": "Converting Variable Types\n\nNumeric to Factor\nConvert categorical variables to factors for modeling:\n\n# Convert GENDER to factor\nds.asFactor(input.var.name = \"D$GENDER\", newobj.name = \"gender_f\")\n\n$all.unique.levels\n[1] \"0\" \"1\"\n\n$return.message\n[1] \"Data object &lt;gender_f&gt; correctly created in all specified data sources\"\n\n# Convert DIS_DIAB to factor\nds.asFactor(input.var.name = \"D$DIS_DIAB\", newobj.name = \"diabetes_f\")\n\n$all.unique.levels\n[1] \"0\" \"1\"\n\n$return.message\n[1] \"Data object &lt;diabetes_f&gt; correctly created in all specified data sources\"\n\n# Add factors to data frame\nds.dataFrame(x = c(\"D\", \"gender_f\", \"diabetes_f\"), newobj = \"D\")\n\n$is.object.created\n[1] \"A data object &lt;D&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;D&gt; appears valid in all sources\"\n\n# Check levels\nds.levels(\"gender_f\")\n\n$demo\n$demo$Levels\n[1] \"0\" \"1\"\n\n$demo$ValidityMessage\n[1] \"VALID ANALYSIS\"\n\n\n\n\nFactor to Numeric\n\n# Convert back to numeric\nds.asNumeric(x.name = \"D$DIS_DIAB\", newobj = \"diabetes_numeric\")",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conditional Operations</span>"
+    ]
+  },
+  {
+    "objectID": "4-conditional-operations.html#multiple-imputation-with-ds.mice",
+    "href": "4-conditional-operations.html#multiple-imputation-with-ds.mice",
+    "title": "Conditional Operations",
+    "section": "Multiple Imputation with ds.mice()",
+    "text": "Multiple Imputation with ds.mice()\nFor handling missing data, use ds.mice():\n\n# Perform multiple imputation using random forest method\nds.mice(\n  data = \"D\",\n  m = 5,                       # Number of imputations\n  method = \"rf\",               # Random forest method\n  newobj_df = \"imputed_data\",  # Output data frame prefix\n  seed = \"fixed\",              # For reproducibility\n  newobj_mids = \"imputed_mids\" # MICE object for diagnostics\n)\n\n# The function creates multiple imputed datasets:\n# imputed_data.1, imputed_data.2, ..., imputed_data.5\n\n\n\n\n\n\n\nNote on ds.mice()\n\n\n\nds.mice() requires the dsTidyverse server-side package. It may not be available on all servers.",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conditional Operations</span>"
+    ]
+  },
+  {
+    "objectID": "4-conditional-operations.html#propass-script-workflow",
+    "href": "4-conditional-operations.html#propass-script-workflow",
+    "title": "Conditional Operations",
+    "section": "ProPASS Script Workflow",
+    "text": "ProPASS Script Workflow\n\n\n\n\n\n\nProPASS Data\n\n\n\nThe ProPASS analysis uses different variables than the CNSIM demo data. Here’s the workflow you’ll use with ProPASS data:\n\n\n\n# 1. Winsorize BMI at the 95th percentile\nds.case_when(\n  tidy_expr = list(\n    D$bmi &lt;= 37.16 ~ D$bmi,\n    D$bmi &gt; 37.16 ~ 37.16\n  ),\n  newobj = \"bmi_revised\"\n)\nds.dataFrame(x = c(\"D\", \"bmi_revised\"), newobj = \"D\")\n\n# 2. Create combined medication indicator\nds.if_else(\n  condition = list(D$med_lipid == 1 | D$med_bp == 1 | D$med_glucose == 1),\n  true = 1,\n  false = 0,\n  newobj = \"med_combined\"\n)\nds.dataFrame(x = c(\"D\", \"med_combined\"), newobj = \"D\")\n\n# 3. Create diet score\nds.asNumeric(x.name = \"D$veg\", newobj = \"veg_n\")\nds.asNumeric(x.name = \"D$fruit\", newobj = \"fruit_n\")\nds.make(toAssign = \"fruit_n + veg_n\", newobj = \"diet\")\nds.dataFrame(x = c(\"D\", \"diet\"), newobj = \"D\")\n\n# 4. Convert categorical variables to factors\nds.asFactor(input.var.name = \"D$edu\", newobj.name = \"edu\")\nds.asFactor(input.var.name = \"D$smoke\", newobj.name = \"smoke\")\nds.asFactor(input.var.name = \"D$sex\", newobj.name = \"sex\")",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conditional Operations</span>"
+    ]
+  },
+  {
+    "objectID": "4-conditional-operations.html#best-practices",
+    "href": "4-conditional-operations.html#best-practices",
+    "title": "Conditional Operations",
+    "section": "Best Practices",
+    "text": "Best Practices\n\n\n\n\n\n\nConditional Operations Tips\n\n\n\n\nUse ds.case_when() for multiple conditions or value transformations\nUse ds.if_else() for simple binary conditions\nAlways add new variables to data frame with ds.dataFrame()\nConvert to factors before modeling categorical variables\nCheck your results with ds.table() or ds.summary()",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conditional Operations</span>"
+    ]
+  },
+  {
+    "objectID": "4-conditional-operations.html#exercise",
+    "href": "4-conditional-operations.html#exercise",
+    "title": "Conditional Operations",
+    "section": "Exercise",
+    "text": "Exercise\nUsing the CNSIM data:\n\nWinsorize BMI at 40 using ds.case_when()\nCreate a binary indicator for high cholesterol (LAB_TSC &gt; 6.5) using ds.if_else()\nCreate an HDL ratio using ds.make()\nConvert GENDER to a factor using ds.asFactor()",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conditional Operations</span>"
+    ]
+  },
+  {
+    "objectID": "4-conditional-operations.html#next-steps",
+    "href": "4-conditional-operations.html#next-steps",
+    "title": "Conditional Operations",
+    "section": "Next Steps",
+    "text": "Next Steps\nContinue to Derived Variables to learn about creating more complex derived variables and grouped summaries.",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Conditional Operations</span>"
+    ]
+  },
+  {
+    "objectID": "5-derived-variables.html",
+    "href": "5-derived-variables.html",
+    "title": "Derived Variables & Grouped Summaries",
+    "section": "",
+    "text": "Overview\nDerived variables are new variables computed from existing ones. This chapter covers:\n# Load required packages\nlibrary(DSI)\nlibrary(DSOpal)\nlibrary(dsBaseClient)\nlibrary(dsTidyverseClient)\n\n# Connect to the server\nbuilder &lt;- DSI::newDSLoginBuilder()\nbuilder$append(\n  server = \"demo\",\n  url = \"https://opal-demo.obiba.org\",\n  user = \"dsuser\",\n  password = \"P@ssw0rd\",\n  table = \"CNSIM.CNSIM1\",\n  profile = \"lemon-donkey\"\n)\nlogindata &lt;- builder$build()\nconns &lt;- datashield.login(logins = logindata, assign = TRUE, symbol = \"D\")",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Derived Variables & Grouped Summaries</span>"
+    ]
+  },
+  {
+    "objectID": "5-derived-variables.html#overview",
+    "href": "5-derived-variables.html#overview",
+    "title": "Derived Variables & Grouped Summaries",
+    "section": "",
+    "text": "Arithmetic operations with ds.make()\nGetting quantiles for model knots\nGrouped summaries and tabulations\nCombining variables into data frames",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Derived Variables & Grouped Summaries</span>"
+    ]
+  },
+  {
+    "objectID": "5-derived-variables.html#arithmetic-operations-with-ds.make",
+    "href": "5-derived-variables.html#arithmetic-operations-with-ds.make",
+    "title": "Derived Variables & Grouped Summaries",
+    "section": "Arithmetic Operations with ds.make()",
+    "text": "Arithmetic Operations with ds.make()\nUse ds.make() to create new variables from arithmetic expressions:\n\nRatios and Calculations\n\n# Create HDL to total cholesterol ratio\nds.make(\n  toAssign = \"D$LAB_HDL / D$LAB_TSC\",\n  newobj = \"hdl_ratio\"\n)\n\n$is.object.created\n[1] \"A data object &lt;hdl_ratio&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;hdl_ratio&gt; appears valid in all sources\"\n\nds.dataFrame(x = c(\"D\", \"hdl_ratio\"), newobj = \"D\")\n\n$is.object.created\n[1] \"A data object &lt;D&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;D&gt; appears valid in all sources\"\n\nds.summary(\"D$hdl_ratio\")\n\n$demo\n$demo$class\n[1] \"numeric\"\n\n$demo$length\n[1] 2163\n\n$demo$`quantiles & mean`\n       5%       10%       25%       50%       75%       90%       95%      Mean \n0.1313137 0.1655379 0.2145864 0.2730897 0.3371916 0.4000319 0.4549046 0.2799964 \n\n\n\n\nLog Transformations\n\n# Log-transform triglycerides (common for skewed distributions)\nds.make(\n  toAssign = \"log(D$LAB_TRIG)\",\n  newobj = \"log_trig\"\n)\n\n$is.object.created\n[1] \"A data object &lt;log_trig&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;log_trig&gt; appears valid in all sources\"\n\nds.dataFrame(x = c(\"D\", \"log_trig\"), newobj = \"D\")\n\n$is.object.created\n[1] \"A data object &lt;D&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;D&gt; appears valid in all sources\"\n\nds.summary(\"D$log_trig\")\n\n$demo\n$demo$class\n[1] \"numeric\"\n\n$demo$length\n[1] 2163\n\n$demo$`quantiles & mean`\n        5%        10%        25%        50%        75%        90%        95% \n-0.9797256 -0.4005223  0.2723146  0.8232979  1.1665824  1.4211788  1.5478593 \n      Mean \n 0.6161325 \n\n\n\n\nVariable Copies\nCreate copies of variables with new names (useful for analysis):\n\n# Create primary exposure variable\nds.make(\n  toAssign = \"D$PM_BMI_CONTINUOUS\",\n  newobj = \"Primary_exposure\"\n)\n\n$is.object.created\n[1] \"A data object &lt;Primary_exposure&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;Primary_exposure&gt; appears valid in all sources\"\n\nds.dataFrame(x = c(\"D\", \"Primary_exposure\"), newobj = \"D\")\n\n$is.object.created\n[1] \"A data object &lt;D&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;D&gt; appears valid in all sources\"\n\nds.colnames(\"D\")\n\n$demo\n [1] \"LAB_TSC\"            \"LAB_TRIG\"           \"LAB_HDL\"           \n [4] \"LAB_GLUC_ADJUSTED\"  \"PM_BMI_CONTINUOUS\"  \"DIS_CVA\"           \n [7] \"MEDI_LPD\"           \"DIS_DIAB\"           \"DIS_AMI\"           \n[10] \"GENDER\"             \"PM_BMI_CATEGORICAL\" \"hdl_ratio\"         \n[13] \"log_trig\"           \"Primary_exposure\"  \n\n\n\n\nCreating Constant Vectors\n\n# Create knots for restricted cubic splines\n# Get quantiles first: ds.quantileMean(\"D$PM_BMI_CONTINUOUS\")\nds.make(\n  toAssign = \"c(23.5, 27.5, 32.8)\",\n  newobj = \"knots\"\n)",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Derived Variables & Grouped Summaries</span>"
+    ]
+  },
+  {
+    "objectID": "5-derived-variables.html#getting-quantiles",
+    "href": "5-derived-variables.html#getting-quantiles",
+    "title": "Derived Variables & Grouped Summaries",
+    "section": "Getting Quantiles",
+    "text": "Getting Quantiles\nUse ds.quantileMean() to get percentiles for setting cutpoints:\n\n# Get quantiles for BMI (used for knots in spline models)\nds.quantileMean(x = \"D$PM_BMI_CONTINUOUS\", type = \"combine\")\n\n Quantiles of the pooled data\n\n\n      5%      10%      25%      50%      75%      90%      95%     Mean \n19.49500 21.06500 24.10500 27.33000 30.66750 33.76000 35.66750 27.39804 \n\n# Get quantiles for cholesterol\nds.quantileMean(x = \"D$LAB_TSC\", type = \"combine\")\n\n Quantiles of the pooled data\n\n\n      5%      10%      25%      50%      75%      90%      95%     Mean \n4.089300 4.492600 5.108500 5.856000 6.593500 7.311400 7.738500 5.872113",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Derived Variables & Grouped Summaries</span>"
+    ]
+  },
+  {
+    "objectID": "5-derived-variables.html#checking-for-missing-data",
+    "href": "5-derived-variables.html#checking-for-missing-data",
+    "title": "Derived Variables & Grouped Summaries",
+    "section": "Checking for Missing Data",
+    "text": "Checking for Missing Data\nBefore analysis, check for missing values:\n\n# Count missing values in variables\nds.numNA(x = \"D$LAB_TSC\")\n\n$demo\n[1] 356\n\nds.numNA(x = \"D$LAB_HDL\")\n\n$demo\n[1] 360\n\nds.numNA(x = \"D$PM_BMI_CONTINUOUS\")\n\n$demo\n[1] 97",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Derived Variables & Grouped Summaries</span>"
+    ]
+  },
+  {
+    "objectID": "5-derived-variables.html#statistical-summaries",
+    "href": "5-derived-variables.html#statistical-summaries",
+    "title": "Derived Variables & Grouped Summaries",
+    "section": "Statistical Summaries",
+    "text": "Statistical Summaries\n\nVariable Summary\n\n# Full summary of a variable\nds.summary(\"D$PM_BMI_CONTINUOUS\")\n\n$demo\n$demo$class\n[1] \"numeric\"\n\n$demo$length\n[1] 2163\n\n$demo$`quantiles & mean`\n      5%      10%      25%      50%      75%      90%      95%     Mean \n19.49500 21.06500 24.10500 27.33000 30.66750 33.76000 35.66750 27.39804 \n\n# Mean\nds.mean(\"D$PM_BMI_CONTINUOUS\", type = \"combine\")\n\n$Global.Mean\n                EstimatedMean Nmissing Nvalid Ntotal\nstudiesCombined      27.39804       97   2066   2163\n\n$Nstudies\n[1] 1\n\n$ValidityMessage\n     ValidityMessage \ndemo \"VALID ANALYSIS\"\n\n# Variance\nds.var(\"D$PM_BMI_CONTINUOUS\", type = \"combine\")\n\n$Global.Variance\n                EstimatedVar Nmissing Nvalid Ntotal\nstudiesCombined     25.21478       97   2066   2163\n\n$Nstudies\n[1] 1\n\n$ValidityMessage\n     ValidityMessage \ndemo \"VALID ANALYSIS\"\n\n\n\n\nGrouped Summaries with ds.tapply()\nCalculate statistics by group:\n\n# Mean BMI by gender\nds.tapply(\n  X.name = \"D$PM_BMI_CONTINUOUS\",\n  INDEX.names = \"D$GENDER\",\n  FUN.name = \"mean\"\n)\n\n$demo\n$demo$Mean\nD$GENDER.1 D$GENDER.2 \n  28.10222   26.69113 \n\n$demo$N\nD$GENDER.1 D$GENDER.2 \n      1035       1031 \n\n# SD of BMI by gender\nds.tapply(\n  X.name = \"D$PM_BMI_CONTINUOUS\",\n  INDEX.names = \"D$GENDER\",\n  FUN.name = \"sd\"\n)\n\n$demo\n$demo$SD\nD$GENDER.1 D$GENDER.2 \n  5.102012   4.839615 \n\n$demo$N\nD$GENDER.1 D$GENDER.2 \n      1035       1031 \n\n\n\n\nCross-Tabulations\n\n# Single variable frequency\nds.table(\"D$GENDER\")\n\n\n Data in all studies were valid \n\nStudy 1 :  No errors reported from this study\n\n\n$output.list\n$output.list$TABLE_rvar.by.study_row.props\n        study\nD$GENDER demo\n      0     1\n      1     1\n      NA  NaN\n\n$output.list$TABLE_rvar.by.study_col.props\n        study\nD$GENDER      demo\n      0  0.5048544\n      1  0.4951456\n      NA 0.0000000\n\n$output.list$TABLE_rvar.by.study_counts\n        study\nD$GENDER demo\n      0  1092\n      1  1071\n      NA    0\n\n$output.list$TABLES.COMBINED_all.sources_proportions\nD$GENDER\n    0     1    NA \n0.505 0.495 0.000 \n\n$output.list$TABLES.COMBINED_all.sources_counts\nD$GENDER\n   0    1   NA \n1092 1071    0 \n\n\n$validity.message\n[1] \"Data in all studies were valid\"\n\n# Two-way table: gender by diabetes\nds.table(\n  rvar = \"D$GENDER\",\n  cvar = \"D$DIS_DIAB\"\n)\n\n\n Data in all studies were valid \n\nStudy 1 :  No errors reported from this study\n\n\n$output.list\n$output.list$TABLE.STUDY.demo_row.props\n        D$DIS_DIAB\nD$GENDER     0      1  NA\n      0  0.981 0.0192   0\n      1  0.992 0.0084   0\n      NA   NaN    NaN NaN\n\n$output.list$TABLE.STUDY.demo_col.props\n        D$DIS_DIAB\nD$GENDER     0   1  NA\n      0  0.502 0.7 NaN\n      1  0.498 0.3 NaN\n      NA 0.000 0.0 NaN\n\n$output.list$TABLES.COMBINED_all.sources_row.props\n        D$DIS_DIAB\nD$GENDER     0      1  NA\n      0  0.981 0.0192   0\n      1  0.992 0.0084   0\n      NA   NaN    NaN NaN\n\n$output.list$TABLES.COMBINED_all.sources_col.props\n        D$DIS_DIAB\nD$GENDER     0   1  NA\n      0  0.502 0.7 NaN\n      1  0.498 0.3 NaN\n      NA 0.000 0.0 NaN\n\n$output.list$TABLE_STUDY.demo_counts\n        D$DIS_DIAB\nD$GENDER    0  1 NA\n      0  1071 21  0\n      1  1062  9  0\n      NA    0  0  0\n\n$output.list$TABLES.COMBINED_all.sources_counts\n        D$DIS_DIAB\nD$GENDER    0  1 NA\n      0  1071 21  0\n      1  1062  9  0\n      NA    0  0  0\n\n\n$validity.message\n[1] \"Data in all studies were valid\"",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Derived Variables & Grouped Summaries</span>"
+    ]
+  },
+  {
+    "objectID": "5-derived-variables.html#combining-variables-into-data-frames",
+    "href": "5-derived-variables.html#combining-variables-into-data-frames",
+    "title": "Derived Variables & Grouped Summaries",
+    "section": "Combining Variables into Data Frames",
+    "text": "Combining Variables into Data Frames\n\nCreating New Data Frames\n\n# Combine variables into a new data frame\nds.dataFrame(\n  x = c(\"D$PM_BMI_CONTINUOUS\", \"D$LAB_TSC\", \"D$LAB_HDL\", \"D$LAB_TRIG\", \"D$GENDER\", \"D$DIS_DIAB\"),\n  newobj = \"D_analysis\"\n)\n\n$is.object.created\n[1] \"A data object &lt;D_analysis&gt; has been created in all specified data sources\"\n\n$validity.check\n[1] \"&lt;D_analysis&gt; appears valid in all sources\"\n\nds.colnames(\"D_analysis\")\n\n$demo\n[1] \"PM_BMI_CONTINUOUS\" \"LAB_TSC\"           \"LAB_HDL\"          \n[4] \"LAB_TRIG\"          \"GENDER\"            \"DIS_DIAB\"         \n\nds.dim(\"D_analysis\")\n\n$`dimensions of D_analysis in demo`\n[1] 2163    6\n\n$`dimensions of D_analysis in combined studies`\n[1] 2163    6\n\n\n\n\nAdding Variables to Existing Data Frames\n\n# Add derived variables\nds.dataFrame(\n  x = c(\"D\", \"hdl_ratio\", \"log_trig\"),\n  newobj = \"D\"\n)\n\n# Or use ds.cbind\nds.cbind(\n  x = c(\"D_analysis\", \"hdl_ratio\"),\n  newobj = \"D_extended\"\n)\n\nds.colnames(\"D_extended\")",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Derived Variables & Grouped Summaries</span>"
+    ]
+  },
+  {
+    "objectID": "5-derived-variables.html#correlation-analysis",
+    "href": "5-derived-variables.html#correlation-analysis",
+    "title": "Derived Variables & Grouped Summaries",
+    "section": "Correlation Analysis",
+    "text": "Correlation Analysis\n\n# Correlation between BMI and cholesterol\nds.cor(\n  x = \"D$PM_BMI_CONTINUOUS\",\n  y = \"D$LAB_TSC\"\n)\n\n$demo\n$demo$`Number of missing values in each variable`\n     x.val y.val\n[1,]    97   356\n\n$demo$`Number of missing values casewise`\n      x.val y.val\nx.val   427   427\ny.val   427   427\n\n$demo$`Correlation Matrix`\n           [,1]       [,2]\n[1,] 1.00000000 0.01256042\n[2,] 0.01256042 1.00000000\n\n$demo$`Number of complete cases used`\n      x.val y.val\nx.val  1736  1736\ny.val  1736  1736",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Derived Variables & Grouped Summaries</span>"
+    ]
+  },
+  {
+    "objectID": "5-derived-variables.html#propass-script-workflow",
+    "href": "5-derived-variables.html#propass-script-workflow",
+    "title": "Derived Variables & Grouped Summaries",
+    "section": "ProPASS Script Workflow",
+    "text": "ProPASS Script Workflow\n\n\n\n\n\n\nProPASS Data\n\n\n\nThe ProPASS analysis uses different variables than the CNSIM demo data. Here’s the workflow you’ll use with ProPASS data:\n\n\n\n# 1. Create diet score from fruit and vegetable intake\nds.asNumeric(x.name = \"D$veg\", newobj = \"veg_n\")\nds.asNumeric(x.name = \"D$fruit\", newobj = \"fruit_n\")\nds.make(toAssign = \"fruit_n + veg_n\", newobj = \"diet\")\nds.dataFrame(x = c(\"D\", \"diet\"), newobj = \"D\")\n\n# 2. Create primary exposure variable for survival model\nds.make(toAssign = \"D$bmi\", newobj = \"Primary_exposure\")\nds.dataFrame(x = c(\"D\", \"Primary_exposure\"), newobj = \"D\")\n\n# 3. Get quantiles for spline knots\nds.quantileMean(x = \"D$Primary_exposure\", type = \"combine\")\n# Use 10th, 50th, 90th percentiles as knots\nds.make(toAssign = \"c(23.5, 27.5, 32.8)\", newobj = \"knots\")",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Derived Variables & Grouped Summaries</span>"
+    ]
+  },
+  {
+    "objectID": "5-derived-variables.html#best-practices",
+    "href": "5-derived-variables.html#best-practices",
+    "title": "Derived Variables & Grouped Summaries",
+    "section": "Best Practices",
+    "text": "Best Practices\n\n\n\n\n\n\nDerived Variables Tips\n\n\n\n\nCheck for missing data with ds.numNA() before creating derived variables\nAdd variables to data frames immediately after creation with ds.dataFrame()\nUse meaningful names like Primary_exposure for clarity in models\nGet quantiles for setting appropriate knots in spline models\nVerify your work with ds.summary() and ds.dim()",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Derived Variables & Grouped Summaries</span>"
+    ]
+  },
+  {
+    "objectID": "5-derived-variables.html#exercise",
+    "href": "5-derived-variables.html#exercise",
+    "title": "Derived Variables & Grouped Summaries",
+    "section": "Exercise",
+    "text": "Exercise\nUsing the CNSIM data:\n\nCreate an HDL/TSC ratio using ds.make()\nLog-transform LAB_TRIG using ds.make()\nGet the quantiles of BMI using ds.quantileMean()\nCalculate mean cholesterol by gender using ds.tapply()\nCreate a cross-tabulation of GENDER by DIS_DIAB using ds.table()",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Derived Variables & Grouped Summaries</span>"
+    ]
+  },
+  {
+    "objectID": "5-derived-variables.html#next-steps",
+    "href": "5-derived-variables.html#next-steps",
+    "title": "Derived Variables & Grouped Summaries",
+    "section": "Next Steps",
+    "text": "Next Steps\nContinue to Table One to learn about creating descriptive statistics tables.",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>Derived Variables & Grouped Summaries</span>"
+    ]
+  },
+  {
+    "objectID": "6-table-one.html",
+    "href": "6-table-one.html",
+    "title": "Creating Table 1",
+    "section": "",
+    "text": "Overview\nTable 1 is a standard component of epidemiological and clinical research papers, presenting baseline characteristics of study participants. In DataSHIELD, we construct Table 1 from aggregate statistics without accessing individual-level data.",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Creating Table 1</span>"
+    ]
+  },
+  {
+    "objectID": "6-table-one.html#components-of-table-1",
+    "href": "6-table-one.html#components-of-table-1",
+    "title": "Creating Table 1",
+    "section": "Components of Table 1",
+    "text": "Components of Table 1\nA typical Table 1 includes:\n\nContinuous variables: Mean (SD) or Median (IQR)\nCategorical variables: N (%)\nStratification: Often by exposure group or study site\nMissing data: Documentation of missingness\n\n\n# Load required packages\nlibrary(DSI)\nlibrary(DSOpal)\nlibrary(dsBaseClient)\nlibrary(dsTidyverseClient)\n\n# Connect to the server\nbuilder &lt;- DSI::newDSLoginBuilder()\nbuilder$append(\n  server = \"demo\",\n  url = \"https://opal-demo.obiba.org\",\n  user = \"dsuser\",\n  password = \"P@ssw0rd\",\n  table = \"CNSIM.CNSIM1\",\n  profile = \"lemon-donkey\"\n)\nlogindata &lt;- builder$build()\nconns &lt;- datashield.login(logins = logindata, assign = TRUE, symbol = \"D\")",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Creating Table 1</span>"
+    ]
+  },
+  {
+    "objectID": "6-table-one.html#basic-descriptive-statistics",
+    "href": "6-table-one.html#basic-descriptive-statistics",
+    "title": "Creating Table 1",
+    "section": "Basic Descriptive Statistics",
+    "text": "Basic Descriptive Statistics\n\nContinuous Variables\n\n# Mean and standard deviation for BMI\nbmi_mean &lt;- ds.mean(\"D$PM_BMI_CONTINUOUS\", type = \"combine\")\nbmi_var &lt;- ds.var(\"D$PM_BMI_CONTINUOUS\", type = \"combine\")\nbmi_sd &lt;- sqrt(bmi_var$Global.Variance[1])\n\ncat(\"BMI: \", round(bmi_mean$Global.Mean, 1), \" (\", round(bmi_sd, 1), \")\\n\")\n\nBMI:  27.4 97 2066 2163  ( 5 )\n\n# Use ds.summary for quick overview\nds.summary(\"D$PM_BMI_CONTINUOUS\")\n\n$demo\n$demo$class\n[1] \"numeric\"\n\n$demo$length\n[1] 2163\n\n$demo$`quantiles & mean`\n      5%      10%      25%      50%      75%      90%      95%     Mean \n19.49500 21.06500 24.10500 27.33000 30.66750 33.76000 35.66750 27.39804 \n\n# Quantiles for median and IQR\nds.quantileMean(\"D$PM_BMI_CONTINUOUS\", type = \"combine\")\n\n Quantiles of the pooled data\n\n\n      5%      10%      25%      50%      75%      90%      95%     Mean \n19.49500 21.06500 24.10500 27.33000 30.66750 33.76000 35.66750 27.39804 \n\n\n\n\nCategorical Variables\n\n# Frequency tables\nds.table(\"D$GENDER\")\n\n\n Data in all studies were valid \n\nStudy 1 :  No errors reported from this study\n\n\n$output.list\n$output.list$TABLE_rvar.by.study_row.props\n        study\nD$GENDER demo\n      0     1\n      1     1\n      NA  NaN\n\n$output.list$TABLE_rvar.by.study_col.props\n        study\nD$GENDER      demo\n      0  0.5048544\n      1  0.4951456\n      NA 0.0000000\n\n$output.list$TABLE_rvar.by.study_counts\n        study\nD$GENDER demo\n      0  1092\n      1  1071\n      NA    0\n\n$output.list$TABLES.COMBINED_all.sources_proportions\nD$GENDER\n    0     1    NA \n0.505 0.495 0.000 \n\n$output.list$TABLES.COMBINED_all.sources_counts\nD$GENDER\n   0    1   NA \n1092 1071    0 \n\n\n$validity.message\n[1] \"Data in all studies were valid\"\n\nds.table(\"D$DIS_DIAB\")\n\n\n Data in all studies were valid \n\nStudy 1 :  No errors reported from this study\n\n\n$output.list\n$output.list$TABLE_rvar.by.study_row.props\n          study\nD$DIS_DIAB demo\n        0     1\n        1     1\n        NA  NaN\n\n$output.list$TABLE_rvar.by.study_col.props\n          study\nD$DIS_DIAB       demo\n        0  0.98613037\n        1  0.01386963\n        NA 0.00000000\n\n$output.list$TABLE_rvar.by.study_counts\n          study\nD$DIS_DIAB demo\n        0  2133\n        1    30\n        NA    0\n\n$output.list$TABLES.COMBINED_all.sources_proportions\nD$DIS_DIAB\n     0      1     NA \n0.9860 0.0139 0.0000 \n\n$output.list$TABLES.COMBINED_all.sources_counts\nD$DIS_DIAB\n   0    1   NA \n2133   30    0 \n\n\n$validity.message\n[1] \"Data in all studies were valid\"\n\n# Two-way tables (for stratified analysis)\nds.table(\"D$GENDER\", \"D$DIS_DIAB\")\n\n\n Data in all studies were valid \n\nStudy 1 :  No errors reported from this study\n\n\n$output.list\n$output.list$TABLE.STUDY.demo_row.props\n        D$DIS_DIAB\nD$GENDER     0      1  NA\n      0  0.981 0.0192   0\n      1  0.992 0.0084   0\n      NA   NaN    NaN NaN\n\n$output.list$TABLE.STUDY.demo_col.props\n        D$DIS_DIAB\nD$GENDER     0   1  NA\n      0  0.502 0.7 NaN\n      1  0.498 0.3 NaN\n      NA 0.000 0.0 NaN\n\n$output.list$TABLES.COMBINED_all.sources_row.props\n        D$DIS_DIAB\nD$GENDER     0      1  NA\n      0  0.981 0.0192   0\n      1  0.992 0.0084   0\n      NA   NaN    NaN NaN\n\n$output.list$TABLES.COMBINED_all.sources_col.props\n        D$DIS_DIAB\nD$GENDER     0   1  NA\n      0  0.502 0.7 NaN\n      1  0.498 0.3 NaN\n      NA 0.000 0.0 NaN\n\n$output.list$TABLE_STUDY.demo_counts\n        D$DIS_DIAB\nD$GENDER    0  1 NA\n      0  1071 21  0\n      1  1062  9  0\n      NA    0  0  0\n\n$output.list$TABLES.COMBINED_all.sources_counts\n        D$DIS_DIAB\nD$GENDER    0  1 NA\n      0  1071 21  0\n      1  1062  9  0\n      NA    0  0  0\n\n\n$validity.message\n[1] \"Data in all studies were valid\"",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Creating Table 1</span>"
+    ]
+  },
+  {
+    "objectID": "6-table-one.html#stratified-statistics",
+    "href": "6-table-one.html#stratified-statistics",
+    "title": "Creating Table 1",
+    "section": "Stratified Statistics",
+    "text": "Stratified Statistics\n\nBy Single Grouping Variable\n\n# Mean BMI by gender\nds.tapply(\n  X.name = \"D$PM_BMI_CONTINUOUS\",\n  INDEX.names = \"D$GENDER\",\n  FUN.name = \"mean\"\n)\n\n$demo\n$demo$Mean\nD$GENDER.1 D$GENDER.2 \n  28.10222   26.69113 \n\n$demo$N\nD$GENDER.1 D$GENDER.2 \n      1035       1031 \n\n# SD of BMI by gender\nds.tapply(\n  X.name = \"D$PM_BMI_CONTINUOUS\",\n  INDEX.names = \"D$GENDER\",\n  FUN.name = \"sd\"\n)\n\n$demo\n$demo$SD\nD$GENDER.1 D$GENDER.2 \n  5.102012   4.839615 \n\n$demo$N\nD$GENDER.1 D$GENDER.2 \n      1035       1031 \n\n# Mean cholesterol by gender\nds.tapply(\n  X.name = \"D$LAB_TSC\",\n  INDEX.names = \"D$GENDER\",\n  FUN.name = \"mean\"\n)\n\n$demo\n$demo$Mean\nD$GENDER.1 D$GENDER.2 \n  5.915789   5.827805 \n\n$demo$N\nD$GENDER.1 D$GENDER.2 \n       910        897 \n\n\n\n\nCross-Tabulation\n\n# Get counts for diabetes by gender\ndiab_by_gender &lt;- ds.table(\"D$DIS_DIAB\", \"D$GENDER\")\n\n\n Data in all studies were valid \n\nStudy 1 :  No errors reported from this study\n\nprint(diab_by_gender)\n\n$output.list\n$output.list$TABLE.STUDY.demo_row.props\n          D$GENDER\nD$DIS_DIAB     0     1  NA\n        0  0.502 0.498   0\n        1  0.700 0.300   0\n        NA   NaN   NaN NaN\n\n$output.list$TABLE.STUDY.demo_col.props\n          D$GENDER\nD$DIS_DIAB      0      1  NA\n        0  0.9810 0.9920 NaN\n        1  0.0192 0.0084 NaN\n        NA 0.0000 0.0000 NaN\n\n$output.list$TABLES.COMBINED_all.sources_row.props\n          D$GENDER\nD$DIS_DIAB     0     1  NA\n        0  0.502 0.498   0\n        1  0.700 0.300   0\n        NA   NaN   NaN NaN\n\n$output.list$TABLES.COMBINED_all.sources_col.props\n          D$GENDER\nD$DIS_DIAB      0      1  NA\n        0  0.9810 0.9920 NaN\n        1  0.0192 0.0084 NaN\n        NA 0.0000 0.0000 NaN\n\n$output.list$TABLE_STUDY.demo_counts\n          D$GENDER\nD$DIS_DIAB    0    1 NA\n        0  1071 1062  0\n        1    21    9  0\n        NA    0    0  0\n\n$output.list$TABLES.COMBINED_all.sources_counts\n          D$GENDER\nD$DIS_DIAB    0    1 NA\n        0  1071 1062  0\n        1    21    9  0\n        NA    0    0  0\n\n\n$validity.message\n[1] \"Data in all studies were valid\"",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Creating Table 1</span>"
+    ]
+  },
+  {
+    "objectID": "6-table-one.html#building-table-1-programmatically",
+    "href": "6-table-one.html#building-table-1-programmatically",
+    "title": "Creating Table 1",
+    "section": "Building Table 1 Programmatically",
+    "text": "Building Table 1 Programmatically\n\nHelper Function for Continuous Variables\n\n# Helper function to extract statistics for continuous variables\nget_continuous_stats &lt;- function(var_name) {\n  mean_val &lt;- ds.mean(var_name, type = \"combine\")\n  var_val &lt;- ds.var(var_name, type = \"combine\")\n  sd_val &lt;- sqrt(var_val$Global.Variance[1])\n  n_val &lt;- ds.length(var_name, type = \"combine\")\n  na_val &lt;- ds.numNA(var_name)\n  \n  list(\n    n = n_val,\n    mean = round(mean_val$Global.Mean[1], 2),\n    sd = round(sd_val, 2),\n    missing = na_val\n  )\n}\n\n# Usage with CNSIM data\nbmi_stats &lt;- get_continuous_stats(\"D$PM_BMI_CONTINUOUS\")\ntsc_stats &lt;- get_continuous_stats(\"D$LAB_TSC\")\nhdl_stats &lt;- get_continuous_stats(\"D$LAB_HDL\")\n\n\n\nComplete Table 1 Workflow\n\n# ============================================\n# Table 1: Baseline Characteristics (CNSIM)\n# ============================================\n\n# Sample size\nn_total &lt;- ds.length(\"D$PM_BMI_CONTINUOUS\", type = \"combine\")\n\n# Continuous variables\nbmi_mean &lt;- ds.mean(\"D$PM_BMI_CONTINUOUS\", type = \"combine\")$Global.Mean\nbmi_sd &lt;- sqrt(ds.var(\"D$PM_BMI_CONTINUOUS\", type = \"combine\")$Global.Variance[1])\n\ntsc_mean &lt;- ds.mean(\"D$LAB_TSC\", type = \"combine\")$Global.Mean\ntsc_sd &lt;- sqrt(ds.var(\"D$LAB_TSC\", type = \"combine\")$Global.Variance[1])\n\nhdl_mean &lt;- ds.mean(\"D$LAB_HDL\", type = \"combine\")$Global.Mean\nhdl_sd &lt;- sqrt(ds.var(\"D$LAB_HDL\", type = \"combine\")$Global.Variance[1])\n\ntrig_mean &lt;- ds.mean(\"D$LAB_TRIG\", type = \"combine\")$Global.Mean\ntrig_sd &lt;- sqrt(ds.var(\"D$LAB_TRIG\", type = \"combine\")$Global.Variance[1])\n\n# Print results\ncat(\"=== Table 1: Baseline Characteristics ===\\n\\n\")\n\n=== Table 1: Baseline Characteristics ===\n\ncat(\"N:\", n_total$`length of D$PM_BMI_CONTINUOUS in combined studies`, \"\\n\\n\")\n\nN: \n\ncat(\"BMI, mean (SD):\", round(bmi_mean, 1), \"(\", round(bmi_sd, 1), \")\\n\")\n\nBMI, mean (SD): 27.4 97 2066 2163 ( 5 )\n\ncat(\"Total Cholesterol, mean (SD):\", round(tsc_mean, 2), \"(\", round(tsc_sd, 2), \")\\n\")\n\nTotal Cholesterol, mean (SD): 5.87 356 1807 2163 ( 1.11 )\n\ncat(\"HDL Cholesterol, mean (SD):\", round(hdl_mean, 2), \"(\", round(hdl_sd, 2), \")\\n\")\n\nHDL Cholesterol, mean (SD): 1.57 360 1803 2163 ( 0.41 )\n\ncat(\"Triglycerides, mean (SD):\", round(trig_mean, 2), \"(\", round(trig_sd, 2), \")\\n\")\n\nTriglycerides, mean (SD): 2.1 362 1801 2163 ( 1.58 )",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Creating Table 1</span>"
+    ]
+  },
+  {
+    "objectID": "6-table-one.html#stratified-table-1-by-gender",
+    "href": "6-table-one.html#stratified-table-1-by-gender",
+    "title": "Creating Table 1",
+    "section": "Stratified Table 1 (By Gender)",
+    "text": "Stratified Table 1 (By Gender)\n\n# ============================================\n# Table 1 Stratified by Gender\n# ============================================\n\ncat(\"=== BMI by Gender ===\\n\")\n\n=== BMI by Gender ===\n\nbmi_by_gender &lt;- ds.tapply(X.name = \"D$PM_BMI_CONTINUOUS\", INDEX.names = \"D$GENDER\", FUN.name = \"mean\")\nbmi_sd_by_gender &lt;- ds.tapply(X.name = \"D$PM_BMI_CONTINUOUS\", INDEX.names = \"D$GENDER\", FUN.name = \"sd\")\nprint(bmi_by_gender)\n\n$demo\n$demo$Mean\nD$GENDER.1 D$GENDER.2 \n  28.10222   26.69113 \n\n$demo$N\nD$GENDER.1 D$GENDER.2 \n      1035       1031 \n\ncat(\"\\n=== Total Cholesterol by Gender ===\\n\")\n\n\n=== Total Cholesterol by Gender ===\n\ntsc_by_gender &lt;- ds.tapply(X.name = \"D$LAB_TSC\", INDEX.names = \"D$GENDER\", FUN.name = \"mean\")\nprint(tsc_by_gender)\n\n$demo\n$demo$Mean\nD$GENDER.1 D$GENDER.2 \n  5.915789   5.827805 \n\n$demo$N\nD$GENDER.1 D$GENDER.2 \n       910        897 \n\ncat(\"\\n=== HDL by Gender ===\\n\")\n\n\n=== HDL by Gender ===\n\nhdl_by_gender &lt;- ds.tapply(X.name = \"D$LAB_HDL\", INDEX.names = \"D$GENDER\", FUN.name = \"mean\")\nprint(hdl_by_gender)\n\n$demo\n$demo$Mean\nD$GENDER.1 D$GENDER.2 \n  1.517015   1.622344 \n\n$demo$N\nD$GENDER.1 D$GENDER.2 \n       906        897 \n\ncat(\"\\n=== Diabetes by Gender ===\\n\")\n\n\n=== Diabetes by Gender ===\n\nprint(ds.table(\"D$DIS_DIAB\", \"D$GENDER\"))\n\n\n Data in all studies were valid \n\nStudy 1 :  No errors reported from this study\n\n$output.list\n$output.list$TABLE.STUDY.demo_row.props\n          D$GENDER\nD$DIS_DIAB     0     1  NA\n        0  0.502 0.498   0\n        1  0.700 0.300   0\n        NA   NaN   NaN NaN\n\n$output.list$TABLE.STUDY.demo_col.props\n          D$GENDER\nD$DIS_DIAB      0      1  NA\n        0  0.9810 0.9920 NaN\n        1  0.0192 0.0084 NaN\n        NA 0.0000 0.0000 NaN\n\n$output.list$TABLES.COMBINED_all.sources_row.props\n          D$GENDER\nD$DIS_DIAB     0     1  NA\n        0  0.502 0.498   0\n        1  0.700 0.300   0\n        NA   NaN   NaN NaN\n\n$output.list$TABLES.COMBINED_all.sources_col.props\n          D$GENDER\nD$DIS_DIAB      0      1  NA\n        0  0.9810 0.9920 NaN\n        1  0.0192 0.0084 NaN\n        NA 0.0000 0.0000 NaN\n\n$output.list$TABLE_STUDY.demo_counts\n          D$GENDER\nD$DIS_DIAB    0    1 NA\n        0  1071 1062  0\n        1    21    9  0\n        NA    0    0  0\n\n$output.list$TABLES.COMBINED_all.sources_counts\n          D$GENDER\nD$DIS_DIAB    0    1 NA\n        0  1071 1062  0\n        1    21    9  0\n        NA    0    0  0\n\n\n$validity.message\n[1] \"Data in all studies were valid\"",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Creating Table 1</span>"
+    ]
+  },
+  {
+    "objectID": "6-table-one.html#handling-multiple-studies",
+    "href": "6-table-one.html#handling-multiple-studies",
+    "title": "Creating Table 1",
+    "section": "Handling Multiple Studies",
+    "text": "Handling Multiple Studies\nWhen analyzing federated data from multiple studies:\n\n# Get statistics per study (split)\nds.mean(\"D$PM_BMI_CONTINUOUS\", type = \"split\")  # Per-study means\nds.mean(\"D$PM_BMI_CONTINUOUS\", type = \"combine\")  # Pooled mean\n\n# Sample size per study\nds.length(\"D$PM_BMI_CONTINUOUS\", type = \"split\")\n\n# Variance per study\nds.var(\"D$LAB_TSC\", type = \"split\")",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Creating Table 1</span>"
+    ]
+  },
+  {
+    "objectID": "6-table-one.html#missing-data-summary",
+    "href": "6-table-one.html#missing-data-summary",
+    "title": "Creating Table 1",
+    "section": "Missing Data Summary",
+    "text": "Missing Data Summary\nAlways report missing data in Table 1:\n\n# Check missing values for all key variables\ncat(\"=== Missing Data Summary ===\\n\\n\")\n\n=== Missing Data Summary ===\n\ncat(\"PM_BMI_CONTINUOUS:\", ds.numNA(\"D$PM_BMI_CONTINUOUS\")$demo, \"\\n\")\n\nPM_BMI_CONTINUOUS: 97 \n\ncat(\"LAB_TSC:\", ds.numNA(\"D$LAB_TSC\")$demo, \"\\n\")\n\nLAB_TSC: 356 \n\ncat(\"LAB_HDL:\", ds.numNA(\"D$LAB_HDL\")$demo, \"\\n\")\n\nLAB_HDL: 360 \n\ncat(\"LAB_TRIG:\", ds.numNA(\"D$LAB_TRIG\")$demo, \"\\n\")\n\nLAB_TRIG: 362 \n\ncat(\"GENDER:\", ds.numNA(\"D$GENDER\")$demo, \"\\n\")\n\nGENDER: 0 \n\ncat(\"DIS_DIAB:\", ds.numNA(\"D$DIS_DIAB\")$demo, \"\\n\")\n\nDIS_DIAB: 0",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Creating Table 1</span>"
+    ]
+  },
+  {
+    "objectID": "6-table-one.html#propass-script-workflow",
+    "href": "6-table-one.html#propass-script-workflow",
+    "title": "Creating Table 1",
+    "section": "ProPASS Script Workflow",
+    "text": "ProPASS Script Workflow\n\n\n\n\n\n\nProPASS Data\n\n\n\nThe ProPASS analysis uses different variables than the CNSIM demo data. Here’s how you would create Table 1 with ProPASS data:\n\n\n\n# Sample size\nn_total &lt;- ds.length(\"D$ID\", type = \"combine\")\n\n# Demographics\nage_mean &lt;- ds.mean(\"D$age\", type = \"combine\")$Global.Mean\nage_sd &lt;- sqrt(ds.var(\"D$age\", type = \"combine\")$Global.Variance[1])\n\n# Clinical measurements\nbmi_mean &lt;- ds.mean(\"D$bmi\", type = \"combine\")$Global.Mean\nbmi_sd &lt;- sqrt(ds.var(\"D$bmi\", type = \"combine\")$Global.Variance[1])\n\n# Categorical variables\nsex_table &lt;- ds.table(\"D$sex\")\nsmoke_table &lt;- ds.table(\"D$smoke\")\nedu_table &lt;- ds.table(\"D$edu\")\n\n# Stratified by exposure\nds.tapply(X.name = \"D$age\", INDEX.names = \"D$sex\", FUN.name = \"mean\")\nds.tapply(X.name = \"D$bmi\", INDEX.names = \"D$sex\", FUN.name = \"mean\")",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Creating Table 1</span>"
+    ]
+  },
+  {
+    "objectID": "6-table-one.html#best-practices",
+    "href": "6-table-one.html#best-practices",
+    "title": "Creating Table 1",
+    "section": "Best Practices",
+    "text": "Best Practices\n\n\n\n\n\n\nTable 1 Guidelines\n\n\n\n\nReport both N and % for categorical variables\nInclude missing data counts or percentages\nUse appropriate statistics: Mean (SD) for normal distributions, Median (IQR) for skewed\nStratify meaningfully: By exposure, outcome, or study site as appropriate\nBe consistent: Use the same decimal places throughout",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Creating Table 1</span>"
+    ]
+  },
+  {
+    "objectID": "6-table-one.html#complete-table-1-output",
+    "href": "6-table-one.html#complete-table-1-output",
+    "title": "Creating Table 1",
+    "section": "Complete Table 1 Output",
+    "text": "Complete Table 1 Output\nHere we compile all the statistics into a formatted Table 1:\n\n# ============================================\n# COMPLETE TABLE 1: CNSIM Dataset\n# ============================================\n\n# Get sample sizes\nn_total_val &lt;- ds.length(\"D$PM_BMI_CONTINUOUS\", type = \"combine\")$`length of D$PM_BMI_CONTINUOUS in combined studies`\ngender_counts &lt;- ds.table(\"D$GENDER\")$output.list$TABLES.COMBINED_all.sources_counts\n\n\n Data in all studies were valid \n\nStudy 1 :  No errors reported from this study\n\n# Get stratified means\nbmi_male &lt;- bmi_by_gender$demo$output.list$Mean[\"0\"]\nbmi_female &lt;- bmi_by_gender$demo$output.list$Mean[\"1\"]\nbmi_sd_male &lt;- bmi_sd_by_gender$demo$output.list$SD[\"0\"]\nbmi_sd_female &lt;- bmi_sd_by_gender$demo$output.list$SD[\"1\"]\n\ntsc_male &lt;- tsc_by_gender$demo$output.list$Mean[\"0\"]\ntsc_female &lt;- tsc_by_gender$demo$output.list$Mean[\"1\"]\n\nhdl_male &lt;- hdl_by_gender$demo$output.list$Mean[\"0\"]\nhdl_female &lt;- hdl_by_gender$demo$output.list$Mean[\"1\"]\n\n# Diabetes counts\ndiab_counts &lt;- ds.table(\"D$DIS_DIAB\")$output.list$TABLES.COMBINED_all.sources_counts\n\n\n Data in all studies were valid \n\nStudy 1 :  No errors reported from this study\n\ndiab_n &lt;- diab_counts[\"1\"]\ndiab_pct &lt;- round(100 * diab_n / n_total_val, 1)\n\n# Build formatted output\ncat(\"======================================================================\\n\")\n\n======================================================================\n\ncat(\"TABLE 1: Baseline Characteristics of CNSIM Study Participants\\n\")\n\nTABLE 1: Baseline Characteristics of CNSIM Study Participants\n\ncat(\"======================================================================\\n\\n\")\n\n======================================================================\n\ncat(sprintf(\"%-28s %14s %14s %14s\\n\", \"Characteristic\", \"Overall\", \"Male (0)\", \"Female (1)\"))\n\nCharacteristic                      Overall       Male (0)     Female (1)\n\ncat(\"----------------------------------------------------------------------\\n\")\n\n----------------------------------------------------------------------\n\n# Sample size\ncat(sprintf(\"%-28s %14d %14d %14d\\n\\n\", \"N\", n_total_val, gender_counts[\"0\"], gender_counts[\"1\"]))\n\n# Continuous variables\ncat(sprintf(\"%-28s %11.1f (%.1f) %11.1f (%.1f) %11.1f (%.1f)\\n\", \n    \"BMI, mean (SD)\", \n    bmi_mean, bmi_sd, bmi_male, bmi_sd_male, bmi_female, bmi_sd_female))\n\ncat(sprintf(\"%-28s %11.2f (%.2f) %11.2f       %11.2f\\n\", \n    \"Total Cholesterol\", tsc_mean, tsc_sd, tsc_male, tsc_female))\n\ncat(sprintf(\"%-28s %11.2f (%.2f) %11.2f       %11.2f\\n\", \n    \"HDL Cholesterol\", hdl_mean, hdl_sd, hdl_male, hdl_female))\n\ncat(sprintf(\"%-28s %11.2f (%.2f)\\n\\n\", \n    \"Triglycerides\", trig_mean, trig_sd))\n\nTriglycerides                       2.10 (1.58)\n\n Triglycerides                     362.00 (1.58)\n\n Triglycerides                    1801.00 (1.58)\n\n Triglycerides                    2163.00 (1.58)\n\n# Categorical variables\ncat(sprintf(\"%-28s %11d (%.1f%%)\\n\", \"Diabetes, n (%)\", diab_n, diab_pct))\n\ncat(\"\\n----------------------------------------------------------------------\\n\")\n\n\n----------------------------------------------------------------------\n\ncat(\"Values are mean (SD) for continuous variables, n (%) for categorical.\\n\")\n\nValues are mean (SD) for continuous variables, n (%) for categorical.\n\ncat(\"Gender: 0 = Male, 1 = Female\\n\")\n\nGender: 0 = Male, 1 = Female",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Creating Table 1</span>"
+    ]
+  },
+  {
+    "objectID": "6-table-one.html#exercise",
+    "href": "6-table-one.html#exercise",
+    "title": "Creating Table 1",
+    "section": "Exercise",
+    "text": "Exercise\nUsing the CNSIM data, create a Table 1 that includes:\n\nSample size (overall and by gender)\nBMI (mean, SD) - overall and by gender\nTotal cholesterol (mean, SD) - overall and by gender\nHDL cholesterol (mean, SD) - overall and by gender\nDiabetes prevalence (n, %) - overall and by gender\nMissing data counts for each variable",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Creating Table 1</span>"
+    ]
+  },
+  {
+    "objectID": "6-table-one.html#next-steps",
+    "href": "6-table-one.html#next-steps",
+    "title": "Creating Table 1",
+    "section": "Next Steps",
+    "text": "Next Steps\nNow that you can describe your data, proceed to GLM Models to learn about statistical modelling.",
+    "crumbs": [
+      "Data Cleaning & Management",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>Creating Table 1</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html",
+    "href": "7-glm-models.html",
+    "title": "Generalized Linear Models",
+    "section": "",
+    "text": "Overview\nGeneralized linear models extend linear regression to handle various outcome types:\n# Load required packages\nlibrary(DSI)\nlibrary(DSOpal)\nlibrary(dsBaseClient)\nlibrary(dsTidyverseClient)\n\n# Connect to the server\nbuilder &lt;- DSI::newDSLoginBuilder()\nbuilder$append(\n  server = \"demo\",\n  url = \"https://opal-demo.obiba.org\",\n  user = \"dsuser\",\n  password = \"P@ssw0rd\",\n  table = \"CNSIM.CNSIM1\",\n  profile = \"lemon-donkey\"\n)\nlogindata &lt;- builder$build()\nconns &lt;- datashield.login(logins = logindata, assign = TRUE, symbol = \"D\")",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html#overview",
+    "href": "7-glm-models.html#overview",
+    "title": "Generalized Linear Models",
+    "section": "",
+    "text": "Gaussian (identity link): Continuous outcomes (linear regression)\nBinomial (logit link): Binary outcomes (logistic regression)\nPoisson (log link): Count data\nGamma: Positive continuous outcomes with right skew",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html#the-ds.glm-function",
+    "href": "7-glm-models.html#the-ds.glm-function",
+    "title": "Generalized Linear Models",
+    "section": "The ds.glm() Function",
+    "text": "The ds.glm() Function\nBasic syntax:\n\nmodel &lt;- ds.glm(\n  formula = \"outcome ~ predictor1 + predictor2\",\n  data = \"D\",\n  family = \"gaussian\",  # or \"binomial\", \"poisson\", \"Gamma\"\n  viewIter = FALSE\n)",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html#linear-regression-continuous-outcomes",
+    "href": "7-glm-models.html#linear-regression-continuous-outcomes",
+    "title": "Generalized Linear Models",
+    "section": "Linear Regression (Continuous Outcomes)",
+    "text": "Linear Regression (Continuous Outcomes)\n\nSimple Linear Regression\n\n# BMI as a predictor of total cholesterol\nmodel_simple &lt;- ds.glm(\n  formula = \"LAB_TSC ~ PM_BMI_CONTINUOUS\",\n  data = \"D\",\n  family = \"gaussian\"\n)\n\nIteration 1...\n\n\nCURRENT DEVIANCE:      61934.059686\n\n\nIteration 2...\n\n\nCURRENT DEVIANCE:      2108.63554456376\n\n\nIteration 3...\n\n\nCURRENT DEVIANCE:      2108.63554456376\n\n\nSUMMARY OF MODEL STATE after iteration 3\n\n\nCurrent deviance 2108.63554456376 on 1734 degrees of freedom\n\n\nConvergence criterion TRUE (0)\n\n\n\nbeta: 5.79402724015325 0.00278425122047829\n\n\n\nInformation matrix overall:\n\n\n                  (Intercept) PM_BMI_CONTINUOUS\n(Intercept)           1736.00          47611.62\nPM_BMI_CONTINUOUS    47611.62        1348718.80\n\n\n\nScore vector overall:\n\n\n                           [,1]\n(Intercept)       -7.036149e-12\nPM_BMI_CONTINUOUS -1.923866e-10\n\n\n\nCurrent deviance: 2108.63554456376\n\n# View results\nmodel_simple$coefficients\n\n                     Estimate  Std. Error    z-value   p-value   low0.95CI\n(Intercept)       5.794027240 0.148364905 39.0525457 0.0000000  5.50323737\nPM_BMI_CONTINUOUS 0.002784251 0.005322864  0.5230739 0.6009228 -0.00764837\n                  high0.95CI\n(Intercept)       6.08481711\nPM_BMI_CONTINUOUS 0.01321687\n\n\n\n\nMultiple Linear Regression\n\n# Cholesterol predicted by multiple factors\nmodel_multiple &lt;- ds.glm(\n  formula = \"LAB_TSC ~ PM_BMI_CONTINUOUS + LAB_HDL + GENDER\",\n  data = \"D\",\n  family = \"gaussian\"\n)\n\nIteration 1...\n\n\nCURRENT DEVIANCE:      61595.4536\n\n\nIteration 2...\n\n\nCURRENT DEVIANCE:      1996.60708106983\n\n\nIteration 3...\n\n\nCURRENT DEVIANCE:      1996.60708106983\n\n\nSUMMARY OF MODEL STATE after iteration 3\n\n\nCurrent deviance 1996.60708106983 on 1728 degrees of freedom\n\n\nConvergence criterion TRUE (0)\n\n\n\nbeta: 6.85318985113947 -0.00880153517619878 -0.474658587820022 -0.00610281948608032\n\n\n\nInformation matrix overall:\n\n\n                  (Intercept) PM_BMI_CONTINUOUS   LAB_HDL   GENDER1\n(Intercept)          1732.000          47418.98  2723.499   866.000\nPM_BMI_CONTINUOUS   47418.980        1339350.67 74131.285 23255.810\nLAB_HDL              2723.499          74131.29  4576.719  1406.812\nGENDER1               866.000          23255.81  1406.812   866.000\n\n\n\nScore vector overall:\n\n\n                          [,1]\n(Intercept)       1.125500e-11\nPM_BMI_CONTINUOUS 3.079172e-10\nLAB_HDL           1.760903e-11\nGENDER1           5.540457e-12\n\n\n\nCurrent deviance: 1996.60708106983\n\n# Extract coefficients\nmodel_multiple$coefficients\n\n                      Estimate  Std. Error    z-value       p-value   low0.95CI\n(Intercept)        6.853189851 0.190688944 35.9391043 7.490106e-283  6.47944639\nPM_BMI_CONTINUOUS -0.008801535 0.005366787 -1.6400010  1.010050e-01 -0.01932024\nLAB_HDL           -0.474658588 0.063586123 -7.4648141  8.341732e-14 -0.59928510\nGENDER1           -0.006102819 0.052301989 -0.1166843  9.071103e-01 -0.10861283\n                    high0.95CI\n(Intercept)        7.226933314\nPM_BMI_CONTINUOUS  0.001717173\nLAB_HDL           -0.350032076\nGENDER1            0.096407195\n\n\n\n\nInterpreting Results\n\n# The coefficients output includes:\n# - Estimate: the regression coefficient\n# - Std. Error: standard error of the estimate\n# - z-value: test statistic\n# - p-value: significance level\n\n# Example interpretation:\n# PM_BMI_CONTINUOUS coefficient = 0.05 means:\n# For each 1 unit increase in BMI, cholesterol increases by 0.05 units",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html#logistic-regression-binary-outcomes",
+    "href": "7-glm-models.html#logistic-regression-binary-outcomes",
+    "title": "Generalized Linear Models",
+    "section": "Logistic Regression (Binary Outcomes)",
+    "text": "Logistic Regression (Binary Outcomes)\n\nSimple Logistic Regression\n\n# Diabetes predicted by BMI\nmodel_logistic &lt;- ds.glm(\n  formula = \"DIS_DIAB ~ PM_BMI_CONTINUOUS\",\n  data = \"D\",\n  family = \"binomial\"\n)\n\nIteration 1...\n\n\nCURRENT DEVIANCE:      2864.08415007369\n\n\nIteration 2...\n\n\nCURRENT DEVIANCE:      664.29240022525\n\n\nIteration 3...\n\n\nCURRENT DEVIANCE:      376.697280364928\n\n\nIteration 4...\n\n\nCURRENT DEVIANCE:      306.438153897246\n\n\nIteration 5...\n\n\nCURRENT DEVIANCE:      292.639535998019\n\n\nIteration 6...\n\n\nCURRENT DEVIANCE:      291.331982353567\n\n\nIteration 7...\n\n\nCURRENT DEVIANCE:      291.314338097214\n\n\nIteration 8...\n\n\nCURRENT DEVIANCE:      291.314334147146\n\n\nIteration 9...\n\n\nCURRENT DEVIANCE:      291.314334147146\n\n\nSUMMARY OF MODEL STATE after iteration 9\n\n\nCurrent deviance 291.314334147146 on 2064 degrees of freedom\n\n\nConvergence criterion TRUE (7.80241905768514e-16)\n\n\n\nbeta: -7.97564060620008 0.128164950163299\n\n\n\nInformation matrix overall:\n\n\n                  (Intercept) PM_BMI_CONTINUOUS\n(Intercept)          28.29673          871.4757\nPM_BMI_CONTINUOUS   871.47574        27750.8489\n\n\n\nScore vector overall:\n\n\n                          [,1]\n(Intercept)       3.356430e-13\nPM_BMI_CONTINUOUS 1.092246e-11\n\n\n\nCurrent deviance: 291.314334147146\n\n# Results are on log-odds scale\nmodel_logistic$coefficients\n\n                   Estimate Std. Error   z-value      p-value low0.95CI.LP\n(Intercept)       -7.975641 1.03735570 -7.688434 1.489471e-14 -10.00882041\nPM_BMI_CONTINUOUS  0.128165 0.03312513  3.869115 1.092312e-04   0.06324088\n                  high0.95CI.LP         P_OR low0.95CI.P_OR high0.95CI.P_OR\n(Intercept)           -5.942461 0.0003436165   4.499922e-05     0.002618685\nPM_BMI_CONTINUOUS      0.193089 1.1367404928   1.065283e+00     1.212990770\n\n# Convert to odds ratios\nexp(model_logistic$coefficients[, \"Estimate\"])\n\n      (Intercept) PM_BMI_CONTINUOUS \n     0.0003437346      1.1367404928 \n\n\n\n\nMultiple Logistic Regression\n\n# Diabetes predicted by multiple risk factors\nmodel_diabetes &lt;- ds.glm(\n  formula = \"DIS_DIAB ~ PM_BMI_CONTINUOUS + LAB_TSC + GENDER\",\n  data = \"D\",\n  family = \"binomial\"\n)\n\nIteration 1...\n\n\nCURRENT DEVIANCE:      2406.60701090413\n\n\nIteration 2...\n\n\nCURRENT DEVIANCE:      560.909237342004\n\n\nIteration 3...\n\n\nCURRENT DEVIANCE:      319.925807987188\n\n\nIteration 4...\n\n\nCURRENT DEVIANCE:      260.761811075199\n\n\nIteration 5...\n\n\nCURRENT DEVIANCE:      249.020431449224\n\n\nIteration 6...\n\n\nCURRENT DEVIANCE:      247.965547009566\n\n\nIteration 7...\n\n\nCURRENT DEVIANCE:      247.951679627053\n\n\nIteration 8...\n\n\nCURRENT DEVIANCE:      247.951676112782\n\n\nIteration 9...\n\n\nCURRENT DEVIANCE:      247.951676112781\n\n\nSUMMARY OF MODEL STATE after iteration 9\n\n\nCurrent deviance 247.951676112781 on 1732 degrees of freedom\n\n\nConvergence criterion TRUE (1.03121812713466e-15)\n\n\n\nbeta: -8.17499120062243 0.121259330650184 0.0994449436744155 -0.38653486743053\n\n\n\nInformation matrix overall:\n\n\n                  (Intercept) PM_BMI_CONTINUOUS    LAB_TSC   GENDER1\n(Intercept)          24.27406          748.0070  147.42266   8.87059\nPM_BMI_CONTINUOUS   748.00701        23885.4256 4585.78813 262.28757\nLAB_TSC             147.42266         4585.7881  932.01485  52.21114\nGENDER1               8.87059          262.2876   52.21114   8.87059\n\n\n\nScore vector overall:\n\n\n                           [,1]\n(Intercept)       -1.602065e-13\nPM_BMI_CONTINUOUS -4.346995e-12\nLAB_TSC           -1.018725e-12\nGENDER1           -1.064578e-13\n\n\n\nCurrent deviance: 247.951676112781\n\n# Extract and format results\ncoefs &lt;- model_diabetes$coefficients\nodds_ratios &lt;- exp(coefs[, \"Estimate\"])\nci_lower &lt;- exp(coefs[, \"Estimate\"] - 1.96 * coefs[, \"Std. Error\"])\nci_upper &lt;- exp(coefs[, \"Estimate\"] + 1.96 * coefs[, \"Std. Error\"])\n\nresults &lt;- data.frame(\n  OR = round(odds_ratios, 3),\n  CI_lower = round(ci_lower, 3),\n  CI_upper = round(ci_upper, 3),\n  p_value = round(coefs[, \"p-value\"], 4)\n)\n\nprint(results)\n\n                     OR CI_lower CI_upper p_value\n(Intercept)       0.000    0.000    0.004  0.0000\nPM_BMI_CONTINUOUS 1.129    1.052    1.212  0.0008\nLAB_TSC           1.105    0.790    1.544  0.5606\nGENDER1           0.679    0.293    1.573  0.3670",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html#adjusting-for-confounders",
+    "href": "7-glm-models.html#adjusting-for-confounders",
+    "title": "Generalized Linear Models",
+    "section": "Adjusting for Confounders",
+    "text": "Adjusting for Confounders\n\nBuilding Adjusted Models\n\n# Unadjusted model\nmodel_unadj &lt;- ds.glm(\n  formula = \"DIS_DIAB ~ PM_BMI_CONTINUOUS\",\n  data = \"D\",\n  family = \"binomial\"\n)\n\nIteration 1...\n\n\nCURRENT DEVIANCE:      2864.08415007369\n\n\nIteration 2...\n\n\nCURRENT DEVIANCE:      664.29240022525\n\n\nIteration 3...\n\n\nCURRENT DEVIANCE:      376.697280364928\n\n\nIteration 4...\n\n\nCURRENT DEVIANCE:      306.438153897246\n\n\nIteration 5...\n\n\nCURRENT DEVIANCE:      292.639535998019\n\n\nIteration 6...\n\n\nCURRENT DEVIANCE:      291.331982353567\n\n\nIteration 7...\n\n\nCURRENT DEVIANCE:      291.314338097214\n\n\nIteration 8...\n\n\nCURRENT DEVIANCE:      291.314334147146\n\n\nIteration 9...\n\n\nCURRENT DEVIANCE:      291.314334147146\n\n\nSUMMARY OF MODEL STATE after iteration 9\n\n\nCurrent deviance 291.314334147146 on 2064 degrees of freedom\n\n\nConvergence criterion TRUE (7.80241905768514e-16)\n\n\n\nbeta: -7.97564060620008 0.128164950163299\n\n\n\nInformation matrix overall:\n\n\n                  (Intercept) PM_BMI_CONTINUOUS\n(Intercept)          28.29673          871.4757\nPM_BMI_CONTINUOUS   871.47574        27750.8489\n\n\n\nScore vector overall:\n\n\n                          [,1]\n(Intercept)       3.356430e-13\nPM_BMI_CONTINUOUS 1.092246e-11\n\n\n\nCurrent deviance: 291.314334147146\n\n# Gender adjusted\nmodel_adj1 &lt;- ds.glm(\n  formula = \"DIS_DIAB ~ PM_BMI_CONTINUOUS + GENDER\",\n  data = \"D\",\n  family = \"binomial\"\n)\n\nIteration 1...\n\n\nCURRENT DEVIANCE:      2864.08415007369\n\n\nIteration 2...\n\n\nCURRENT DEVIANCE:      664.091745207646\n\n\nIteration 3...\n\n\nCURRENT DEVIANCE:      376.077873636942\n\n\nIteration 4...\n\n\nCURRENT DEVIANCE:      305.060218021482\n\n\nIteration 5...\n\n\nCURRENT DEVIANCE:      290.53336981469\n\n\nIteration 6...\n\n\nCURRENT DEVIANCE:      289.008148333213\n\n\nIteration 7...\n\n\nCURRENT DEVIANCE:      288.981069589415\n\n\nIteration 8...\n\n\nCURRENT DEVIANCE:      288.981056969819\n\n\nIteration 9...\n\n\nCURRENT DEVIANCE:      288.981056969815\n\n\nSUMMARY OF MODEL STATE after iteration 9\n\n\nCurrent deviance 288.981056969815 on 2063 degrees of freedom\n\n\nConvergence criterion TRUE (1.21913625413999e-14)\n\n\n\nbeta: -7.46199544706331 0.119009703477005 -0.609693778835752\n\n\n\nInformation matrix overall:\n\n\n                  (Intercept) PM_BMI_CONTINUOUS    GENDER1\n(Intercept)         28.247764          869.6887   8.891516\nPM_BMI_CONTINUOUS  869.688718        27696.7482 261.610627\nGENDER1              8.891516          261.6106   8.891516\n\n\n\nScore vector overall:\n\n\n                           [,1]\n(Intercept)       -1.662210e-12\nPM_BMI_CONTINUOUS -4.706158e-11\nGENDER1           -1.632526e-12\n\n\n\nCurrent deviance: 288.981056969815\n\n# Adjusted for multiple factors\nmodel_adj2 &lt;- ds.glm(\n  formula = \"DIS_DIAB ~ PM_BMI_CONTINUOUS + GENDER + LAB_TSC\",\n  data = \"D\",\n  family = \"binomial\"\n)\n\nIteration 1...\n\n\nCURRENT DEVIANCE:      2406.60701090413\n\n\nIteration 2...\n\n\nCURRENT DEVIANCE:      560.909237342012\n\n\nIteration 3...\n\n\nCURRENT DEVIANCE:      319.925807987189\n\n\nIteration 4...\n\n\nCURRENT DEVIANCE:      260.761811075199\n\n\nIteration 5...\n\n\nCURRENT DEVIANCE:      249.020431449225\n\n\nIteration 6...\n\n\nCURRENT DEVIANCE:      247.965547009566\n\n\nIteration 7...\n\n\nCURRENT DEVIANCE:      247.951679627053\n\n\nIteration 8...\n\n\nCURRENT DEVIANCE:      247.951676112782\n\n\nIteration 9...\n\n\nCURRENT DEVIANCE:      247.951676112781\n\n\nSUMMARY OF MODEL STATE after iteration 9\n\n\nCurrent deviance 247.951676112781 on 1732 degrees of freedom\n\n\nConvergence criterion TRUE (1.03121812713466e-15)\n\n\n\nbeta: -8.17499120062243 0.121259330650184 -0.38653486743053 0.0994449436744149\n\n\n\nInformation matrix overall:\n\n\n                  (Intercept) PM_BMI_CONTINUOUS   GENDER1    LAB_TSC\n(Intercept)          24.27406          748.0070   8.87059  147.42266\nPM_BMI_CONTINUOUS   748.00701        23885.4256 262.28757 4585.78813\nGENDER1               8.87059          262.2876   8.87059   52.21114\nLAB_TSC             147.42266         4585.7881  52.21114  932.01485\n\n\n\nScore vector overall:\n\n\n                           [,1]\n(Intercept)       -8.427677e-14\nPM_BMI_CONTINUOUS -1.959183e-12\nGENDER1           -8.945318e-14\nLAB_TSC           -6.018311e-13\n\n\n\nCurrent deviance: 247.951676112781\n\n# Compare estimates across models\ncat(\"Unadjusted OR for BMI:\", round(exp(model_unadj$coefficients[\"PM_BMI_CONTINUOUS\", \"Estimate\"]), 3), \"\\n\")\n\nUnadjusted OR for BMI: 1.137 \n\ncat(\"Gender-adjusted OR:\", round(exp(model_adj1$coefficients[\"PM_BMI_CONTINUOUS\", \"Estimate\"]), 3), \"\\n\")\n\nGender-adjusted OR: 1.126 \n\ncat(\"Fully adjusted OR:\", round(exp(model_adj2$coefficients[\"PM_BMI_CONTINUOUS\", \"Estimate\"]), 3), \"\\n\")\n\nFully adjusted OR: 1.129",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html#working-with-factor-variables",
+    "href": "7-glm-models.html#working-with-factor-variables",
+    "title": "Generalized Linear Models",
+    "section": "Working with Factor Variables",
+    "text": "Working with Factor Variables\n\nConverting Variables to Factors\n\n# Ensure categorical variables are factors\nds.asFactor(\"D$GENDER\", newobj = \"gender_f\")\nds.asFactor(\"D$DIS_DIAB\", newobj = \"diabetes_f\")\nds.asFactor(\"D$PM_BMI_CATEGORICAL\", newobj = \"bmi_cat_f\")\n\n# Add to data frame\nds.dataFrame(x = c(\"D\", \"gender_f\", \"diabetes_f\", \"bmi_cat_f\"), newobj = \"D_factors\")\n\n\n\nUsing Factors in Models\n\n# Model with factor predictors\nmodel_factors &lt;- ds.glm(\n  formula = \"DIS_DIAB ~ PM_BMI_CONTINUOUS + gender_f\",\n  data = \"D_factors\",\n  family = \"binomial\"\n)\n\n# Each factor level (except reference) gets its own coefficient\nmodel_factors$coefficients",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html#interaction-terms",
+    "href": "7-glm-models.html#interaction-terms",
+    "title": "Generalized Linear Models",
+    "section": "Interaction Terms",
+    "text": "Interaction Terms\n\nTesting Interactions\n\n# Interaction between BMI and gender\nmodel_interaction &lt;- ds.glm(\n  formula = \"D$DIS_DIAB ~ D$PM_BMI_CONTINUOUS + D$GENDER + D$PM_BMI_CONTINUOUS:D$GENDER\",\n  family = \"binomial\"\n)\n\nIteration 1...\n\n\nCURRENT DEVIANCE:      2864.08415007369\n\n\nIteration 2...\n\n\nCURRENT DEVIANCE:      663.64903038877\n\n\nIteration 3...\n\n\nCURRENT DEVIANCE:      374.912930736829\n\n\nIteration 4...\n\n\nCURRENT DEVIANCE:      303.419209135154\n\n\nIteration 5...\n\n\nCURRENT DEVIANCE:      289.592337227501\n\n\nIteration 6...\n\n\nCURRENT DEVIANCE:      288.353029162793\n\n\nIteration 7...\n\n\nCURRENT DEVIANCE:      288.326338557291\n\n\nIteration 8...\n\n\nCURRENT DEVIANCE:      288.326307172945\n\n\nIteration 9...\n\n\nCURRENT DEVIANCE:      288.326307172892\n\n\nSUMMARY OF MODEL STATE after iteration 9\n\n\nCurrent deviance 288.326307172892 on 2062 degrees of freedom\n\n\nConvergence criterion TRUE (1.85453461829877e-13)\n\n\n\nbeta: -7.92542541105242 0.133660437389928 1.27087964660502 -0.0637498408875636\n\n\n\nInformation matrix overall:\n\n\n                              (Intercept) D$PM_BMI_CONTINUOUS D$GENDER1\n(Intercept)                      28.15728            865.1230   8.91207\nD$PM_BMI_CONTINUOUS             865.12297          27575.7058 252.21723\nD$GENDER1                         8.91207            252.2172   8.91207\nD$PM_BMI_CONTINUOUS:D$GENDER1   252.21723           7347.2810 252.21723\n                              D$PM_BMI_CONTINUOUS:D$GENDER1\n(Intercept)                                        252.2172\nD$PM_BMI_CONTINUOUS                               7347.2810\nD$GENDER1                                          252.2172\nD$PM_BMI_CONTINUOUS:D$GENDER1                     7347.2810\n\n\n\nScore vector overall:\n\n\n                                       [,1]\n(Intercept)                   -2.709960e-11\nD$PM_BMI_CONTINUOUS           -6.415722e-10\nD$GENDER1                     -2.657315e-11\nD$PM_BMI_CONTINUOUS:D$GENDER1 -6.242105e-10\n\n\n\nCurrent deviance: 288.326307172892\n\nmodel_interaction$coefficients\n\n                                 Estimate Std. Error    z-value      p-value\n(Intercept)                   -7.92542541 1.21749187 -6.5096331 7.533457e-11\nD$PM_BMI_CONTINUOUS            0.13366044 0.03755315  3.5592341 3.719379e-04\nD$GENDER1                      1.27087965 2.32805373  0.5458979 5.851361e-01\nD$PM_BMI_CONTINUOUS:D$GENDER1 -0.06374984 0.07865359 -0.8105141 4.176448e-01\n                              low0.95CI.LP high0.95CI.LP         P_OR\n(Intercept)                   -10.31166563   -5.53918519 0.0003613055\nD$PM_BMI_CONTINUOUS             0.06005762    0.20726325 1.1430046321\nD$GENDER1                      -3.29202182    5.83378112 3.5639862323\nD$PM_BMI_CONTINUOUS:D$GENDER1  -0.21790804    0.09040836 0.9382396794\n                              low0.95CI.P_OR high0.95CI.P_OR\n(Intercept)                     3.324192e-05    3.914345e-03\nD$PM_BMI_CONTINUOUS             1.061898e+00    1.230306e+00\nD$GENDER1                       3.717860e-02    3.416481e+02\nD$PM_BMI_CONTINUOUS:D$GENDER1   8.041994e-01    1.094621e+00\n\n\nThe interaction term PM_BMI_CONTINUOUS:GENDER tests whether the effect of BMI on diabetes risk differs between males and females.",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html#model-diagnostics",
+    "href": "7-glm-models.html#model-diagnostics",
+    "title": "Generalized Linear Models",
+    "section": "Model Diagnostics",
+    "text": "Model Diagnostics\n\nChecking Model Fit\n\n# Deviance and degrees of freedom\nmodel_diabetes$dev  # Deviance\nmodel_diabetes$df   # Degrees of freedom\n\n# Number of valid observations\nmodel_diabetes$Nvalid",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html#practical-example-univariate-and-multivariate-analysis",
+    "href": "7-glm-models.html#practical-example-univariate-and-multivariate-analysis",
+    "title": "Generalized Linear Models",
+    "section": "Practical Example: Univariate and Multivariate Analysis",
+    "text": "Practical Example: Univariate and Multivariate Analysis\n\n# ============================================\n# Univariate Analysis (CNSIM Data)\n# ============================================\n\n# Model 1: Diabetes ~ BMI\nuni_bmi &lt;- ds.glm(\n  formula = \"DIS_DIAB ~ PM_BMI_CONTINUOUS\",\n  data = \"D\",\n  family = \"binomial\"\n)\n\n# Model 2: Diabetes ~ Total Cholesterol\nuni_tsc &lt;- ds.glm(\n  formula = \"DIS_DIAB ~ LAB_TSC\",\n  data = \"D\",\n  family = \"binomial\"\n)\n\n# Model 3: Diabetes ~ HDL\nuni_hdl &lt;- ds.glm(\n  formula = \"DIS_DIAB ~ LAB_HDL\",\n  data = \"D\",\n  family = \"binomial\"\n)\n\n# Model 4: Diabetes ~ Triglycerides\nuni_trig &lt;- ds.glm(\n  formula = \"DIS_DIAB ~ LAB_TRIG\",\n  data = \"D\",\n  family = \"binomial\"\n)\n\n# Collect univariate results\ncat(\"=== Univariate Analysis ===\\n\\n\")\ncat(\"BMI OR:\", round(exp(uni_bmi$coefficients[2, 1]), 3), \n    \"p =\", round(uni_bmi$coefficients[2, 4], 4), \"\\n\")\ncat(\"TSC OR:\", round(exp(uni_tsc$coefficients[2, 1]), 3), \n    \"p =\", round(uni_tsc$coefficients[2, 4], 4), \"\\n\")\ncat(\"HDL OR:\", round(exp(uni_hdl$coefficients[2, 1]), 3), \n    \"p =\", round(uni_hdl$coefficients[2, 4], 4), \"\\n\")\ncat(\"TRIG OR:\", round(exp(uni_trig$coefficients[2, 1]), 3), \n    \"p =\", round(uni_trig$coefficients[2, 4], 4), \"\\n\")\n\n# ============================================\n# Multivariate Analysis\n# ============================================\n\nmulti_model &lt;- ds.glm(\n  formula = \"DIS_DIAB ~ PM_BMI_CONTINUOUS + LAB_TSC + LAB_HDL + GENDER\",\n  data = \"D\",\n  family = \"binomial\"\n)\n\ncat(\"\\n=== Multivariate Analysis ===\\n\")\nprint(multi_model$coefficients)",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html#reporting-results",
+    "href": "7-glm-models.html#reporting-results",
+    "title": "Generalized Linear Models",
+    "section": "Reporting Results",
+    "text": "Reporting Results\n\nCreating Publication-Ready Tables\n\n# Format model results\nformat_glm_results &lt;- function(model, family = \"binomial\") {\n  coefs &lt;- model$coefficients\n  \n  if (family == \"binomial\") {\n    results &lt;- data.frame(\n      Variable = rownames(coefs),\n      OR = round(exp(coefs[, \"Estimate\"]), 2),\n      CI_95 = paste0(\n        round(exp(coefs[, \"Estimate\"] - 1.96 * coefs[, \"Std. Error\"]), 2),\n        \"-\",\n        round(exp(coefs[, \"Estimate\"] + 1.96 * coefs[, \"Std. Error\"]), 2)\n      ),\n      p = ifelse(coefs[, \"p-value\"] &lt; 0.001, \"&lt;0.001\", \n                 round(coefs[, \"p-value\"], 3))\n    )\n  } else {\n    results &lt;- data.frame(\n      Variable = rownames(coefs),\n      Beta = round(coefs[, \"Estimate\"], 3),\n      SE = round(coefs[, \"Std. Error\"], 3),\n      p = ifelse(coefs[, \"p-value\"] &lt; 0.001, \"&lt;0.001\",\n                 round(coefs[, \"p-value\"], 3))\n    )\n  }\n  \n  return(results)\n}\n\n# Usage\nformatted &lt;- format_glm_results(multi_model, family = \"binomial\")\nprint(formatted)",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html#propass-script-workflow",
+    "href": "7-glm-models.html#propass-script-workflow",
+    "title": "Generalized Linear Models",
+    "section": "ProPASS Script Workflow",
+    "text": "ProPASS Script Workflow\n\n\n\n\n\n\nProPASS Data\n\n\n\nThe ProPASS analysis uses different variables than the CNSIM demo data. Here’s how GLM models are used with ProPASS data:\n\n\n\n# Convert categorical variables to factors\nds.asFactor(input.var.name = \"D$edu\", newobj.name = \"edu\")\nds.asFactor(input.var.name = \"D$smoke\", newobj.name = \"smoke\")\nds.asFactor(input.var.name = \"D$sex\", newobj.name = \"sex\")\n\n# Multivariate logistic regression with ProPASS covariates\nmodel_propass &lt;- ds.glm(\n  formula = \"acm ~ bmi + age + sex + smoke + edu + alc + med_combined + diet\",\n  data = \"D\",\n  family = \"binomial\"\n)\n\n# Extract odds ratios\nexp(model_propass$coefficients[, \"Estimate\"])",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html#best-practices",
+    "href": "7-glm-models.html#best-practices",
+    "title": "Generalized Linear Models",
+    "section": "Best Practices",
+    "text": "Best Practices\n\n\n\n\n\n\nGLM Modeling Tips\n\n\n\n\nCheck variable types: Ensure factors are properly coded with ds.asFactor()\nStart simple: Begin with univariate analyses\nBuild progressively: Add confounders stepwise\nCheck multicollinearity: Avoid highly correlated predictors\nReport consistently: Include OR, 95% CI, and p-values",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html#exercise",
+    "href": "7-glm-models.html#exercise",
+    "title": "Generalized Linear Models",
+    "section": "Exercise",
+    "text": "Exercise\nUsing the CNSIM data:\n\nFit a univariate logistic regression of DIS_DIAB on PM_BMI_CONTINUOUS\nFit a univariate logistic regression of DIS_DIAB on LAB_TSC\nBuild a multivariate model with BMI, cholesterol, HDL, and gender\nTest for an interaction between BMI and gender\nReport your results in a publication-ready table with odds ratios and 95% CIs",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "7-glm-models.html#next-steps",
+    "href": "7-glm-models.html#next-steps",
+    "title": "Generalized Linear Models",
+    "section": "Next Steps",
+    "text": "Next Steps\nContinue to Survival Analysis to learn about time-to-event modelling.",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>8</span>  <span class='chapter-title'>Generalized Linear Models</span>"
+    ]
+  },
+  {
+    "objectID": "8-survival-analysis.html",
+    "href": "8-survival-analysis.html",
+    "title": "Survival Analysis",
+    "section": "",
+    "text": "Overview\nSurvival analysis is used to analyze time-to-event data, such as:",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Survival Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "8-survival-analysis.html#overview",
+    "href": "8-survival-analysis.html#overview",
+    "title": "Survival Analysis",
+    "section": "",
+    "text": "Time to death (all-cause mortality - ACM)\nTime to cardiovascular event (CVD)\nTime to disease onset\nTime to recurrence",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Survival Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "8-survival-analysis.html#setup",
+    "href": "8-survival-analysis.html#setup",
+    "title": "Survival Analysis",
+    "section": "Setup",
+    "text": "Setup\n\n\n\n\n\n\nProfile Requirement\n\n\n\nSurvival analysis requires the dsSurvival server-side package. On the Opal demo server, use profile = \"default\" which includes dsBase, dsSurvival, dsTidyverse, and resourcer.\n\n\n\nInstalling dsSurvivalClient\n\n# Install the specific version used in ProPASS\ndevtools::install_github(\"datashield/dsSurvivalClient\", ref = \"v2.3.0-dev\")\n\n\n\nLoading Libraries and Connecting\n\n# Load all required libraries\nlibrary(DSI)\nlibrary(DSOpal)\nlibrary(dsBaseClient)\nlibrary(dsTidyverseClient)\nlibrary(dsSurvivalClient)\n\n# Connect to ProPass dataset\nbuilder &lt;- DSI::newDSLoginBuilder()\nbuilder$append(\n  server = \"study1\",\n  url = \"https://opal-demo.obiba.org\",\n  user = \"administrator\",\n  password = \"password\",\n  table = \"ProPass.life1\",\n  profile = \"margin-idiom\"\n)\n\nlogindata &lt;- builder$build()\nconns &lt;- datashield.login(logins = logindata, assign = TRUE, symbol = \"D\")\n\n\n\nExploring the Data\n\n# Check data structure\nds.colnames(\"D\")\n\n$study1\n [1] \"ID\"                \"age\"               \"sex\"              \n [4] \"smoke\"             \"fruit\"             \"veg\"              \n [7] \"edu\"               \"eth\"               \"job\"              \n[10] \"slf-hlth\"          \"alc\"               \"mobility\"         \n[13] \"fasting\"           \"med_lipid\"         \"med_bp\"           \n[16] \"med_glucose\"       \"prev_cvd\"          \"prev_ht\"          \n[19] \"prev_bronchitis\"   \"body_fat_percent\"  \"hdl\"              \n[22] \"total_cholesterol\" \"hba1c\"             \"cprotein\"         \n[25] \"IGF\"               \"triglycerides\"     \"wc\"               \n[28] \"bmi\"               \"t2d\"               \"sbp\"              \n[31] \"dbp\"               \"cohort\"           \n\nds.dim(\"D\")\n\n$`dimensions of D in study1`\n[1] 537  32\n\n$`dimensions of D in combined studies`\n[1] 537  32\n\n\nThe ProPASS dataset contains lifestyle and follow-up data.",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Survival Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "8-survival-analysis.html#data-preparation-propass-workflow",
+    "href": "8-survival-analysis.html#data-preparation-propass-workflow",
+    "title": "Survival Analysis",
+    "section": "Data Preparation (ProPASS Workflow)",
+    "text": "Data Preparation (ProPASS Workflow)\nThis section replicates the data preparation steps from the ProPASS analysis script. These steps are necessary to create the analysis-ready dataset.\n\nStep 1: Arrange and Winsorize BMI\nFirst, we arrange the data by ID and cap extreme BMI values at the 97.5th percentile (here approximated as 37.16):\n\n# Arrange data by ID\nds.arrange(df.name = \"D\", tidy_expr = list(ID), newobj = \"D\")\n\n# Winsorize BMI at 97.5th percentile (cap at 37.16)\n# Original script uses 0.975 quantile; on DataSHIELD we approximate this\n# ds.quantileMean(x = 'D$bmi') yields approximately 37.16 at 95th percentile\nds.case_when(\n  tidy_expr = list(D$bmi &lt;= 37.16 ~ D$bmi, D$bmi &gt; 37.16 ~ 37.16),\n  newobj = \"bmi_revised\"\n)\nds.dataFrame(x = c(\"D\", \"bmi_revised\"), newobj = \"D\")\n\n\n\nStep 2: Handle Missing Values and Create Derived Variables\n\n# Check for missing values in alcohol variable\nds.numNA(x = \"D$alc\")\n\n# Filter out rows with missing alcohol data\nds.filter(df.name = \"D\", tidy_expr = list(D$alc != \"NA\"), newobj = \"D\")\n\n# Create combined medication variable (1 if any medication, 0 otherwise)\nds.if_else(\n  condition = list(D$med_lipid == 1 | D$med_bp == 1 | D$med_glucose == 1),\n  true = 1,\n  false = 0,\n  newobj = \"med_combined\"\n)\nds.dataFrame(x = c(\"D\", \"med_combined\"), newobj = \"D\")\n\n# Create diet variable from fruit and vegetable consumption\nds.asNumeric(x.name = \"D$veg\", newobj = \"veg.n\")\nds.asNumeric(x.name = \"D$fruit\", newobj = \"fruit.n\")\nds.make(toAssign = \"fruit.n + veg.n\", newobj = \"diet\")\nds.dataFrame(x = c(\"D\", \"diet\"), newobj = \"D\")\n\n\n\nStep 3: Select Variables and Generate Outcome Variables\n\n# Select relevant columns for analysis\nds.select(\n  df.name = \"D\",\n  tidy_expr = list(ID, age, sex, smoke, edu, bmi, alc, med_combined, diet),\n  newobj = \"D2\"\n)\n\n# Generate simulated ACM outcome (for demonstration purposes)\nds.rBinom(samp.size = 491, size = 1, prob = 0.15, newobj = \"acm\", seed.as.integer = 3112)\n\n# Generate follow-up times\nds.rUnif(samp.size = 491, min = 3.0, max = 7.8, newobj = \"var1\", seed.as.integer = NULL)\nds.make(toAssign = \"acm * var1\", newobj = \"var2\")\nds.recodeValues(var.name = \"var2\", values2replace.vector = 0, new.values.vector = 8, newobj = \"fup\")\nds.recodeValues(var.name = \"var1\", values2replace.vector = 0, new.values.vector = 8, newobj = \"fup2\")\nds.dataFrame(x = c(\"D2\", \"acm\", \"fup\"), newobj = \"D2\")\n\n# Generate simulated CVD outcome (0 = censored, 1 = CVD, 2 = competing death)\nds.rBinom(samp.size = 491, size = 2, prob = 0.3, newobj = \"CVD\", seed.as.integer = NULL)\nds.case_when(tidy_expr = list(CVD == 2 ~ var1, CVD &lt; 2 ~ 8), newobj = \"fup_CVD\")\nds.dataFrame(x = c(\"D2\", \"CVD\", \"fup_CVD\"), newobj = \"D2\")\n\n\n\nStep 4: Convert Variables to Appropriate Types\n\n# Convert categorical variables to numeric for model fitting\nds.asNumeric(x.name = \"D2$edu\", newobj = \"edu\")\nds.asNumeric(x.name = \"D2$smoke\", newobj = \"smoke\")\n\n# Reorganize data frame\nds.select(\n  df.name = \"D2\",\n  tidy_expr = list(ID, age, sex, bmi, alc, med_combined, diet, acm, fup, CVD, fup_CVD),\n  newobj = \"D2\"\n)\nds.dataFrame(x = c(\"D2\", \"smoke\", \"edu\"), newobj = \"D2\")\n\n\n\nStep 5: Multiple Imputation\nHandle remaining missing values using multiple imputation with random forests:\n\n# Perform multiple imputation with 5 imputations using random forest\nds.mice(\n  data = \"D2\",\n  m = 5,\n  method = \"rf\",\n  newobj_df = \"imputed_data\",\n  seed = \"fixed\",\n  newobj_mids = \"imputed_mids\"\n)\n\n# Convert variables to factors for the imputed data\nds.asFactor(input.var.name = \"D2$edu\", newobj.name = \"edu\")\nds.asFactor(input.var.name = \"D2$smoke\", newobj.name = \"smoke\")\nds.asFactor(input.var.name = \"D2$sex\", newobj.name = \"sex\")\n\n# Select from first imputation and combine with factor variables\nds.select(\n  df.name = \"imputed_data.1\",\n  tidy_expr = list(ID, age, bmi, alc, med_combined, diet, acm, fup, CVD, fup_CVD),\n  newobj = \"imputed_data1\"\n)\nds.dataFrame(x = c(\"imputed_data1\", \"smoke\", \"edu\", \"sex\"), newobj = \"imputed_data.3\")\n\n\n\nStep 6: Prepare Final Analysis Datasets\n\n# ACM analysis dataset: filter for adequate follow-up (&gt;= 1 year)\nds.dataFrameSubset(\n  df.name = \"imputed_data.3\",\n  V1.name = \"fup\",\n  V2.name = \"1\",\n  Boolean.operator = \"&gt;=\",\n  newobj = \"dat_ACM_BMI\"\n)\nds.make(toAssign = \"dat_ACM_BMI$bmi\", newobj = \"Primary_exposure\")\nds.dataFrame(c(\"dat_ACM_BMI\", \"Primary_exposure\"), newobj = \"dat_ACM_BMI\")\n\n# CVD analysis dataset: filter for adequate CVD follow-up\nds.dataFrameSubset(\n  df.name = \"imputed_data.3\",\n  V1.name = \"fup_CVD\",\n  V2.name = \"1\",\n  Boolean.operator = \"&gt;=\",\n  newobj = \"dat_CVD_BMI\"\n)\nds.make(toAssign = \"dat_CVD_BMI$bmi\", newobj = \"Primary_exposure\")\nds.dataFrame(c(\"dat_CVD_BMI\", \"Primary_exposure\"), newobj = \"dat_CVD_BMI\")\n\n# Check final sample sizes\nds.dim(\"dat_ACM_BMI\")\nds.dim(\"dat_CVD_BMI\")\n\n\n\n\n\n\n\nData Preparation Summary\n\n\n\nThe data preparation steps above:\n\nWinsorize extreme BMI values to reduce outlier influence\nFilter observations with missing alcohol data\nCreate derived variables (combined medication, diet score)\nImpute missing values using multiple imputation\nSubset for adequate follow-up time\nCreate standardized Primary_exposure variable for modeling",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Survival Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "8-survival-analysis.html#cox-proportional-hazards-models-with-rcs",
+    "href": "8-survival-analysis.html#cox-proportional-hazards-models-with-rcs",
+    "title": "Survival Analysis",
+    "section": "Cox Proportional Hazards Models with RCS",
+    "text": "Cox Proportional Hazards Models with RCS\n\n\n\n\n\n\nWhy Restricted Cubic Splines?\n\n\n\nRCS allows modeling non-linear exposure-response relationships. Instead of assuming a linear association between BMI and mortality, RCS captures potential J-shaped or U-shaped curves. This is the approach used in the ProPASS analysis.\n\n\n\nStep 1: Setup for RMS Package\nThe rms package enables restricted cubic splines. Setup requires ds.datadist():\n\n# Setup datadist for rms functions\n# adjust_to specifies the reference value for hazard ratio plots\nds.datadist(\n  data = \"dat_ACM_BMI\",\n  adjust_to = list(Primary_exposure = \"min\")  # Reference = minimum BMI\n)\n\n# Activate the datadist\nds.useDatadist(datadist = \"datadist_dat_ACM_BMI\")\n\n\n\nStep 2: Define Spline Knots\nKnots are placed at quantiles of the exposure distribution. Standard practice is to use the 10th, 50th, and 90th percentiles for 3 knots:\n\n# Get quantiles to determine knot placement\nds.quantileMean(x = \"dat_ACM_BMI$Primary_exposure\", type = \"combine\")\n\n Quantiles of the pooled data\n\n\n      5%      10%      25%      50%      75%      90%      95%     Mean \n21.85000 22.60000 24.80000 27.50000 30.90000 34.30000 37.55000 28.25499 \n\n\n\n# Create knots vector based on quantiles (10th, 50th, 90th percentiles)\n# Values from ds.quantileMean output: approximately 23.5, 27.5, 32.8\nds.make(toAssign = \"c(22.6, 27.5, 34.3)\", newobj = \"knots\")\n\n\n\nStep 3: Create Survival Object\n\n# Create Surv object for time-to-event analysis\nds.Surv(\n  time = \"dat_ACM_BMI$fup\",\n  event = \"dat_ACM_BMI$acm\",\n  objectname = \"surv_object\"\n)\n\n\n\nStep 4: Fit Cox Model with RCS\nUse ds.coxphSLMAassign() to fit a Cox model with restricted cubic splines:\n\nds.make(toAssign = \"dat_ACM_BMI\", newobj = \"dataTable\")\nds.make(toAssign = \"NULL\", newobj = \"weights_obj\")\n# Fit Cox model with restricted cubic splines for the exposure\nds.coxphSLMAassign(\n  formula = \"surv_object ~ rms::rcs(Primary_exposure, knots) + age + sex + smoke + edu + alc + med_combined + diet\",\n  dataName = \"dat_ACM_BMI\",\n  objectname = \"cph1\",\n  use.rms = TRUE\n)\n\n\n\n\n\n\n\nUnderstanding the Formula\n\n\n\n\nrms::rcs(Primary_exposure, knots): Models BMI as a restricted cubic spline with 3 knots\nThis allows the hazard ratio to vary non-linearly across BMI values\nThe reference point is set by adjust_to in ds.datadist() (minimum BMI)\nCovariates: age, sex, smoke, edu, alc, med_combined, diet\n\n\n\n\n\nStep 5: Test Proportional Hazards Assumption\nThe proportional hazards assumption should be verified. Use ds.cox.zphSLMA() and visualize with survminer::ggcoxzph():\n\n# Test the proportional hazards assumption\ntest_ph &lt;- ds.cox.zphSLMA(\"cph1\")\n\n# View the test results\nprint(test_ph[[1]]$table)\n\n                                        chisq df          p\nrms::rcs(Primary_exposure, knots)  2.71811100  2 0.25690331\nage                                1.56002901  1 0.21166097\nsex                                0.67475094  1 0.41140010\nsmoke                              0.37898794  2 0.82737771\nedu                                7.65788160  3 0.05363760\nalc                                1.69506890  2 0.42847004\nmed_combined                       0.04054328  1 0.84042207\ndiet                               3.14353303  1 0.07622852\nGLOBAL                            14.84456171 13 0.31715674\n\n# Visualize the Schoenfeld residuals\n# Non-significant p-values and flat lines indicate PH assumption holds\nsurvminer::ggcoxzph(test_ph[[1]])\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nInterpreting the PH Test\n\n\n\n\np-value &gt; 0.05: Proportional hazards assumption is satisfied\nFlat residual plot: The hazard ratio is constant over time\nSloped residual plot: The effect changes over time (assumption violated)\n\n\n\n\n\nStep 6: Generate Predictions and Plot Hazard Ratio Curves\nThis is the key visualization step - creating hazard ratio curves across the exposure range:\n\n# Generate predictions across BMI range\n# We use 5th to 95th percentile range (approximately 22.6 to 34.4 from quantiles)\nds.Predict(\n  fit = \"cph1\",\n  objectname = \"predictions\",\n  Primary_exposure = seq(22.6, 34.4, 0.1),\n  fun = \"exp\",        # Exponentiate to get hazard ratios\n  ref.zero = TRUE     # Reference hazard ratio = 1\n)\n\n\n# Create the hazard ratio plot using ds.acmPlot\nds.acmPlot(\n  pred_obj = \"predictions\",\n  line_color = \"blue\",\n  line_size = 2,\n  ref_line_color = \"brown\",\n  ref_line_size = 1.5,\n  x_label = \"BMI\",\n  y_label = \"Hazard Ratio\",\n  event_n = 87\n)[[1]]\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUnderstanding the Hazard Ratio Plot\n\n\n\n\nY-axis = 1: Reference (minimum BMI)\nBlue line: Hazard ratio curve with 95% CI (shaded)\nBrown dashed line: Reference line at HR = 1\nNon-linear shape: Captures J-shaped or U-shaped relationships\n\n\n\n\n\nExtended Prediction Range\nWe can also generate predictions over a wider range to see the full curve:\n\n# Extend the prediction range\nds.Predict(\n  fit = \"cph1\",\n  objectname = \"predictions\",\n  Primary_exposure = seq(22, 44, 0.01),\n  fun = \"exp\",\n  ref.zero = TRUE\n)\n\n\nds.acmPlot(\n  pred_obj = \"predictions\",\n  line_color = \"blue\",\n  line_size = 2,\n  ref_line_color = \"brown\",\n  ref_line_size = 1.5,\n  x_label = \"BMI\",\n  y_label = \"Hazard Ratio\",\n  event_n = 87\n)[[1]]",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Survival Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "8-survival-analysis.html#competing-risks-analysis-fine-gray-model",
+    "href": "8-survival-analysis.html#competing-risks-analysis-fine-gray-model",
+    "title": "Survival Analysis",
+    "section": "Competing Risks Analysis (Fine-Gray Model)",
+    "text": "Competing Risks Analysis (Fine-Gray Model)\nWhen there are competing events (e.g., CVD event vs. death from other causes), use the Fine-Gray model. This estimates the subdistribution hazard which accounts for competing risks.\n\n\n\n\n\n\nWhy Fine-Gray?\n\n\n\nIn CVD analysis, death from non-CVD causes is a competing event. Standard Cox regression would treat these as censored, potentially overestimating CVD risk. Fine-Gray models correctly handle this.\n\n\n\nStep 1: Setup for RMS Package\n\n# Setup datadist for CVD analysis\nds.datadist(\n  data = \"dat_CVD_BMI\",\n  adjust_to = list(Primary_exposure = \"min\")\n)\nds.useDatadist(datadist = \"datadist_dat_CVD_BMI\")\n\n\n\nStep 2: Define Spline Knots\n\n# Get quantiles for CVD data\nds.quantileMean(x = \"dat_CVD_BMI$Primary_exposure\", type = \"combine\")\n\n Quantiles of the pooled data\n\n\n      5%      10%      25%      50%      75%      90%      95%     Mean \n21.85000 22.60000 24.80000 27.50000 30.90000 34.30000 37.55000 28.25499 \n\n\n\n# Create knots vector (same quantiles as ACM analysis)\nds.make(toAssign = \"c(23.5, 27.5, 32.8)\", newobj = \"knots\")\n\n\n\nStep 3: Prepare CVD Variable for Fine-Gray\n\n# Convert CVD to factor (required for Fine-Gray)\n# CVD coding: 0 = censored, 1 = CVD event, 2 = death from other causes\nds.asFactor(input.var.name = \"dat_CVD_BMI$CVD\", newobj.name = \"CVD_factor\")\nds.dataFrame(x = c(\"dat_CVD_BMI\", \"CVD_factor\"), newobj = \"dat_CVD_BMI\")\n\n\n\nStep 4: Create Fine-Gray Object\nThe ds.finegray() function creates a special dataset for competing risks analysis:\n\n# Create Fine-Gray object\nds.finegray(\n  formula = \"Surv(fup_CVD, CVD_factor) ~ .\",\n  data = \"dat_CVD_BMI\",\n  etype = \"1\",        # Event of interest (CVD = 1)\n  newobj = \"fg_object\"\n)\n\n\n\n\n\n\n\nFine-Gray Data Structure\n\n\n\nds.finegray() creates a modified dataset with:\n\nfgstart: Start time (counting process format)\nfgstop: Stop time\nfgstatus: Event status for Fine-Gray model (weights competing risks)\n\n\n\n\n\nStep 5: Fit Fine-Gray Model with RCS\n\n# Fit Cox model on Fine-Gray data with RCS\nds.coxphSLMAassign(\n  formula = \"survival::Surv(fgstart, fgstop, fgstatus) ~ rms::rcs(Primary_exposure, knots) + age + sex + smoke + edu + alc + med_combined + diet\",\n  dataName = \"fg_object\",\n  objectname = \"cph3\",\n  use.rms = TRUE\n)\n\n\n\nStep 6: Generate Predictions and Plot\n\n# Generate predictions for subdistribution hazard ratio\nds.Predict(\n  fit = \"cph3\",\n  objectname = \"predictions\",\n  Primary_exposure = seq(22.6, 34.4, 0.01),\n  fun = \"exp\",\n  ref.zero = TRUE\n)\n\n\n# Plot the subdistribution hazard ratio curve\nds.acmPlot(\n  pred_obj = \"predictions\",\n  line_color = \"blue\",\n  line_size = 2,\n  ref_line_color = \"brown\",\n  ref_line_size = 1.5,\n  x_label = \"BMI\",\n  y_label = \"Subdistribution Hazard Ratio\",\n  event_n = 220,\n  outcome_name = \"CVD\"  # Labels the plot for CVD outcome\n)[[1]]",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Survival Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "8-survival-analysis.html#summary-of-key-functions",
+    "href": "8-survival-analysis.html#summary-of-key-functions",
+    "title": "Survival Analysis",
+    "section": "Summary of Key Functions",
+    "text": "Summary of Key Functions\n\n\n\n\n\n\n\n\nFunction\nPurpose\nWhen to Use\n\n\n\n\nds.Surv()\nCreate survival object\nAlways - first step\n\n\nds.coxph.SLMA()\nSimple Cox model\nQuick analysis, no RCS needed\n\n\nds.coxphSLMAassign()\nCox model with RCS\nProPASS workflow, need predictions\n\n\nds.datadist()\nSetup RMS\nBefore RCS models\n\n\nds.useDatadist()\nActivate datadist\nAfter ds.datadist()\n\n\nds.cox.zphSLMA()\nTest PH assumption\nModel diagnostics\n\n\nsurvminer::ggcoxzph()\nPlot PH test\nVisualize Schoenfeld residuals\n\n\nds.Predict()\nGenerate predictions\nBefore plotting\n\n\nds.acmPlot()\nPlot HR curves\nMain visualization\n\n\nds.finegray()\nCompeting risks prep\nCVD analysis",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Survival Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "8-survival-analysis.html#references",
+    "href": "8-survival-analysis.html#references",
+    "title": "Survival Analysis",
+    "section": "References",
+    "text": "References\n\ndsSurvival Package Documentation\ndsSurvival Paper\ndsSurvival Bookdown",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Survival Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "8-survival-analysis.html#next-steps",
+    "href": "8-survival-analysis.html#next-steps",
+    "title": "Survival Analysis",
+    "section": "Next Steps",
+    "text": "Next Steps\nContinue to CoDA Analysis to learn about compositional data analysis.",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>9</span>  <span class='chapter-title'>Survival Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "9-coda-analysis.html",
+    "href": "9-coda-analysis.html",
+    "title": "Compositional Data Analysis",
+    "section": "",
+    "text": "Overview",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Compositional Data Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "9-coda-analysis.html#overview",
+    "href": "9-coda-analysis.html#overview",
+    "title": "Compositional Data Analysis",
+    "section": "",
+    "text": "What is Compositional Data?\nCompositional data consists of parts that sum to a constant (e.g., 100% or 24 hours). Examples include:\n\nTime-use data: Sleep, sedentary time, light activity, moderate-to-vigorous activity\nNutrient composition: Protein, fat, carbohydrates\nMicrobiome data: Relative abundances of bacterial taxa\nBody composition: Fat mass, lean mass, bone mass\n\n\n\nWhy Special Methods?\nStandard statistical methods assume independence between variables. However, compositional parts are inherently dependent—if one increases, others must decrease. CoDA uses log-ratio transformations to handle this constraint properly.",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Compositional Data Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "9-coda-analysis.html#coda-concepts",
+    "href": "9-coda-analysis.html#coda-concepts",
+    "title": "Compositional Data Analysis",
+    "section": "CoDA Concepts",
+    "text": "CoDA Concepts\n\nThe Simplex\nCompositional data lives in a constrained space called the simplex:\n\\[\\mathcal{S}^D = \\left\\{ \\mathbf{x} = (x_1, \\ldots, x_D) : x_i &gt; 0, \\sum_{i=1}^D x_i = \\kappa \\right\\}\\]\nwhere \\(\\kappa\\) is the constant sum (e.g., 24 hours for daily time-use).\n\n\nLog-Ratio Transformations\nThree main transformations move compositional data from the simplex to unconstrained Euclidean space:\n\nALR (Additive Log-Ratio): Simple but asymmetric\nCLR (Centered Log-Ratio): Symmetric but singular\nILR (Isometric Log-Ratio): Optimal for regression - used in ProPASS\n\n\n\nThe ILR Transformation\nThe ILR transformation maps D-part compositional data to (D-1) dimensional Euclidean space:\n\\[\\mathbf{z} = \\log(\\mathbf{x}) \\cdot \\mathbf{V}\\]\nwhere \\(\\mathbf{V}\\) is an orthonormal basis matrix constructed from a Sequential Binary Partition (SBP).",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Compositional Data Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "9-coda-analysis.html#setup",
+    "href": "9-coda-analysis.html#setup",
+    "title": "Compositional Data Analysis",
+    "section": "Setup",
+    "text": "Setup\n\n\n\n\n\n\nPackage Requirements\n\n\n\nCoDA analysis requires the dsCoda server-side package. Install the client package from GitHub.\n\n\n\nInstalling dsCodaClient\n\n# Install from GitHub\ndevtools::install_github(\"datashield/dsCodaClient\")\n\n\n\nLoading Libraries and Connecting\n\n# Load required packages\nlibrary(DSI)\nlibrary(DSOpal)\nlibrary(dsBaseClient)\nlibrary(dsTidyverseClient)\nlibrary(dsCodaClient)\n\n# Connect to ProPASS data\nbuilder &lt;- DSI::newDSLoginBuilder()\nbuilder$append(\n  server = \"study1\",\n  url = \"https://opal-demo.obiba.org\",\n  user = \"administrator\",\n  password = \"password\",\n  table = \"ProPass.df\",\n  profile = \"margin-idiom\"\n)\n\nlogindata &lt;- builder$build()\nconns &lt;- datashield.login(logins = logindata, assign = TRUE, symbol = \"D\")\n\n\n\nExploring the Data\n\n# Check data structure\nds.colnames(\"D\")\n\n$study1\n [1] \"ID\"                       \"vpa\"                     \n [3] \"mpa\"                      \"lpa\"                     \n [5] \"stand\"                    \"sb\"                      \n [7] \"sleep\"                    \"wear_total\"              \n [9] \"age\"                      \"sex\"                     \n[11] \"smoke\"                    \"fruit\"                   \n[13] \"veg\"                      \"edu\"                     \n[15] \"eth\"                      \"job\"                     \n[17] \"slf-hlth\"                 \"alc\"                     \n[19] \"mobility\"                 \"fasting\"                 \n[21] \"med_lipid\"                \"med_bp\"                  \n[23] \"med_glucose\"              \"prev_cvd\"                \n[25] \"prev_ht\"                  \"prev_bronchitis\"         \n[27] \"body_fat_percent\"         \"hdl\"                     \n[29] \"total_cholesterol\"        \"hba1c\"                   \n[31] \"cprotein\"                 \"IGF\"                     \n[33] \"triglycerides\"            \"wc\"                      \n[35] \"bmi\"                      \"t2d\"                     \n[37] \"sbp\"                      \"dbp\"                     \n[39] \"cohort\"                   \"condition\"               \n[41] \"condition_competing_risk\" \"condition_fup\"           \n\nds.dim(\"D\")\n\n$`dimensions of D in study1`\n[1] 537  42\n\n$`dimensions of D in combined studies`\n[1] 537  42",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Compositional Data Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "9-coda-analysis.html#the-propass-coda-workflow",
+    "href": "9-coda-analysis.html#the-propass-coda-workflow",
+    "title": "Compositional Data Analysis",
+    "section": "The ProPASS CoDA Workflow",
+    "text": "The ProPASS CoDA Workflow\nThe complete workflow for compositional data analysis follows these steps:\n\nData Wrangling: Combine activity categories and select compositional parts\nHandle Zeros: Use ds.lrEM() to impute zeros below detection limits\nCreate Composition: Use ds.acomp() to create compositional objects\nBuild Basis Matrix: Use build_sequential_ilr_V() for ILR transformation\nApply ILR: Use ds.ilr() to transform to Euclidean space\nCombine with Covariates: Merge ILR coordinates with outcome and covariate data\nSurvival Analysis: Fit Fine-Gray competing risks model with ILR coordinates\n\n\nStep 1: Data Wrangling\nFirst, prepare the compositional parts. In ProPASS, light intensity physical activity (lipa) is created by combining lpa and stand:\n\n# Create combined light activity variable (lipa = lpa + stand)\nds.mutate(\n  df.name = \"D\",\n  tidy_expr = list(lipa = lpa + stand),\n  newobj = \"D2\"\n)\n\n# Select the 5 compositional parts for analysis\n# Order matters for ILR interpretation!\nds.select(\n  df.name = \"D2\",\n  tidy_expr = list(vpa, mpa, lipa, sleep, sb),\n  newobj = \"D3\"\n)\n\n# Check the composition\nds.colnames(\"D3\")\n\n$study1\n[1] \"vpa\"   \"mpa\"   \"lipa\"  \"sleep\" \"sb\"   \n\nds.dim(\"D3\")\n\n$`dimensions of D3 in study1`\n[1] 537   5\n\n$`dimensions of D3 in combined studies`\n[1] 537   5\n\n\n\n\n\n\n\n\nComposition Parts\n\n\n\nThe 5-part composition represents daily time-use: - vpa: Vigorous physical activity - mpa: Moderate physical activity\n- lipa: Light intensity physical activity (lpa + stand) - sleep: Sleep time - sb: Sedentary behavior\n\n\n\n\nStep 2: Handle Zeros with ds.lrEM()\nCompositional data requires all parts &gt; 0. The ds.lrEM() function uses log-ratio Expectation-Maximization to impute zeros and values below detection limits:\n\n# Impute zeros using log-ratio EM algorithm\nds.lrEM(\n  X = \"D3\",\n  label = 0,                                         # Value indicating zeros/missing\n  dl = c(0.1667, 0.1667, 0.1667, 0.1667, 0.1667),    # Detection limits (10 min = 0.1667 hours)\n  objectname = \"D4\"\n)\n\n\n\n\n\n\n\nUnderstanding ds.lrEM() Parameters\n\n\n\n\nX: Data frame containing compositional parts\nlabel: Value that indicates zeros/missing (typically 0)\ndl: Detection limits for each part (minimum detectable value)\nobjectname: Name for the output object\n\nThe detection limit of 0.1667 hours = 10 minutes represents the minimum meaningful activity bout.\n\n\n\n# Verify the imputation\nds.class(\"D4\")\n\n$study1\n[1] \"data.frame\"\n\nds.dim(\"D4\")\n\n$`dimensions of D4 in study1`\n[1] 537   5\n\n$`dimensions of D4 in combined studies`\n[1] 537   5\n\n\n\n\nStep 3: Create Compositional Object with ds.acomp()\nThe ds.acomp() function creates an acomp class object that properly represents compositional data:\n\n# Create acomp object\nds.acomp(\n  X = \"D4\",\n  objectname = \"D5\"\n)\n\n\n# Verify the acomp object\nds.class(\"D5\")\n\n$study1\n[1] \"acomp\"\n\n\n\n\n\n\n\n\nWhat is an acomp object?\n\n\n\nThe acomp class (from the compositions R package) represents closed compositions where parts sum to a total. It enables proper compositional operations and transformations.\n\n\n\n\nStep 4: Build the ILR Basis Matrix\nThe ILR transformation requires a basis matrix V. The build_sequential_ilr_V() function creates a sequential binary partition:\n\n# Get the number of compositional parts\nn_parts &lt;- ds.dim(\"D5\")[[1]][2]\ncat(\"Number of compositional parts:\", n_parts, \"\\n\")\n\nNumber of compositional parts: 5 \n\n# Build the sequential ILR basis matrix\nV &lt;- build_sequential_ilr_V(n_parts)\n\n# View the basis matrix\nprint(V)\n\n           ilr1       ilr2       ilr3       ilr4\n[1,]  0.8944272  0.0000000  0.0000000  0.0000000\n[2,] -0.2236068  0.8660254  0.0000000  0.0000000\n[3,] -0.2236068 -0.2886751  0.8164966  0.0000000\n[4,] -0.2236068 -0.2886751 -0.4082483  0.7071068\n[5,] -0.2236068 -0.2886751 -0.4082483 -0.7071068\n\n\n\n\n\n\n\n\nUnderstanding the Basis Matrix\n\n\n\nThe basis matrix V defines how parts are contrasted in the ILR transformation:\n\nRows: Original compositional parts (D parts)\nColumns: ILR coordinates (D-1 coordinates)\nValues: Weights for the log-ratio contrasts\n\nFor 5 parts, you get 4 ILR coordinates.\n\n\n\n\nStep 5: Apply ILR Transformation with ds.ilr()\nApply the ILR transformation to convert the composition to unconstrained Euclidean coordinates:\n\n# Apply ILR transformation\nds.ilr(\n  X = \"D5\",\n  V = V,\n  objectname = \"ilr_coords\"\n)\n\n\n# Check the result\nds.class(\"ilr_coords\")\n\n$study1\n[1] \"rmult\"\n\nds.dim(\"ilr_coords\")\n\n$`dimensions of ilr_coords in study1`\n[1] 537   4\n\n$`dimensions of ilr_coords in combined studies`\n[1] 537   4\n\n\nThe ILR transformation creates D-1 = 4 coordinates from the 5-part composition.\n\n\nStep 6: Combine with Covariates for Analysis\nTo perform survival analysis, combine the ILR coordinates with outcome and covariate data:\n\n# Load survival analysis package\nlibrary(dsSurvivalClient)\n\n# Merge ILR coordinates back with original data\nds.dataFrame(\n  x = c(\"D2\", \"ilr_coords\"),\n  newobj = \"analysis_data\"\n)\n\n# Convert covariates to appropriate types\nds.asFactor(input.var.name = \"analysis_data$sex\", newobj.name = \"sex_factor\")\nds.asNumeric(x.name = \"analysis_data$age\", newobj = \"age_num\")\nds.asFactor(input.var.name = \"analysis_data$condition_competing_risk\", newobj.name = \"event_factor\")\nds.asNumeric(x.name = \"analysis_data$condition_fup\", newobj = \"fup_num\")\n\n# Combine into final analysis dataset\nds.dataFrame(\n  x = c(\"analysis_data\", \"sex_factor\", \"age_num\", \"event_factor\", \"fup_num\"),\n  newobj = \"dat_coda\"\n)\n\n# Rename the ILR coordinate columns to meaningful names\n# Based on sequential binary partition with order: vpa, mpa, lipa, sleep, sb\nds.rename(\n  df.name = \"dat_coda\",\n  tidy_expr = list(\n    VPAvsAll = `ilr_coords`,        # VPA vs (mpa, lipa, sleep, sb)\n    MPAvsRemaining = `NA.`,         # MPA vs (lipa, sleep, sb)\n    LIPAvsRemaining = `NA..1`,      # LIPA vs (sleep, sb)\n    SLEEPvsSB = `NA..2`             # Sleep vs SB\n  ),\n  newobj = \"dat_coda\"\n)\n\n# Select only the columns needed for survival analysis\n# This avoids issues with variables that have too many missing values\nds.select(\n  df.name = \"dat_coda\",\n  tidy_expr = list(VPAvsAll, MPAvsRemaining, LIPAvsRemaining, SLEEPvsSB, age_num, sex_factor, event_factor, fup_num),\n  newobj = \"dat_coda_clean\"\n)\n\n\n# Check the analysis data\nds.colnames(\"dat_coda_clean\")\n\n$study1\n[1] \"VPAvsAll\"        \"MPAvsRemaining\"  \"LIPAvsRemaining\" \"SLEEPvsSB\"      \n[5] \"age_num\"         \"sex_factor\"      \"event_factor\"    \"fup_num\"        \n\nds.dim(\"dat_coda_clean\")\n\n$`dimensions of dat_coda_clean in study1`\n[1] 537   8\n\n$`dimensions of dat_coda_clean in combined studies`\n[1] 537   8\n\n\n\n\nStep 7: Survival Analysis with ILR Coordinates\nNow we fit a Fine-Gray competing risks model using the ILR coordinates as exposures:\n\n# Setup datadist for rms functions\n# Center ILR coordinates at the compositional mean (geometric center)\nds.datadist(\n  data = \"dat_coda_clean\",\n  adjust_to = list(\n    age_num = \"mean\"\n  )\n)\nds.useDatadist(datadist = \"datadist_dat_coda_clean\")\n\n# Create Fine-Gray object for competing risks analysis\n# etype = \"1\" specifies the event of interest\nds.finegray(\n  formula = \"Surv(fup_num, event_factor) ~ .\",\n  data = \"dat_coda_clean\",\n  etype = \"1\",\n  newobj = \"fg_coda\"\n)\n\n\n# Fit Cox model on Fine-Gray data with ILR coordinates\n# Each ILR coordinate represents a specific time-use contrast\nds.coxphSLMAassign(\n  formula = \"survival::Surv(fgstart, fgstop, fgstatus) ~ VPAvsAll + MPAvsRemaining + LIPAvsRemaining + SLEEPvsSB + age_num + sex_factor\",\n  dataName = \"fg_coda\",\n  objectname = \"cph_coda\",\n  use.rms = TRUE\n)\n\n\n# View model results\nds.coxphSummary(\"cph_coda\")\n\n$study1\n                         Low        High      Diff.      Effect       S.E.\nVPAvsAll         -4.06235740 -3.11103842  0.9513190  0.06532509 0.06925808\n Hazard Ratio    -4.06235740 -3.11103842  0.9513190  1.06750600         NA\nMPAvsRemaining   -2.30510945 -1.83498977  0.4701197 -0.13793418 0.11340659\n Hazard Ratio    -2.30510945 -1.83498977  0.4701197  0.87115603         NA\nLIPAvsRemaining  -0.28723712 -0.02656285  0.2606743 -0.26217308 0.10341553\n Hazard Ratio    -0.28723712 -0.02656285  0.2606743  0.76937785         NA\nSLEEPvsSB         0.08593969  0.47208848  0.3861488 -0.09547689 0.12514362\n Hazard Ratio     0.08593969  0.47208848  0.3861488  0.90893937         NA\nage_num          56.00000000 68.00000000 12.0000000  0.17992717 0.10433054\n Hazard Ratio    56.00000000 68.00000000 12.0000000  1.19713017         NA\nsex_factor - 2:1  1.00000000  2.00000000         NA -0.06581742 0.14344655\n Hazard Ratio     1.00000000  2.00000000         NA  0.93630180         NA\n                  Lower 0.95  Upper 0.95 Type\nVPAvsAll         -0.07041825  0.20106843    1\n Hazard Ratio     0.93200393  1.22270844    2\nMPAvsRemaining   -0.36020702  0.08433866    1\n Hazard Ratio     0.69753191  1.08799729    2\nLIPAvsRemaining  -0.46486379 -0.05948237    1\n Hazard Ratio     0.62822067  0.94225214    2\nSLEEPvsSB        -0.34075387  0.14980010    1\n Hazard Ratio     0.71123394  1.16160201    2\nage_num          -0.02455693  0.38441127    1\n Hazard Ratio     0.97574213  1.46874936    2\nsex_factor - 2:1 -0.34696749  0.21533264    1\n Hazard Ratio     0.70682831  1.24027439    2\nattr(,\"heading\")\n[1] \"             Effects              Response : survival::Surv(fgstart, fgstop, fgstatus)\"\nattr(,\"class\")\n[1] \"summary.rms\" \"matrix\"     \nattr(,\"scale\")\n[1] \"log Relative Hazard\" \"Hazard Ratio\"       \nattr(,\"obj.name\")\n[1] \"fit_model\"\nattr(,\"adjust\")\n[1] \"\"\nattr(,\"conf.type\")\n[1] \"z\"\n\n\n\n\n\n\n\n\nILR Coordinate Interpretation\n\n\n\nThe ILR coordinates in the Cox model represent log-ratio contrasts based on the sequential binary partition:\n\n\n\n\n\n\n\n\nCoordinate\nContrast\nInterpretation\n\n\n\n\nVPAvsAll\nVPA vs (mpa, lipa, sleep, sb)\nEffect of increasing VPA relative to all other activities\n\n\nMPAvsRemaining\nMPA vs (lipa, sleep, sb)\nEffect of increasing MPA relative to lighter activities\n\n\nLIPAvsRemaining\nLIPA vs (sleep, sb)\nEffect of increasing LIPA relative to inactive time\n\n\nSLEEPvsSB\nSleep vs SB\nEffect of increasing sleep relative to sedentary behavior\n\n\n\nA positive coefficient means higher hazard ratio when that ILR coordinate increases.",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Compositional Data Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "9-coda-analysis.html#basis-rotation",
+    "href": "9-coda-analysis.html#basis-rotation",
+    "title": "Compositional Data Analysis",
+    "section": "Basis Rotation",
+    "text": "Basis Rotation\nThe order of compositional parts determines the ILR interpretation. Rotation is simply done by reordering the variables in ds.select() - this changes which component is contrasted first:\n\n# ============================================================\n# ROTATION IS CONTROLLED BY VARIABLE ORDER IN ds.select()\n# ============================================================\n\n# Rotation 1: VPA first (default in ProPASS)\nds.select(df.name = \"D2\", tidy_expr = list(vpa, mpa, lipa, sleep, sb), newobj = \"comp_rot1\")\n\n# Rotation 2: Sleep first (to study sleep effects)\nds.select(df.name = \"D2\", tidy_expr = list(sleep, sb, lipa, mpa, vpa), newobj = \"comp_rot2\")\n\n# Rotation 3: Sedentary behavior first\nds.select(df.name = \"D2\", tidy_expr = list(sb, sleep, lipa, mpa, vpa), newobj = \"comp_rot3\")\n\nAfter selecting with a different order, apply the same workflow:\n\n# Example: Sleep-first rotation\nds.select(df.name = \"D2\", tidy_expr = list(sleep, sb, lipa, mpa, vpa), newobj = \"comp_rotated\")\n\n# Same workflow applies - order of dl must match new variable order!\nds.lrEM(\n  X = \"comp_rotated\",\n  label = 0,\n  dl = c(0.1667, 0.1667, 0.1667, 0.1667, 0.1667),\n  objectname = \"comp_rotated_imp\"\n)\n\nds.acomp(X = \"comp_rotated_imp\", objectname = \"comp_rotated_acomp\")\n\n# Build basis and transform (same function, interpretation changes)\nV_rot &lt;- build_sequential_ilr_V(5)\nds.ilr(X = \"comp_rotated_acomp\", V = V_rot, objectname = \"ilr_rotated\")\n\n\n\n\n\n\n\nHow Rotation Works\n\n\n\nRotation is not a separate function - it’s simply the order you specify in ds.select():\n\n\n\nVariable Order\nFirst ILR Interprets\n\n\n\n\nvpa, mpa, lipa, sleep, sb\nVPA vs. all other activities\n\n\nsleep, sb, lipa, mpa, vpa\nSleep vs. all waking activities\n\n\nsb, sleep, lipa, mpa, vpa\nSedentary vs. all other behaviors\n\n\n\nStrategy: Put your exposure of interest first to get its specific contrast in ilr1.",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Compositional Data Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "9-coda-analysis.html#interpreting-coda-results",
+    "href": "9-coda-analysis.html#interpreting-coda-results",
+    "title": "Compositional Data Analysis",
+    "section": "Interpreting CoDA Results",
+    "text": "Interpreting CoDA Results\n\nILR Coefficient Interpretation\nILR coefficients are not directly interpretable in terms of original parts. They represent:\n\nilr1: Log-ratio contrast between first part and geometric mean of remaining parts\nilr2: Log-ratio contrast within the remaining parts\nAnd so on…\n\n\n\nIsotemporal Substitution\nTo understand the effect of reallocating time between activities, use isotemporal substitution analysis. This is typically computed client-side using the ILR coefficients from the model.",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Compositional Data Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "9-coda-analysis.html#summary-of-key-functions",
+    "href": "9-coda-analysis.html#summary-of-key-functions",
+    "title": "Compositional Data Analysis",
+    "section": "Summary of Key Functions",
+    "text": "Summary of Key Functions\n\n\n\n\n\n\n\n\n\nFunction\nPurpose\nInput\nOutput\n\n\n\n\nds.lrEM()\nImpute zeros\nData frame with composition\nData frame with imputed values\n\n\nds.acomp()\nCreate composition object\nData frame\nacomp object\n\n\nbuild_sequential_ilr_V()\nBuild basis matrix\nNumber of parts (integer)\nMatrix V\n\n\nds.ilr()\nILR transformation\nacomp object + V matrix\nILR coordinates",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Compositional Data Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "9-coda-analysis.html#best-practices",
+    "href": "9-coda-analysis.html#best-practices",
+    "title": "Compositional Data Analysis",
+    "section": "Best Practices",
+    "text": "Best Practices\n\n\n\n\n\n\nCoDA Analysis Tips\n\n\n\n\nHandle zeros properly: Always use ds.lrEM() before transformation - zeros break log-ratios\nCheck closure: Ensure compositional parts sum to expected total (e.g., 24 hours)\nChoose rotation wisely: Put your exposure of interest first for clearer interpretation\nSet appropriate detection limits: Use meaningful minimum values (e.g., 10 minutes for activities)\nReport geometric means: Present compositional means correctly (not arithmetic means)",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Compositional Data Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "9-coda-analysis.html#references",
+    "href": "9-coda-analysis.html#references",
+    "title": "Compositional Data Analysis",
+    "section": "References",
+    "text": "References\n\nDumuid, D. et al. (2018). Compositional data analysis for physical activity, sedentary time and sleep research. Statistical Methods in Medical Research.\nChastin, S. et al. (2015). Combined effects of time spent in physical activity, sedentary behaviors and sleep on obesity and cardio-metabolic health markers.\ncompositions R package\nzCompositions R package (for lrEM algorithm)",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Compositional Data Analysis</span>"
+    ]
+  },
+  {
+    "objectID": "9-coda-analysis.html#next-steps",
+    "href": "9-coda-analysis.html#next-steps",
+    "title": "Compositional Data Analysis",
+    "section": "Next Steps",
+    "text": "Next Steps\nContinue to the next chapter or return to Survival Analysis to combine CoDA with time-to-event outcomes.",
+    "crumbs": [
+      "Statistical Modelling",
+      "<span class='chapter-number'>10</span>  <span class='chapter-title'>Compositional Data Analysis</span>"
+    ]
+  }
+]

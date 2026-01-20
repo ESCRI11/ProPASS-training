@@ -1,0 +1,1468 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.54">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Survival Analysis – ProPASS DataSHIELD Training</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./9-coda-analysis.html" rel="next">
+<link href="./7-glm-models.html" rel="prev">
+<link href="./favicon.ico" rel="icon">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./7-glm-models.html">Statistical Modelling</a></li><li class="breadcrumb-item"><a href="./8-survival-analysis.html"><span class="chapter-title">Survival Analysis</span></a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+      <button type="button" class="btn quarto-search-button" aria-label="Search" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">ProPASS DataSHIELD Training</a> 
+        <div class="sidebar-tools-main">
+    <a href="https://github.com/propass/propass-training" title="Source Code" class="quarto-navigation-tool px-1" aria-label="Source Code"><i class="bi bi-github"></i></a>
+    <div class="dropdown">
+      <a href="" title="Share" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label="Share"><i class="bi bi-share"></i></a>
+      <ul class="dropdown-menu" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://twitter.com/intent/tweet?url=|url|">
+              <i class="bi bi-twitter pe-1"></i>
+            Twitter
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item sidebar-tools-main-item" href="https://www.linkedin.com/sharing/share-offsite/?url=|url|">
+              <i class="bi bi-linkedin pe-1"></i>
+            LinkedIn
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Welcome</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Getting Started</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./1-prerequisites.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Prerequisites</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./2-getting-connected.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Getting Connected</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Data Cleaning &amp; Management</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./3-filtering-subsetting.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Filtering &amp; Subsetting</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./4-conditional-operations.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Conditional Operations</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./5-derived-variables.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Derived Variables &amp; Grouped Summaries</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./6-table-one.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Creating Table 1</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Statistical Modelling</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./7-glm-models.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Generalized Linear Models</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./8-survival-analysis.html" class="sidebar-item-text sidebar-link active"><span class="chapter-title">Survival Analysis</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./9-coda-analysis.html" class="sidebar-item-text sidebar-link"><span class="chapter-title">Compositional Data Analysis</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#overview" id="toc-overview" class="nav-link active" data-scroll-target="#overview">Overview</a></li>
+  <li><a href="#setup" id="toc-setup" class="nav-link" data-scroll-target="#setup">Setup</a>
+  <ul class="collapse">
+  <li><a href="#installing-dssurvivalclient" id="toc-installing-dssurvivalclient" class="nav-link" data-scroll-target="#installing-dssurvivalclient">Installing dsSurvivalClient</a></li>
+  <li><a href="#loading-libraries-and-connecting" id="toc-loading-libraries-and-connecting" class="nav-link" data-scroll-target="#loading-libraries-and-connecting">Loading Libraries and Connecting</a></li>
+  <li><a href="#exploring-the-data" id="toc-exploring-the-data" class="nav-link" data-scroll-target="#exploring-the-data">Exploring the Data</a></li>
+  </ul></li>
+  <li><a href="#data-preparation-propass-workflow" id="toc-data-preparation-propass-workflow" class="nav-link" data-scroll-target="#data-preparation-propass-workflow">Data Preparation (ProPASS Workflow)</a>
+  <ul class="collapse">
+  <li><a href="#step-1-arrange-and-winsorize-bmi" id="toc-step-1-arrange-and-winsorize-bmi" class="nav-link" data-scroll-target="#step-1-arrange-and-winsorize-bmi">Step 1: Arrange and Winsorize BMI</a></li>
+  <li><a href="#step-2-handle-missing-values-and-create-derived-variables" id="toc-step-2-handle-missing-values-and-create-derived-variables" class="nav-link" data-scroll-target="#step-2-handle-missing-values-and-create-derived-variables">Step 2: Handle Missing Values and Create Derived Variables</a></li>
+  <li><a href="#step-3-select-variables-and-generate-outcome-variables" id="toc-step-3-select-variables-and-generate-outcome-variables" class="nav-link" data-scroll-target="#step-3-select-variables-and-generate-outcome-variables">Step 3: Select Variables and Generate Outcome Variables</a></li>
+  <li><a href="#step-4-convert-variables-to-appropriate-types" id="toc-step-4-convert-variables-to-appropriate-types" class="nav-link" data-scroll-target="#step-4-convert-variables-to-appropriate-types">Step 4: Convert Variables to Appropriate Types</a></li>
+  <li><a href="#step-5-multiple-imputation" id="toc-step-5-multiple-imputation" class="nav-link" data-scroll-target="#step-5-multiple-imputation">Step 5: Multiple Imputation</a></li>
+  <li><a href="#step-6-prepare-final-analysis-datasets" id="toc-step-6-prepare-final-analysis-datasets" class="nav-link" data-scroll-target="#step-6-prepare-final-analysis-datasets">Step 6: Prepare Final Analysis Datasets</a></li>
+  </ul></li>
+  <li><a href="#cox-proportional-hazards-models-with-rcs" id="toc-cox-proportional-hazards-models-with-rcs" class="nav-link" data-scroll-target="#cox-proportional-hazards-models-with-rcs">Cox Proportional Hazards Models with RCS</a>
+  <ul class="collapse">
+  <li><a href="#step-1-setup-for-rms-package" id="toc-step-1-setup-for-rms-package" class="nav-link" data-scroll-target="#step-1-setup-for-rms-package">Step 1: Setup for RMS Package</a></li>
+  <li><a href="#step-2-define-spline-knots" id="toc-step-2-define-spline-knots" class="nav-link" data-scroll-target="#step-2-define-spline-knots">Step 2: Define Spline Knots</a></li>
+  <li><a href="#step-3-create-survival-object" id="toc-step-3-create-survival-object" class="nav-link" data-scroll-target="#step-3-create-survival-object">Step 3: Create Survival Object</a></li>
+  <li><a href="#step-4-fit-cox-model-with-rcs" id="toc-step-4-fit-cox-model-with-rcs" class="nav-link" data-scroll-target="#step-4-fit-cox-model-with-rcs">Step 4: Fit Cox Model with RCS</a></li>
+  <li><a href="#step-5-test-proportional-hazards-assumption" id="toc-step-5-test-proportional-hazards-assumption" class="nav-link" data-scroll-target="#step-5-test-proportional-hazards-assumption">Step 5: Test Proportional Hazards Assumption</a></li>
+  <li><a href="#step-6-generate-predictions-and-plot-hazard-ratio-curves" id="toc-step-6-generate-predictions-and-plot-hazard-ratio-curves" class="nav-link" data-scroll-target="#step-6-generate-predictions-and-plot-hazard-ratio-curves">Step 6: Generate Predictions and Plot Hazard Ratio Curves</a></li>
+  <li><a href="#extended-prediction-range" id="toc-extended-prediction-range" class="nav-link" data-scroll-target="#extended-prediction-range">Extended Prediction Range</a></li>
+  </ul></li>
+  <li><a href="#competing-risks-analysis-fine-gray-model" id="toc-competing-risks-analysis-fine-gray-model" class="nav-link" data-scroll-target="#competing-risks-analysis-fine-gray-model">Competing Risks Analysis (Fine-Gray Model)</a>
+  <ul class="collapse">
+  <li><a href="#step-1-setup-for-rms-package-1" id="toc-step-1-setup-for-rms-package-1" class="nav-link" data-scroll-target="#step-1-setup-for-rms-package-1">Step 1: Setup for RMS Package</a></li>
+  <li><a href="#step-2-define-spline-knots-1" id="toc-step-2-define-spline-knots-1" class="nav-link" data-scroll-target="#step-2-define-spline-knots-1">Step 2: Define Spline Knots</a></li>
+  <li><a href="#step-3-prepare-cvd-variable-for-fine-gray" id="toc-step-3-prepare-cvd-variable-for-fine-gray" class="nav-link" data-scroll-target="#step-3-prepare-cvd-variable-for-fine-gray">Step 3: Prepare CVD Variable for Fine-Gray</a></li>
+  <li><a href="#step-4-create-fine-gray-object" id="toc-step-4-create-fine-gray-object" class="nav-link" data-scroll-target="#step-4-create-fine-gray-object">Step 4: Create Fine-Gray Object</a></li>
+  <li><a href="#step-5-fit-fine-gray-model-with-rcs" id="toc-step-5-fit-fine-gray-model-with-rcs" class="nav-link" data-scroll-target="#step-5-fit-fine-gray-model-with-rcs">Step 5: Fit Fine-Gray Model with RCS</a></li>
+  <li><a href="#step-6-generate-predictions-and-plot" id="toc-step-6-generate-predictions-and-plot" class="nav-link" data-scroll-target="#step-6-generate-predictions-and-plot">Step 6: Generate Predictions and Plot</a></li>
+  </ul></li>
+  <li><a href="#summary-of-key-functions" id="toc-summary-of-key-functions" class="nav-link" data-scroll-target="#summary-of-key-functions">Summary of Key Functions</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
+  <li><a href="#next-steps" id="toc-next-steps" class="nav-link" data-scroll-target="#next-steps">Next Steps</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/propass/propass-training/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./7-glm-models.html">Statistical Modelling</a></li><li class="breadcrumb-item"><a href="./8-survival-analysis.html"><span class="chapter-title">Survival Analysis</span></a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-title">Survival Analysis</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell">
+<style type="text/css">
+p {
+  text-align: justify
+}
+</style>
+</div>
+<p>This chapter covers survival analysis in DataSHIELD using <code>dsSurvival</code> package functions including <code>ds.Surv()</code>, Cox proportional hazards models with restricted cubic splines, and competing risks analysis (Fine-Gray models).</p>
+<section id="overview" class="level2">
+<h2 class="anchored" data-anchor-id="overview">Overview</h2>
+<p>Survival analysis is used to analyze time-to-event data, such as:</p>
+<ul>
+<li>Time to death (all-cause mortality - ACM)</li>
+<li>Time to cardiovascular event (CVD)</li>
+<li>Time to disease onset</li>
+<li>Time to recurrence</li>
+</ul>
+</section>
+<section id="setup" class="level2">
+<h2 class="anchored" data-anchor-id="setup">Setup</h2>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Profile Requirement
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Survival analysis requires the <code>dsSurvival</code> server-side package. On the Opal demo server, use <code>profile = "default"</code> which includes <code>dsBase</code>, <code>dsSurvival</code>, <code>dsTidyverse</code>, and <code>resourcer</code>.</p>
+</div>
+</div>
+<section id="installing-dssurvivalclient" class="level3">
+<h3 class="anchored" data-anchor-id="installing-dssurvivalclient">Installing dsSurvivalClient</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Install the specific version used in ProPASS</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>devtools<span class="sc">::</span><span class="fu">install_github</span>(<span class="st">"datashield/dsSurvivalClient"</span>, <span class="at">ref =</span> <span class="st">"v2.3.0-dev"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="loading-libraries-and-connecting" class="level3">
+<h3 class="anchored" data-anchor-id="loading-libraries-and-connecting">Loading Libraries and Connecting</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load all required libraries</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DSI)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(DSOpal)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsBaseClient)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsTidyverseClient)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dsSurvivalClient)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Connect to ProPass dataset</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>builder <span class="ot">&lt;-</span> DSI<span class="sc">::</span><span class="fu">newDSLoginBuilder</span>()</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>builder<span class="sc">$</span><span class="fu">append</span>(</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">server =</span> <span class="st">"study1"</span>,</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">url =</span> <span class="st">"https://opal-demo.obiba.org"</span>,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">user =</span> <span class="st">"administrator"</span>,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">password =</span> <span class="st">"password"</span>,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">table =</span> <span class="st">"ProPass.life1"</span>,</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">profile =</span> <span class="st">"margin-idiom"</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>logindata <span class="ot">&lt;-</span> builder<span class="sc">$</span><span class="fu">build</span>()</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>conns <span class="ot">&lt;-</span> <span class="fu">datashield.login</span>(<span class="at">logins =</span> logindata, <span class="at">assign =</span> <span class="cn">TRUE</span>, <span class="at">symbol =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="exploring-the-data" class="level3">
+<h3 class="anchored" data-anchor-id="exploring-the-data">Exploring the Data</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check data structure</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.colnames</span>(<span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$study1
+ [1] "ID"                "age"               "sex"              
+ [4] "smoke"             "fruit"             "veg"              
+ [7] "edu"               "eth"               "job"              
+[10] "slf-hlth"          "alc"               "mobility"         
+[13] "fasting"           "med_lipid"         "med_bp"           
+[16] "med_glucose"       "prev_cvd"          "prev_ht"          
+[19] "prev_bronchitis"   "body_fat_percent"  "hdl"              
+[22] "total_cholesterol" "hba1c"             "cprotein"         
+[25] "IGF"               "triglycerides"     "wc"               
+[28] "bmi"               "t2d"               "sbp"              
+[31] "dbp"               "cohort"           </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dim</span>(<span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>$`dimensions of D in study1`
+[1] 537  32
+
+$`dimensions of D in combined studies`
+[1] 537  32</code></pre>
+</div>
+</div>
+<p>The ProPASS dataset contains lifestyle and follow-up data.</p>
+</section>
+</section>
+<section id="data-preparation-propass-workflow" class="level2">
+<h2 class="anchored" data-anchor-id="data-preparation-propass-workflow">Data Preparation (ProPASS Workflow)</h2>
+<p>This section replicates the data preparation steps from the ProPASS analysis script. These steps are necessary to create the analysis-ready dataset.</p>
+<section id="step-1-arrange-and-winsorize-bmi" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-arrange-and-winsorize-bmi">Step 1: Arrange and Winsorize BMI</h3>
+<p>First, we arrange the data by ID and cap extreme BMI values at the 97.5th percentile (here approximated as 37.16):</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Arrange data by ID</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.arrange</span>(<span class="at">df.name =</span> <span class="st">"D"</span>, <span class="at">tidy_expr =</span> <span class="fu">list</span>(ID), <span class="at">newobj =</span> <span class="st">"D"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Winsorize BMI at 97.5th percentile (cap at 37.16)</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Original script uses 0.975 quantile; on DataSHIELD we approximate this</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># ds.quantileMean(x = 'D$bmi') yields approximately 37.16 at 95th percentile</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.case_when</span>(</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">tidy_expr =</span> <span class="fu">list</span>(D<span class="sc">$</span>bmi <span class="sc">&lt;=</span> <span class="fl">37.16</span> <span class="sc">~</span> D<span class="sc">$</span>bmi, D<span class="sc">$</span>bmi <span class="sc">&gt;</span> <span class="fl">37.16</span> <span class="sc">~</span> <span class="fl">37.16</span>),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"bmi_revised"</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"bmi_revised"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-2-handle-missing-values-and-create-derived-variables" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-handle-missing-values-and-create-derived-variables">Step 2: Handle Missing Values and Create Derived Variables</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Check for missing values in alcohol variable</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.numNA</span>(<span class="at">x =</span> <span class="st">"D$alc"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter out rows with missing alcohol data</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.filter</span>(<span class="at">df.name =</span> <span class="st">"D"</span>, <span class="at">tidy_expr =</span> <span class="fu">list</span>(D<span class="sc">$</span>alc <span class="sc">!=</span> <span class="st">"NA"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Create combined medication variable (1 if any medication, 0 otherwise)</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.if_else</span>(</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">condition =</span> <span class="fu">list</span>(D<span class="sc">$</span>med_lipid <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> D<span class="sc">$</span>med_bp <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> D<span class="sc">$</span>med_glucose <span class="sc">==</span> <span class="dv">1</span>),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">true =</span> <span class="dv">1</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">false =</span> <span class="dv">0</span>,</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"med_combined"</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"med_combined"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Create diet variable from fruit and vegetable consumption</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asNumeric</span>(<span class="at">x.name =</span> <span class="st">"D$veg"</span>, <span class="at">newobj =</span> <span class="st">"veg.n"</span>)</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asNumeric</span>(<span class="at">x.name =</span> <span class="st">"D$fruit"</span>, <span class="at">newobj =</span> <span class="st">"fruit.n"</span>)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.make</span>(<span class="at">toAssign =</span> <span class="st">"fruit.n + veg.n"</span>, <span class="at">newobj =</span> <span class="st">"diet"</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D"</span>, <span class="st">"diet"</span>), <span class="at">newobj =</span> <span class="st">"D"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-3-select-variables-and-generate-outcome-variables" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-select-variables-and-generate-outcome-variables">Step 3: Select Variables and Generate Outcome Variables</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Select relevant columns for analysis</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.select</span>(</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">df.name =</span> <span class="st">"D"</span>,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">tidy_expr =</span> <span class="fu">list</span>(ID, age, sex, smoke, edu, bmi, alc, med_combined, diet),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"D2"</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate simulated ACM outcome (for demonstration purposes)</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.rBinom</span>(<span class="at">samp.size =</span> <span class="dv">491</span>, <span class="at">size =</span> <span class="dv">1</span>, <span class="at">prob =</span> <span class="fl">0.15</span>, <span class="at">newobj =</span> <span class="st">"acm"</span>, <span class="at">seed.as.integer =</span> <span class="dv">3112</span>)</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate follow-up times</span></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.rUnif</span>(<span class="at">samp.size =</span> <span class="dv">491</span>, <span class="at">min =</span> <span class="fl">3.0</span>, <span class="at">max =</span> <span class="fl">7.8</span>, <span class="at">newobj =</span> <span class="st">"var1"</span>, <span class="at">seed.as.integer =</span> <span class="cn">NULL</span>)</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.make</span>(<span class="at">toAssign =</span> <span class="st">"acm * var1"</span>, <span class="at">newobj =</span> <span class="st">"var2"</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.recodeValues</span>(<span class="at">var.name =</span> <span class="st">"var2"</span>, <span class="at">values2replace.vector =</span> <span class="dv">0</span>, <span class="at">new.values.vector =</span> <span class="dv">8</span>, <span class="at">newobj =</span> <span class="st">"fup"</span>)</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.recodeValues</span>(<span class="at">var.name =</span> <span class="st">"var1"</span>, <span class="at">values2replace.vector =</span> <span class="dv">0</span>, <span class="at">new.values.vector =</span> <span class="dv">8</span>, <span class="at">newobj =</span> <span class="st">"fup2"</span>)</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D2"</span>, <span class="st">"acm"</span>, <span class="st">"fup"</span>), <span class="at">newobj =</span> <span class="st">"D2"</span>)</span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate simulated CVD outcome (0 = censored, 1 = CVD, 2 = competing death)</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.rBinom</span>(<span class="at">samp.size =</span> <span class="dv">491</span>, <span class="at">size =</span> <span class="dv">2</span>, <span class="at">prob =</span> <span class="fl">0.3</span>, <span class="at">newobj =</span> <span class="st">"CVD"</span>, <span class="at">seed.as.integer =</span> <span class="cn">NULL</span>)</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.case_when</span>(<span class="at">tidy_expr =</span> <span class="fu">list</span>(CVD <span class="sc">==</span> <span class="dv">2</span> <span class="sc">~</span> var1, CVD <span class="sc">&lt;</span> <span class="dv">2</span> <span class="sc">~</span> <span class="dv">8</span>), <span class="at">newobj =</span> <span class="st">"fup_CVD"</span>)</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D2"</span>, <span class="st">"CVD"</span>, <span class="st">"fup_CVD"</span>), <span class="at">newobj =</span> <span class="st">"D2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-4-convert-variables-to-appropriate-types" class="level3">
+<h3 class="anchored" data-anchor-id="step-4-convert-variables-to-appropriate-types">Step 4: Convert Variables to Appropriate Types</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert categorical variables to numeric for model fitting</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asNumeric</span>(<span class="at">x.name =</span> <span class="st">"D2$edu"</span>, <span class="at">newobj =</span> <span class="st">"edu"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asNumeric</span>(<span class="at">x.name =</span> <span class="st">"D2$smoke"</span>, <span class="at">newobj =</span> <span class="st">"smoke"</span>)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Reorganize data frame</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.select</span>(</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">df.name =</span> <span class="st">"D2"</span>,</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">tidy_expr =</span> <span class="fu">list</span>(ID, age, sex, bmi, alc, med_combined, diet, acm, fup, CVD, fup_CVD),</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"D2"</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"D2"</span>, <span class="st">"smoke"</span>, <span class="st">"edu"</span>), <span class="at">newobj =</span> <span class="st">"D2"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-5-multiple-imputation" class="level3">
+<h3 class="anchored" data-anchor-id="step-5-multiple-imputation">Step 5: Multiple Imputation</h3>
+<p>Handle remaining missing values using multiple imputation with random forests:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Perform multiple imputation with 5 imputations using random forest</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.mice</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"D2"</span>,</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">m =</span> <span class="dv">5</span>,</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"rf"</span>,</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj_df =</span> <span class="st">"imputed_data"</span>,</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">seed =</span> <span class="st">"fixed"</span>,</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj_mids =</span> <span class="st">"imputed_mids"</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert variables to factors for the imputed data</span></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="at">input.var.name =</span> <span class="st">"D2$edu"</span>, <span class="at">newobj.name =</span> <span class="st">"edu"</span>)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="at">input.var.name =</span> <span class="st">"D2$smoke"</span>, <span class="at">newobj.name =</span> <span class="st">"smoke"</span>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="at">input.var.name =</span> <span class="st">"D2$sex"</span>, <span class="at">newobj.name =</span> <span class="st">"sex"</span>)</span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Select from first imputation and combine with factor variables</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.select</span>(</span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">df.name =</span> <span class="st">"imputed_data.1"</span>,</span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">tidy_expr =</span> <span class="fu">list</span>(ID, age, bmi, alc, med_combined, diet, acm, fup, CVD, fup_CVD),</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"imputed_data1"</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"imputed_data1"</span>, <span class="st">"smoke"</span>, <span class="st">"edu"</span>, <span class="st">"sex"</span>), <span class="at">newobj =</span> <span class="st">"imputed_data.3"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-6-prepare-final-analysis-datasets" class="level3">
+<h3 class="anchored" data-anchor-id="step-6-prepare-final-analysis-datasets">Step 6: Prepare Final Analysis Datasets</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ACM analysis dataset: filter for adequate follow-up (&gt;= 1 year)</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrameSubset</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">df.name =</span> <span class="st">"imputed_data.3"</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">V1.name =</span> <span class="st">"fup"</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">V2.name =</span> <span class="st">"1"</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Boolean.operator =</span> <span class="st">"&gt;="</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"dat_ACM_BMI"</span></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.make</span>(<span class="at">toAssign =</span> <span class="st">"dat_ACM_BMI$bmi"</span>, <span class="at">newobj =</span> <span class="st">"Primary_exposure"</span>)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="fu">c</span>(<span class="st">"dat_ACM_BMI"</span>, <span class="st">"Primary_exposure"</span>), <span class="at">newobj =</span> <span class="st">"dat_ACM_BMI"</span>)</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="co"># CVD analysis dataset: filter for adequate CVD follow-up</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrameSubset</span>(</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">df.name =</span> <span class="st">"imputed_data.3"</span>,</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">V1.name =</span> <span class="st">"fup_CVD"</span>,</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">V2.name =</span> <span class="st">"1"</span>,</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">Boolean.operator =</span> <span class="st">"&gt;="</span>,</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"dat_CVD_BMI"</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.make</span>(<span class="at">toAssign =</span> <span class="st">"dat_CVD_BMI$bmi"</span>, <span class="at">newobj =</span> <span class="st">"Primary_exposure"</span>)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="fu">c</span>(<span class="st">"dat_CVD_BMI"</span>, <span class="st">"Primary_exposure"</span>), <span class="at">newobj =</span> <span class="st">"dat_CVD_BMI"</span>)</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Check final sample sizes</span></span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dim</span>(<span class="st">"dat_ACM_BMI"</span>)</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dim</span>(<span class="st">"dat_CVD_BMI"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Data Preparation Summary
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The data preparation steps above:</p>
+<ol type="1">
+<li><strong>Winsorize</strong> extreme BMI values to reduce outlier influence</li>
+<li><strong>Filter</strong> observations with missing alcohol data</li>
+<li><strong>Create</strong> derived variables (combined medication, diet score)</li>
+<li><strong>Impute</strong> missing values using multiple imputation</li>
+<li><strong>Subset</strong> for adequate follow-up time</li>
+<li><strong>Create</strong> standardized <code>Primary_exposure</code> variable for modeling</li>
+</ol>
+</div>
+</div>
+</section>
+</section>
+<section id="cox-proportional-hazards-models-with-rcs" class="level2">
+<h2 class="anchored" data-anchor-id="cox-proportional-hazards-models-with-rcs">Cox Proportional Hazards Models with RCS</h2>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why Restricted Cubic Splines?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>RCS allows modeling non-linear exposure-response relationships. Instead of assuming a linear association between BMI and mortality, RCS captures potential J-shaped or U-shaped curves. This is the approach used in the <strong>ProPASS analysis</strong>.</p>
+</div>
+</div>
+<section id="step-1-setup-for-rms-package" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-setup-for-rms-package">Step 1: Setup for RMS Package</h3>
+<p>The <code>rms</code> package enables restricted cubic splines. Setup requires <code>ds.datadist()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup datadist for rms functions</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="co"># adjust_to specifies the reference value for hazard ratio plots</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.datadist</span>(</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"dat_ACM_BMI"</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">adjust_to =</span> <span class="fu">list</span>(<span class="at">Primary_exposure =</span> <span class="st">"min"</span>)  <span class="co"># Reference = minimum BMI</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Activate the datadist</span></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.useDatadist</span>(<span class="at">datadist =</span> <span class="st">"datadist_dat_ACM_BMI"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-2-define-spline-knots" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-define-spline-knots">Step 2: Define Spline Knots</h3>
+<p>Knots are placed at quantiles of the exposure distribution. Standard practice is to use the 10th, 50th, and 90th percentiles for 3 knots:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get quantiles to determine knot placement</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.quantileMean</span>(<span class="at">x =</span> <span class="st">"dat_ACM_BMI$Primary_exposure"</span>, <span class="at">type =</span> <span class="st">"combine"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code> Quantiles of the pooled data</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      5%      10%      25%      50%      75%      90%      95%     Mean 
+21.85000 22.60000 24.80000 27.50000 30.90000 34.30000 37.55000 28.25499 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create knots vector based on quantiles (10th, 50th, 90th percentiles)</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Values from ds.quantileMean output: approximately 23.5, 27.5, 32.8</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.make</span>(<span class="at">toAssign =</span> <span class="st">"c(22.6, 27.5, 34.3)"</span>, <span class="at">newobj =</span> <span class="st">"knots"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-3-create-survival-object" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-create-survival-object">Step 3: Create Survival Object</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create Surv object for time-to-event analysis</span></span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.Surv</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">time =</span> <span class="st">"dat_ACM_BMI$fup"</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">event =</span> <span class="st">"dat_ACM_BMI$acm"</span>,</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">objectname =</span> <span class="st">"surv_object"</span></span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-4-fit-cox-model-with-rcs" class="level3">
+<h3 class="anchored" data-anchor-id="step-4-fit-cox-model-with-rcs">Step 4: Fit Cox Model with RCS</h3>
+<p>Use <code>ds.coxphSLMAassign()</code> to fit a Cox model with restricted cubic splines:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.make</span>(<span class="at">toAssign =</span> <span class="st">"dat_ACM_BMI"</span>, <span class="at">newobj =</span> <span class="st">"dataTable"</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.make</span>(<span class="at">toAssign =</span> <span class="st">"NULL"</span>, <span class="at">newobj =</span> <span class="st">"weights_obj"</span>)</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit Cox model with restricted cubic splines for the exposure</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.coxphSLMAassign</span>(</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"surv_object ~ rms::rcs(Primary_exposure, knots) + age + sex + smoke + edu + alc + med_combined + diet"</span>,</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataName =</span> <span class="st">"dat_ACM_BMI"</span>,</span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">objectname =</span> <span class="st">"cph1"</span>,</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">use.rms =</span> <span class="cn">TRUE</span></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Understanding the Formula
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><code>rms::rcs(Primary_exposure, knots)</code>: Models BMI as a restricted cubic spline with 3 knots</li>
+<li>This allows the hazard ratio to vary non-linearly across BMI values</li>
+<li>The reference point is set by <code>adjust_to</code> in <code>ds.datadist()</code> (minimum BMI)</li>
+<li>Covariates: <code>age</code>, <code>sex</code>, <code>smoke</code>, <code>edu</code>, <code>alc</code>, <code>med_combined</code>, <code>diet</code></li>
+</ul>
+</div>
+</div>
+</section>
+<section id="step-5-test-proportional-hazards-assumption" class="level3">
+<h3 class="anchored" data-anchor-id="step-5-test-proportional-hazards-assumption">Step 5: Test Proportional Hazards Assumption</h3>
+<p>The proportional hazards assumption should be verified. Use <code>ds.cox.zphSLMA()</code> and visualize with <code>survminer::ggcoxzph()</code>:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Test the proportional hazards assumption</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>test_ph <span class="ot">&lt;-</span> <span class="fu">ds.cox.zphSLMA</span>(<span class="st">"cph1"</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="co"># View the test results</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(test_ph[[<span class="dv">1</span>]]<span class="sc">$</span>table)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                                        chisq df          p
+rms::rcs(Primary_exposure, knots)  2.71811100  2 0.25690331
+age                                1.56002901  1 0.21166097
+sex                                0.67475094  1 0.41140010
+smoke                              0.37898794  2 0.82737771
+edu                                7.65788160  3 0.05363760
+alc                                1.69506890  2 0.42847004
+med_combined                       0.04054328  1 0.84042207
+diet                               3.14353303  1 0.07622852
+GLOBAL                            14.84456171 13 0.31715674</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Visualize the Schoenfeld residuals</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Non-significant p-values and flat lines indicate PH assumption holds</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>survminer<span class="sc">::</span><span class="fu">ggcoxzph</span>(test_ph[[<span class="dv">1</span>]])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="8-survival-analysis_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="960"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Interpreting the PH Test
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>p-value &gt; 0.05</strong>: Proportional hazards assumption is satisfied</li>
+<li><strong>Flat residual plot</strong>: The hazard ratio is constant over time</li>
+<li><strong>Sloped residual plot</strong>: The effect changes over time (assumption violated)</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="step-6-generate-predictions-and-plot-hazard-ratio-curves" class="level3">
+<h3 class="anchored" data-anchor-id="step-6-generate-predictions-and-plot-hazard-ratio-curves">Step 6: Generate Predictions and Plot Hazard Ratio Curves</h3>
+<p>This is the key visualization step - creating hazard ratio curves across the exposure range:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate predictions across BMI range</span></span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># We use 5th to 95th percentile range (approximately 22.6 to 34.4 from quantiles)</span></span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.Predict</span>(</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">fit =</span> <span class="st">"cph1"</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">objectname =</span> <span class="st">"predictions"</span>,</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">Primary_exposure =</span> <span class="fu">seq</span>(<span class="fl">22.6</span>, <span class="fl">34.4</span>, <span class="fl">0.1</span>),</span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="st">"exp"</span>,        <span class="co"># Exponentiate to get hazard ratios</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref.zero =</span> <span class="cn">TRUE</span>     <span class="co"># Reference hazard ratio = 1</span></span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create the hazard ratio plot using ds.acmPlot</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.acmPlot</span>(</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_obj =</span> <span class="st">"predictions"</span>,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">line_color =</span> <span class="st">"blue"</span>,</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">line_size =</span> <span class="dv">2</span>,</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_line_color =</span> <span class="st">"brown"</span>,</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_line_size =</span> <span class="fl">1.5</span>,</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">x_label =</span> <span class="st">"BMI"</span>,</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">y_label =</span> <span class="st">"Hazard Ratio"</span>,</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_n =</span> <span class="dv">87</span></span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>)[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="8-survival-analysis_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Understanding the Hazard Ratio Plot
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Y-axis = 1</strong>: Reference (minimum BMI)</li>
+<li><strong>Blue line</strong>: Hazard ratio curve with 95% CI (shaded)</li>
+<li><strong>Brown dashed line</strong>: Reference line at HR = 1</li>
+<li><strong>Non-linear shape</strong>: Captures J-shaped or U-shaped relationships</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="extended-prediction-range" class="level3">
+<h3 class="anchored" data-anchor-id="extended-prediction-range">Extended Prediction Range</h3>
+<p>We can also generate predictions over a wider range to see the full curve:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Extend the prediction range</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.Predict</span>(</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fit =</span> <span class="st">"cph1"</span>,</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">objectname =</span> <span class="st">"predictions"</span>,</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Primary_exposure =</span> <span class="fu">seq</span>(<span class="dv">22</span>, <span class="dv">44</span>, <span class="fl">0.01</span>),</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="st">"exp"</span>,</span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref.zero =</span> <span class="cn">TRUE</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.acmPlot</span>(</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_obj =</span> <span class="st">"predictions"</span>,</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">line_color =</span> <span class="st">"blue"</span>,</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">line_size =</span> <span class="dv">2</span>,</span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_line_color =</span> <span class="st">"brown"</span>,</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_line_size =</span> <span class="fl">1.5</span>,</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">x_label =</span> <span class="st">"BMI"</span>,</span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">y_label =</span> <span class="st">"Hazard Ratio"</span>,</span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_n =</span> <span class="dv">87</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>)[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="8-survival-analysis_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="competing-risks-analysis-fine-gray-model" class="level2">
+<h2 class="anchored" data-anchor-id="competing-risks-analysis-fine-gray-model">Competing Risks Analysis (Fine-Gray Model)</h2>
+<p>When there are competing events (e.g., CVD event vs.&nbsp;death from other causes), use the Fine-Gray model. This estimates the <strong>subdistribution hazard</strong> which accounts for competing risks.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Why Fine-Gray?
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>In CVD analysis, death from non-CVD causes is a competing event. Standard Cox regression would treat these as censored, potentially overestimating CVD risk. Fine-Gray models correctly handle this.</p>
+</div>
+</div>
+<section id="step-1-setup-for-rms-package-1" class="level3">
+<h3 class="anchored" data-anchor-id="step-1-setup-for-rms-package-1">Step 1: Setup for RMS Package</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Setup datadist for CVD analysis</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.datadist</span>(</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"dat_CVD_BMI"</span>,</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">adjust_to =</span> <span class="fu">list</span>(<span class="at">Primary_exposure =</span> <span class="st">"min"</span>)</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.useDatadist</span>(<span class="at">datadist =</span> <span class="st">"datadist_dat_CVD_BMI"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-2-define-spline-knots-1" class="level3">
+<h3 class="anchored" data-anchor-id="step-2-define-spline-knots-1">Step 2: Define Spline Knots</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Get quantiles for CVD data</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.quantileMean</span>(<span class="at">x =</span> <span class="st">"dat_CVD_BMI$Primary_exposure"</span>, <span class="at">type =</span> <span class="st">"combine"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code> Quantiles of the pooled data</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>      5%      10%      25%      50%      75%      90%      95%     Mean 
+21.85000 22.60000 24.80000 27.50000 30.90000 34.30000 37.55000 28.25499 </code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create knots vector (same quantiles as ACM analysis)</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.make</span>(<span class="at">toAssign =</span> <span class="st">"c(23.5, 27.5, 32.8)"</span>, <span class="at">newobj =</span> <span class="st">"knots"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-3-prepare-cvd-variable-for-fine-gray" class="level3">
+<h3 class="anchored" data-anchor-id="step-3-prepare-cvd-variable-for-fine-gray">Step 3: Prepare CVD Variable for Fine-Gray</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert CVD to factor (required for Fine-Gray)</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a><span class="co"># CVD coding: 0 = censored, 1 = CVD event, 2 = death from other causes</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.asFactor</span>(<span class="at">input.var.name =</span> <span class="st">"dat_CVD_BMI$CVD"</span>, <span class="at">newobj.name =</span> <span class="st">"CVD_factor"</span>)</span>
+<span id="cb32-4"><a href="#cb32-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.dataFrame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="st">"dat_CVD_BMI"</span>, <span class="st">"CVD_factor"</span>), <span class="at">newobj =</span> <span class="st">"dat_CVD_BMI"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-4-create-fine-gray-object" class="level3">
+<h3 class="anchored" data-anchor-id="step-4-create-fine-gray-object">Step 4: Create Fine-Gray Object</h3>
+<p>The <code>ds.finegray()</code> function creates a special dataset for competing risks analysis:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Create Fine-Gray object</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.finegray</span>(</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"Surv(fup_CVD, CVD_factor) ~ ."</span>,</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> <span class="st">"dat_CVD_BMI"</span>,</span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">etype =</span> <span class="st">"1"</span>,        <span class="co"># Event of interest (CVD = 1)</span></span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">newobj =</span> <span class="st">"fg_object"</span></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Fine-Gray Data Structure
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>ds.finegray()</code> creates a modified dataset with:</p>
+<ul>
+<li><code>fgstart</code>: Start time (counting process format)</li>
+<li><code>fgstop</code>: Stop time</li>
+<li><code>fgstatus</code>: Event status for Fine-Gray model (weights competing risks)</li>
+</ul>
+</div>
+</div>
+</section>
+<section id="step-5-fit-fine-gray-model-with-rcs" class="level3">
+<h3 class="anchored" data-anchor-id="step-5-fit-fine-gray-model-with-rcs">Step 5: Fit Fine-Gray Model with RCS</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit Cox model on Fine-Gray data with RCS</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.coxphSLMAassign</span>(</span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">formula =</span> <span class="st">"survival::Surv(fgstart, fgstop, fgstatus) ~ rms::rcs(Primary_exposure, knots) + age + sex + smoke + edu + alc + med_combined + diet"</span>,</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">dataName =</span> <span class="st">"fg_object"</span>,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">objectname =</span> <span class="st">"cph3"</span>,</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">use.rms =</span> <span class="cn">TRUE</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="step-6-generate-predictions-and-plot" class="level3">
+<h3 class="anchored" data-anchor-id="step-6-generate-predictions-and-plot">Step 6: Generate Predictions and Plot</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Generate predictions for subdistribution hazard ratio</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.Predict</span>(</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fit =</span> <span class="st">"cph3"</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">objectname =</span> <span class="st">"predictions"</span>,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">Primary_exposure =</span> <span class="fu">seq</span>(<span class="fl">22.6</span>, <span class="fl">34.4</span>, <span class="fl">0.01</span>),</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">fun =</span> <span class="st">"exp"</span>,</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref.zero =</span> <span class="cn">TRUE</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the subdistribution hazard ratio curve</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ds.acmPlot</span>(</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pred_obj =</span> <span class="st">"predictions"</span>,</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">line_color =</span> <span class="st">"blue"</span>,</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">line_size =</span> <span class="dv">2</span>,</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_line_color =</span> <span class="st">"brown"</span>,</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ref_line_size =</span> <span class="fl">1.5</span>,</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">x_label =</span> <span class="st">"BMI"</span>,</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">y_label =</span> <span class="st">"Subdistribution Hazard Ratio"</span>,</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">event_n =</span> <span class="dv">220</span>,</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">outcome_name =</span> <span class="st">"CVD"</span>  <span class="co"># Labels the plot for CVD outcome</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>)[[<span class="dv">1</span>]]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="8-survival-analysis_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="768"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="summary-of-key-functions" class="level2">
+<h2 class="anchored" data-anchor-id="summary-of-key-functions">Summary of Key Functions</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 31%">
+<col style="width: 28%">
+<col style="width: 40%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Function</th>
+<th>Purpose</th>
+<th>When to Use</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>ds.Surv()</code></td>
+<td>Create survival object</td>
+<td>Always - first step</td>
+</tr>
+<tr class="even">
+<td><code>ds.coxph.SLMA()</code></td>
+<td>Simple Cox model</td>
+<td>Quick analysis, no RCS needed</td>
+</tr>
+<tr class="odd">
+<td><code>ds.coxphSLMAassign()</code></td>
+<td>Cox model with RCS</td>
+<td>ProPASS workflow, need predictions</td>
+</tr>
+<tr class="even">
+<td><code>ds.datadist()</code></td>
+<td>Setup RMS</td>
+<td>Before RCS models</td>
+</tr>
+<tr class="odd">
+<td><code>ds.useDatadist()</code></td>
+<td>Activate datadist</td>
+<td>After ds.datadist()</td>
+</tr>
+<tr class="even">
+<td><code>ds.cox.zphSLMA()</code></td>
+<td>Test PH assumption</td>
+<td>Model diagnostics</td>
+</tr>
+<tr class="odd">
+<td><code>survminer::ggcoxzph()</code></td>
+<td><strong>Plot PH test</strong></td>
+<td>Visualize Schoenfeld residuals</td>
+</tr>
+<tr class="even">
+<td><code>ds.Predict()</code></td>
+<td>Generate predictions</td>
+<td>Before plotting</td>
+</tr>
+<tr class="odd">
+<td><code>ds.acmPlot()</code></td>
+<td><strong>Plot HR curves</strong></td>
+<td>Main visualization</td>
+</tr>
+<tr class="even">
+<td><code>ds.finegray()</code></td>
+<td>Competing risks prep</td>
+<td>CVD analysis</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<ul>
+<li><a href="https://github.com/neelsoumya/dsSurvival">dsSurvival Package Documentation</a></li>
+<li><a href="https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-022-06085-1">dsSurvival Paper</a></li>
+<li><a href="https://neelsoumya.github.io/dsSurvivalbookdown/">dsSurvival Bookdown</a></li>
+</ul>
+</section>
+<section id="next-steps" class="level2">
+<h2 class="anchored" data-anchor-id="next-steps">Next Steps</h2>
+<p>Continue to <a href="./9-coda-analysis.html">CoDA Analysis</a> to learn about compositional data analysis.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./7-glm-models.html" class="pagination-link" aria-label="Generalized Linear Models">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-title">Generalized Linear Models</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./9-coda-analysis.html" class="pagination-link" aria-label="Compositional Data Analysis">
+        <span class="nav-page-text"><span class="chapter-title">Compositional Data Analysis</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/propass/propass-training/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
