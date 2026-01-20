@@ -43,7 +43,7 @@ devtools::install_github("datashield/dsBaseClient", force = TRUE)
 devtools::install_github("molgenis/dsTidyverseClient")
 
 # Survival analysis (for Module 2)
-devtools::install_github("neelsoumya/dsSurvivalClient")
+devtools::install_github("datashield/dsSurvivalClient")
 
 # Helper packages
 devtools::install_github("timcadman/ds-helper")

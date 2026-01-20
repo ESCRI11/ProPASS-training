@@ -35,7 +35,7 @@ install.packages(c("DSI", "DSOpal", "devtools", "metafor"))
 
 # DataSHIELD client packages
 devtools::install_github("datashield/dsBaseClient")
-devtools::install_github("neelsoumya/dsSurvivalClient")
+devtools::install_github("datashield/dsSurvivalClient")
 devtools::install_github("timcadman/ds-helper")
 ```
 
