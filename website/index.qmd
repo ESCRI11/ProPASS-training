@@ -64,11 +64,11 @@ For this workshop, we use the public **OBiBa Opal demo server**:
 | **URL** | `https://opal-demo.obiba.org` |
 | **Username** | `dsuser` |
 | **Password** | `P@ssw0rd` |
-| **Profile** | `lemon-donkey` |
+| **Profile** | `margin-idiom` |
 
 ::: {.callout-tip}
-## Why lemon-donkey?
-The `lemon-donkey` profile includes the required DataSHIELD packages to follow the materials.
+## Why margin-idiom?
+The `margin-idiom` profile includes the required DataSHIELD packages to follow the materials.
 :::
 
 ## Resources

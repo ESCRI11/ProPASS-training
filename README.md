@@ -48,9 +48,9 @@ This training uses the public OBiBa Opal demo server:
 | **URL** | `https://opal-demo.obiba.org` |
 | **Username** | `dsuser` |
 | **Password** | `P@ssw0rd` |
-| **Profile** | `lemon-donkey` |
+| **Profile** | `margin-idiom` |
 
-> **Note**: The `lemon-donkey` profile includes `dsSurvival` and other advanced DataSHIELD packages.
+> **Note**: The `margin-idiom` profile includes `dsSurvival` and other advanced DataSHIELD packages.
 
 ### Building the Website
 

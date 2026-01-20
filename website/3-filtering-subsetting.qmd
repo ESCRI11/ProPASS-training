@@ -41,7 +41,7 @@ builder$append(
   user = "dsuser",
   password = "P@ssw0rd",
   table = "CNSIM.CNSIM1",
-  profile = "lemon-donkey"
+  profile = "margin-idiom"
 )
 logindata <- builder$build()
 conns <- datashield.login(logins = logindata, assign = TRUE, symbol = "D")

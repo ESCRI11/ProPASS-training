@@ -68,7 +68,7 @@ builder$append(
   user = "dsuser",
   password = "P@ssw0rd",
   table = "CNSIM.CNSIM1",
-  profile = "lemon-donkey"
+  profile = "margin-idiom"
 )
 
 # Build the login data frame
@@ -76,8 +76,8 @@ logindata <- builder$build()
 ```
 
 ::: {.callout-important}
-## Profile: lemon-donkey
-We use the `lemon-donkey` profile which includes additional packages for survival analysis (`dsSurvival`) and other advanced methods not available in the default profile.
+## Profile: margin-idiom
+We use the `margin-idiom` profile which includes additional packages for survival analysis (`dsSurvival`) and other advanced methods not available in the default profile.
 :::
 
 ### Multiple Sites Example
@@ -96,7 +96,7 @@ builder$append(
   user = "dsuser",
   password = "P@ssw0rd",
   table = "CNSIM.CNSIM1",
-  profile = "lemon-donkey"
+  profile = "margin-idiom"
 )
 
 # Site 2 (same server, different table for demo)
@@ -106,7 +106,7 @@ builder$append(
   user = "dsuser",
   password = "P@ssw0rd",
   table = "CNSIM.CNSIM2",
-  profile = "lemon-donkey"
+  profile = "margin-idiom"
 )
 
 logindata <- builder$build()
@@ -123,7 +123,7 @@ builder$append(
   user = Sys.getenv("OPAL_USER"),
   password = Sys.getenv("OPAL_PASSWORD"),
   table = "PROJECT.DATASET",
-  profile = "lemon-donkey"
+  profile = "margin-idiom"
 )
 ```
 :::
@@ -157,7 +157,7 @@ builder$append(
   user = "dsuser",
   password = "P@ssw0rd",
   resource = "RSRC.CNSIM1",
-  profile = "lemon-donkey"
+  profile = "margin-idiom"
 )
 
 logindata <- builder$build()

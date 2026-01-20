@@ -78,7 +78,7 @@ For this training, we will use the public **Opal demo server** provided by OBiBa
 | **Server URL** | `https://opal-demo.obiba.org` |
 | **Username** | `dsuser` |
 | **Password** | `P@ssw0rd` |
-| **Profile** | `lemon-donkey` |
+| **Profile** | `margin-idiom` |
 
 ::: {.callout-note}
 ## Public Demo Server
@@ -103,7 +103,7 @@ builder$append(
   user = "dsuser",
   password = "P@ssw0rd",
   table = "CNSIM.CNSIM1",
-  profile = "lemon-donkey"
+  profile = "margin-idiom"
 )
 
 logindata <- builder$build()
